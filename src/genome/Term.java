@@ -11,19 +11,6 @@ public abstract class Term {
 		public abstract int eval(CellContext c);
 	}
 	
-	public static class Name extends Term {
-		private byte value;
-
-		public Name(byte value) {
-			this.value = value;
-		}
-
-		public byte val() {
-			return value;
-		}
-		
-	}
-	
 	public static class Int extends Operator {
 		private int val;
 		
@@ -33,6 +20,10 @@ public abstract class Term {
 		
 		public int eval(CellContext c) {
 			return val;
+		}
+		
+		public String toString() {
+			return ""+val;
 		}
 	}
 	
@@ -46,6 +37,10 @@ public abstract class Term {
 		
 		public int eval(CellContext c) {
 			return a.eval(c) + b.eval(c);
+		}
+		
+		public String toString() {
+			return "Add(" + a + "," + b + ")";
 		}
 	}
 }

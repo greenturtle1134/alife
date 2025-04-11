@@ -40,6 +40,7 @@ public class DNA {
 	}
 	
 	public static DNA stringToDNA(String s) {
+		s = s.toUpperCase().replaceAll("[^ATGC]", "");
 		int[] res = new int[(s.length()-1) / 16 + 1];
 		for (int i = 0; i<s.length(); i++) {
 			for (int x = 0; x<4; x++) {
