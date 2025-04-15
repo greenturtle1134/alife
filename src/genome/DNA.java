@@ -23,7 +23,7 @@ public class DNA {
 	}
 
 	public int idxCodon(int i) {
-		return idx(i) + (idx(i+1) << 2) + (idx(i+2) << 4);
+		return (idx(i) << 4) + (idx(i+1) << 2) + idx(i+2);
 	}
 	
 	public int getLength() {
