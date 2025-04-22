@@ -71,7 +71,25 @@ public class Parser {
 		else {
 			return new Term.Int(defaultVal);
 		}
-		
+	}
+	
+	public Statement nextStatement() {
+		if (isEnd()) {
+			return null;
+		}
+		Operator res = nextOperator();
+		if (res != null) {
+			// TODO Handle case where we get an operator instead of statement!
+			return null;
+		}
+		byte c = nextCodon();
+		switch (c) {
+			case 4:
+				return new Term.Print(nextOperator(0));
+			default:
+				i--;
+				return null;
+		}
 	}
 	
 }

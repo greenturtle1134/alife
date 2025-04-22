@@ -6,6 +6,22 @@ public abstract class Term {
 	public static abstract class Statement extends Term {
 		public abstract void exec(CellContext c);
 	}
+	
+	public static class Print extends Statement {
+		private Operator a;
+		
+		public Print(Operator a) {
+			this.a = a;
+		}
+		
+		public void exec(CellContext c) {
+			System.out.println("PRINT: " + a.eval(c));
+		}
+		
+		public String toString() {
+			return "Print("+a+")";
+		}
+	}
 
 	public static abstract class Operator extends Term {
 		public abstract int eval(CellContext c);

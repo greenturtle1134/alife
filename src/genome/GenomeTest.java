@@ -1,8 +1,9 @@
 package genome;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 
-import genome.Term.*;
+import genome.Term.Statement;
 
 public class GenomeTest {
 
@@ -13,9 +14,10 @@ public class GenomeTest {
 		 * 1 (AAT)  = STOP
 		 * 2 (AAG)  = INT (and take one codon)
 		 * 3 (AAC)  = ADD
+		 * 4 (ATA)  = PRINT (statement)
 		 * 21 (TTT) = No Token
 		 */
-		String testString = "AAA TTT AAC AAG ATA TTT AAG ATC AAT";
+		String testString = "AAA TTT ATA TTT AAC AAG ATA TTT AAG ATC ATA TTT AAG TAA TTT AAT";
 		DNA testDNA = DNA.stringToDNA(testString);
 		DNA.SplicePair[] testSplices = testDNA.findSplices();
 		byte[] testSpliced = testDNA.makeSplices(testSplices);
@@ -25,10 +27,17 @@ public class GenomeTest {
 		System.out.println(Arrays.toString(testSpliced));
 		
 		Parser testParser = new Parser(testSpliced);
-		Operator testOperator = testParser.nextOperator();
-		System.out.println(testOperator);
+		Statement current = testParser.nextStatement();
+		ArrayList<Statement> statements = new ArrayList<Statement>();
+		while (current != null) {
+			statements.add(current);
+			System.out.println(current);
+			current = testParser.nextStatement();
+		}
 		CellContext c = new CellContext();
-		System.out.println(testOperator.eval(c));
+		for (Statement s : statements) {
+			s.exec(c);
+		}
 	}
 
 }
