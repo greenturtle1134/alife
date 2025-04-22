@@ -7,32 +7,52 @@ public class Parser {
 	private byte[] codons;
 	private int i;
 	
+	/**
+	 * Looks up if a codon is irrelevant (should be skipped as if it doesn't exist)
+	 * @param codon - the codon to be queried
+	 */
 	public static boolean isIrrelevant(byte codon) {
-		return codon == 21;
+		return codon == 0 || codon == 1 || codon == 21;
 	}
 	
 	public Parser(byte[] codons) {
-		this.codons = codons;
+		int c = 0;
+		for (int i=0; i<codons.length; i++) {
+			if (!isIrrelevant(codons[i])) {
+				c++;
+			}
+		}
+		this.codons = new byte[c];
+		int j = 0;
+		for (int i=0; i<codons.length; i++) {
+			if (!isIrrelevant(codons[i])) {
+				this.codons[j++] = codons[i];
+			}
+		}
+		
 		this.i = 0;
 	}
 	
+	/**
+	 * Checks if the parser is currently at the end of the message
+	 */
 	public boolean isEnd() {
 		return i >= codons.length;
 	}
 	
+	/**
+	 * Returns the current codon and advances the parser to the next relevant codon
+	 */
 	public byte nextCodon() {
-		byte res = codons[i++];
-		while (!isEnd() && isIrrelevant(codons[i])) {
-			i++;
-		}
-		return res;
+		return codons[i++];
 	}
 	
 	public Operator nextOperator() {
 		if (isEnd()) {
 			return null;
 		}
-		switch (nextCodon()) {
+		byte c = nextCodon();
+		switch (c) {
 		case 2:
 			return new Term.Int(nextCodon());
 		case 3:

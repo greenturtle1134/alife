@@ -24,12 +24,11 @@ public class GenomeTest {
 		System.out.println(Arrays.toString(testSplices));
 		System.out.println(Arrays.toString(testSpliced));
 		
-//		Parser testParser = new Parser(testSpliced);
-//		testParser.nextCodon();
-//		Operator testOperator = testParser.nextOperator(0);
-//		System.out.println(testOperator);
-//		CellContext c = new CellContext();
-//		System.out.println(testOperator.eval(c));
+		Parser testParser = new Parser(testSpliced);
+		Operator testOperator = testParser.nextOperator();
+		System.out.println(testOperator);
+		CellContext c = new CellContext();
+		System.out.println(testOperator.eval(c));
 	}
 
 }
