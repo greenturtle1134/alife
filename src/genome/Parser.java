@@ -57,6 +57,8 @@ public class Parser {
 			return new Term.Int(nextCodon());
 		case 3:
 			return new Term.Add(nextOperator(0), nextOperator(0));
+		case 5:
+			return new Term.Read(64);
 		default:
 			i--;
 			return null;
@@ -79,8 +81,7 @@ public class Parser {
 		}
 		Operator res = nextOperator();
 		if (res != null) {
-			// TODO Handle case where we get an operator instead of statement!
-			return null;
+			return new Term.Store(res, 64);
 		}
 		byte c = nextCodon();
 		switch (c) {

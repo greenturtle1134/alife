@@ -1,5 +1,24 @@
 package genome;
 
 public class CellContext {
-	// This is really just a placeholder test for now but in the future it could be useful (???) to separate execution context from a cell
+	private int[] memory;
+	
+	public CellContext() {
+		this.memory = new int[65];
+	}
+
+	public int memGet(int i) {
+		if (i < memory.length) {
+			return memory[i];
+		}
+		else {
+			return 0;
+		}
+	}
+	
+	public void memSet(int i, int x) {
+		if (i < memory.length) {
+			memory[i] = x;
+		}
+	}
 }

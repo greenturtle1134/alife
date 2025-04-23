@@ -3,8 +3,21 @@ package genome;
 public abstract class Term {
 	// Should there be a children() method here?
 	
+	public static String regName(int x) {
+		if (x == 64) {
+			return "ANS";
+		}
+		else {
+			return x+"";
+		}
+	}
+	
 	public static abstract class Statement extends Term {
 		public abstract void exec(CellContext c);
+	}
+
+	public static abstract class Operator extends Term {
+		public abstract int eval(CellContext c);
 	}
 	
 	public static class Nop extends Statement{
@@ -36,9 +49,39 @@ public abstract class Term {
 			return "Print("+a+")";
 		}
 	}
-
-	public static abstract class Operator extends Term {
-		public abstract int eval(CellContext c);
+	
+	public static class Store extends Statement {
+		private Operator a;
+		private int i;
+		
+		public Store(Operator a, int i) {
+			this.a = a;
+			this.i = i;
+		}
+		
+		public void exec(CellContext c) {
+			c.memSet(i, a.eval(c));
+		}
+		
+		public String toString() {
+			return "$"+regName(i) + " <- " + a;
+		}
+	}
+	
+	public static class Read extends Operator {
+		private int a;
+		
+		public Read(int a) {
+			this.a = a;
+		}
+		
+		public int eval(CellContext c) {
+			return c.memGet(a);
+		}
+		
+		public String toString() {
+			return "$" + regName(a);
+		}
 	}
 	
 	public static class Int extends Operator {
