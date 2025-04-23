@@ -1,9 +1,6 @@
 package genome;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-
-import genome.Term.Statement;
 
 public class GenomeTest {
 
@@ -21,25 +18,13 @@ public class GenomeTest {
 		 */
 		String testString = "AAA TTT AAC AAG ATA TTT AAG TAC TTT ATA TTT AAC ATT ATT AAT";
 		DNA testDNA = DNA.stringToDNA(testString);
-		DNA.SplicePair[] testSplices = testDNA.findSplices();
-		byte[] testSpliced = testDNA.makeSplices(testSplices);
-		
-		System.out.println(testDNA);
-		System.out.println(Arrays.toString(testSplices));
-		System.out.println(Arrays.toString(testSpliced));
-		
-		Parser testParser = new Parser(testSpliced);
-		Statement current = testParser.nextStatement();
-		ArrayList<Statement> statements = new ArrayList<Statement>();
-		while (current != null) {
-			statements.add(current);
-			System.out.println(current);
-			current = testParser.nextStatement();
-		}
+		Program testProgram = Program.parseProgram(testDNA);
 		CellContext c = new CellContext();
-		for (Statement s : statements) {
-			s.exec(c);
-		}
+		ExecContext e = new ExecContext();
+		
+		System.out.println(Arrays.toString(testProgram.getStatements()));
+		System.out.println("Executing...");
+		testProgram.run(c, e);
 	}
 
 }
