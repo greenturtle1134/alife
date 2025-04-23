@@ -7,6 +7,20 @@ public abstract class Term {
 		public abstract void exec(CellContext c);
 	}
 	
+	public static class Nop extends Statement{
+		public Nop() {
+			// Nah
+		}
+		
+		public void exec(CellContext c) {
+			// Nope
+		}
+		
+		public String toString() {
+			return "Nop()";
+		}
+	}
+	
 	public static class Print extends Statement {
 		private Operator a;
 		

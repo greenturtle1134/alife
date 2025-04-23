@@ -87,8 +87,7 @@ public class Parser {
 			case 4:
 				return new Term.Print(nextOperator(0));
 			default:
-				i--;
-				return null;
+				return new Term.Nop();
 		}
 	}
 	

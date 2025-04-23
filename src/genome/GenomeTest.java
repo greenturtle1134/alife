@@ -16,8 +16,9 @@ public class GenomeTest {
 		 * 3 (AAC)  = ADD
 		 * 4 (ATA)  = PRINT (statement)
 		 * 21 (TTT) = No Token
+		 * All non-defined treated as NOPs
 		 */
-		String testString = "AAA TTT ATA TTT AAC AAG ATA TTT AAG ATC ATA TTT AAG TAA TTT AAT";
+		String testString = "AAA TTT ATA TTT AAC AAG ATA TTT AAG ATC ATA TTT AAG TAA TTT GCT AAT";
 		DNA testDNA = DNA.stringToDNA(testString);
 		DNA.SplicePair[] testSplices = testDNA.findSplices();
 		byte[] testSpliced = testDNA.makeSplices(testSplices);
