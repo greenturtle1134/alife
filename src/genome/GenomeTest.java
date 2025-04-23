@@ -19,7 +19,7 @@ public class GenomeTest {
 		String testString = "AAA TTT AAC AAG ATA TTT AAG TAC TTT ATA TTT AAC ATT ATT AAT";
 		DNA testDNA = DNA.stringToDNA(testString);
 		Program testProgram = Program.parseProgram(testDNA);
-		CellContext c = new CellContext();
+		Cell c = new Cell();
 		ExecContext e = new ExecContext();
 		
 		System.out.println(Arrays.toString(testProgram.getStatements()));
