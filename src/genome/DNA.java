@@ -6,8 +6,9 @@ public class DNA {
 	public static final char[] DEFAULT_NUCLEOTIDES = {'A', 'T', 'G', 'C'};
 //	public static final char[] NUCLEOTIDES = {'K', 'X', 'P', 'M'};
 //	public static final char[] NUCLEOTIDES = {'E', 'J', 'P', 'X'};
-	public static final int START_CODON = 0;
-	public static final int END_CODON = 1;
+	
+	public static final int C_START = 17;
+	public static final int C_END = 1;
 	
 	private int[] dna;
 	private int length;
@@ -81,9 +82,9 @@ public class DNA {
 	public SplicePair[] findSplices() {
 		ArrayList<SplicePair> res = new ArrayList<SplicePair>();
 		for (int i = 0; i < length-2; i++) {
-			if (idxCodon(i) == START_CODON) {
+			if (idxCodon(i) == C_START) {
 				int end = i+3;
-				while (end < length-2 && idxCodon(end-3) != END_CODON) {
+				while (end < length-2 && idxCodon(end-3) != C_END) {
 					end += 3;
 				}
 				res.add(new SplicePair(i, end));

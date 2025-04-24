@@ -1,35 +1,40 @@
 package genome;
 
+import java.util.Arrays;
+
 import genome.Term.*;
 
 public class Parser {
 	
+	public static final int C_ESCAPE = 0;
+	public static final int C_BLANK1 = 21;
+	public static final int C_BLANK2 = 42;
+	public static final int C_BLANK3 = 63;
+	
 	private byte[] codons;
 	private int i;
 	
-	/**
-	 * Looks up if a codon is irrelevant (should be skipped as if it doesn't exist)
-	 * @param codon - the codon to be queried
-	 */
-	public static boolean isIrrelevant(byte codon) {
-		return codon == 0 || codon == 1 || codon == 21;
+	public static byte[] stripBlanks (byte[] codons) {
+		byte[] res = new byte[codons.length];
+		int c = 0;
+		boolean escape = false;
+		for (int i=0; i<codons.length; i++) {
+			if (escape) {
+				res[c++] = codons[i];
+				escape = false;
+			}
+			if (codons[i] == C_ESCAPE) {
+				escape = true;
+			}
+			else if (!(codons[i] == C_BLANK1 || codons[i] == C_BLANK2 || codons[i] == C_BLANK3 || codons[i] == DNA.C_START || codons[i] == DNA.C_END)) {
+				res[c++] = codons[i];
+			}
+		}
+		return Arrays.copyOfRange(res, 0, c);
 	}
 	
 	public Parser(byte[] codons) {
-		int c = 0;
-		for (int i=0; i<codons.length; i++) {
-			if (!isIrrelevant(codons[i])) {
-				c++;
-			}
-		}
-		this.codons = new byte[c];
-		int j = 0;
-		for (int i=0; i<codons.length; i++) {
-			if (!isIrrelevant(codons[i])) {
-				this.codons[j++] = codons[i];
-			}
-		}
-		
+		this.codons = codons;
 		this.i = 0;
 	}
 	
@@ -41,30 +46,56 @@ public class Parser {
 	}
 	
 	/**
-	 * Returns the current codon and advances the parser to the next relevant codon
+	 * Gets the next codon and advances the pointer. If the end is reached, returns defaultVal and leaves the pointer unchanged.
+	 * @param defaultVal - default value if end is reached
+	 * @return the next codon
 	 */
-	public byte nextCodon() {
-		return codons[i++];
+	public byte nextCodon(byte defaultVal) {
+		if (isEnd()) {
+			return defaultVal;
+		}
+		else {
+			return codons[i++];
+		}
 	}
 	
+	/**
+	 * Gets the next codon and advances the pointer. If the end is reached, returns -1 and leaves the pointer unchanged.
+	 * Wraps nextCodon(defaultVal) with a default of -1.
+	 * @return the next codon
+	 */
+	public byte nextCodon() {
+		return this.nextCodon((byte) -1);
+	}
+	
+	/**
+	 * Parses the next operator.
+	 * If the end of the sequence is reached, returns null.
+	 * If the next symbol cannot be recognized as an operator, returns null and does not advance pointer.
+	 * @return the next operator
+	 */
 	public Operator nextOperator() {
-		if (isEnd()) {
-			return null;
-		}
 		byte c = nextCodon();
 		switch (c) {
+		case -1: // End of sequence reached
+			return null;
 		case 2:
 			return new Term.Int(nextCodon());
 		case 3:
 			return new Term.Add(nextOperator(0), nextOperator(0));
-		case 5:
+		case 5: 
 			return new Term.Read(64);
-		default:
+		default: // Codon not recognized as operator
 			i--;
 			return null;
 		}
 	}
 	
+	/**
+	 * As nextOperator(), but with a default value.
+	 * @param defaultVal - integer
+	 * @return the next operator, or Int(defaultVal) if none exists
+	 */
 	public Operator nextOperator(int defaultVal) {
 		Operator res = nextOperator();
 		if (res != null) {
@@ -75,6 +106,12 @@ public class Parser {
 		}
 	}
 	
+	/**
+	 * Parse the next statement.
+	 * If the end of the sequence is reached, returns null.
+	 * If the next codon cannot be interpreted as a statement (or operator), returns a Nop.
+	 * @return the next statement
+	 */
 	public Statement nextStatement() {
 		if (isEnd()) {
 			return null;
@@ -85,10 +122,12 @@ public class Parser {
 		}
 		byte c = nextCodon();
 		switch (c) {
+			case -1: // End of sequence reached
+				
 			case 4:
 				return new Term.Print(nextOperator(0));
 			case 16:
-				return new Term.Label(nextCodon()); // TODO: This has no error-handling if it hits the end of the DNA!
+				return new Term.Label(nextCodon((byte) 0)); // TODO: This has no error-handling if it hits the end of the DNA!
 			default:
 				return new Term.Nop();
 		}

@@ -16,7 +16,7 @@ public class Program {
 	}
 	
 	public static Program parseProgram(DNA dna) {
-		byte[] codons = dna.makeSplices(dna.findSplices());
+		byte[] codons = Parser.stripBlanks(dna.makeSplices(dna.findSplices()));
 		Parser parser = new Parser(codons);
 		
 		Statement current = parser.nextStatement();
