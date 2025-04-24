@@ -87,6 +87,8 @@ public class Parser {
 		switch (c) {
 			case 4:
 				return new Term.Print(nextOperator(0));
+			case 16:
+				return new Term.Label(nextCodon()); // TODO: This has no error-handling if it hits the end of the DNA!
 			default:
 				return new Term.Nop();
 		}

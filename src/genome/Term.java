@@ -34,6 +34,22 @@ public abstract class Term {
 		}
 	}
 	
+	public static class Label extends Statement {
+		private int label;
+		
+		public Label(int label) {
+			this.label = label;
+		}
+		
+		public void exec(CellContext c) {
+			// Nope
+		}
+		
+		public String toString() {
+			return "Label<"+label+">";
+		}
+	}
+	
 	public static class Print extends Statement {
 		private Operator a;
 		
