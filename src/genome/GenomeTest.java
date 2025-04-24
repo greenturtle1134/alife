@@ -26,6 +26,9 @@ public class GenomeTest {
 		System.out.println(Arrays.toString(testProgram.getStatements()));
 		System.out.println("Executing...");
 		testProgram.run(c, e);
+		
+//		char[] testChars = {'E', 'J', 'K', 'M'};
+//		System.out.println(testDNA.toString(testChars));
 	}
 
 }

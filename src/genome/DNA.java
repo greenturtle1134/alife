@@ -3,7 +3,7 @@ package genome;
 import java.util.ArrayList;
 
 public class DNA {
-	public static final char[] NUCLEOTIDES = {'A', 'T', 'G', 'C'};
+	public static final char[] DEFAULT_NUCLEOTIDES = {'A', 'T', 'G', 'C'};
 //	public static final char[] NUCLEOTIDES = {'K', 'X', 'P', 'M'};
 //	public static final char[] NUCLEOTIDES = {'E', 'J', 'P', 'X'};
 	public static final int START_CODON = 0;
@@ -30,27 +30,35 @@ public class DNA {
 		return length;
 	}
 	
-	public String toString() {
+	public String toString(char[] nucleotides) {
 		StringBuilder res = new StringBuilder();
 		for (int i=0; i<length; i++) {
 			int a = idx(i);
-			res.append(NUCLEOTIDES[a]);
+			res.append(nucleotides[a]);
 		}
 		return res.toString();
 	}
 	
-	public static DNA stringToDNA(String s) {
+	public String toString() {
+		return this.toString(DEFAULT_NUCLEOTIDES);
+	}
+	
+	public static DNA stringToDNA(String s, char[] nucleotides) {
 		s = s.toUpperCase().replaceAll("[^ATGC]", "");
 		int[] res = new int[(s.length()-1) / 16 + 1];
 		for (int i = 0; i<s.length(); i++) {
 			for (int x = 0; x<4; x++) {
-				if (NUCLEOTIDES[x] == s.charAt(i)) {
+				if (nucleotides[x] == s.charAt(i)) {
 					res[i / 16] += x << 2*(i % 16);
 					break;
 				}
 			}
 		}
 		return new DNA(res, s.length());
+	}
+	
+	public static DNA stringToDNA(String s) {
+		return stringToDNA(s, DEFAULT_NUCLEOTIDES);
 	}
 	
 	public class SplicePair {

@@ -10,7 +10,7 @@ public class CodonConverter {
 		int res = 0;
 		for (int i=0; i<s.length(); i++) {
 			for (int x = 0; x<4; x++) {
-				if (DNA.NUCLEOTIDES[x] == s.charAt(i)) {
+				if (DNA.DEFAULT_NUCLEOTIDES[x] == s.charAt(i)) {
 					res += x << 2*i;
 				}
 			}
@@ -21,7 +21,7 @@ public class CodonConverter {
 	public static String intToString(int x) {
 		StringBuilder res = new StringBuilder();
 		for (int i=0; i<3; i++) {
-			res.append(DNA.NUCLEOTIDES[x & 3]);
+			res.append(DNA.DEFAULT_NUCLEOTIDES[x & 3]);
 			x = x >> 2;
 		}
 		return res.toString();
