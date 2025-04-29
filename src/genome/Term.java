@@ -41,6 +41,10 @@ public abstract class Term {
 			this.label = label;
 		}
 		
+		public int getLabel() {
+			return label;
+		}
+		
 		public void exec(CellContext c) {
 			// Nope
 		}

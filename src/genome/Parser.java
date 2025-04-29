@@ -6,6 +6,8 @@ import genome.Term.*;
 
 public class Parser {
 	
+	private static final byte BYTE_ZERO = (byte) 0;
+	private static final byte BYTE_NEG1 = (byte) -1;
 	public static final int C_ESCAPE = 0;
 	public static final int C_BLANK1 = 21;
 	public static final int C_BLANK2 = 42;
@@ -65,7 +67,7 @@ public class Parser {
 	 * @return the next codon
 	 */
 	public byte nextCodon() {
-		return this.nextCodon((byte) -1);
+		return this.nextCodon(BYTE_NEG1);
 	}
 	
 	/**
@@ -124,7 +126,7 @@ public class Parser {
 			case 4:
 				return new Term.Print(nextOperator(0));
 			case 16:
-				return new Term.Label(nextCodon((byte) 0));
+				return new Term.Label(nextCodon(BYTE_ZERO) * 64 + nextCodon(BYTE_ZERO));
 			default:
 				return new Term.Nop();
 		}
