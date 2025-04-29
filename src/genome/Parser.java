@@ -113,9 +113,6 @@ public class Parser {
 	 * @return the next statement
 	 */
 	public Statement nextStatement() {
-		if (isEnd()) {
-			return null;
-		}
 		Operator res = nextOperator();
 		if (res != null) {
 			return new Term.Store(res, 64);
@@ -123,11 +120,11 @@ public class Parser {
 		byte c = nextCodon();
 		switch (c) {
 			case -1: // End of sequence reached
-				
+				return null;
 			case 4:
 				return new Term.Print(nextOperator(0));
 			case 16:
-				return new Term.Label(nextCodon((byte) 0)); // TODO: This has no error-handling if it hits the end of the DNA!
+				return new Term.Label(nextCodon((byte) 0));
 			default:
 				return new Term.Nop();
 		}
