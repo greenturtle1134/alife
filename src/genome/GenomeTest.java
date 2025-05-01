@@ -16,12 +16,13 @@ public class GenomeTest {
 		 * 5 (ATT)  = ANS
 		 * 16 (TAA) = Label
 		 * 17 (TAT) = START
+		 * 18 (TAG) = LABELJUMP
 		 * 21 (TTT) = BLANK
 		 * 42 (GGG) = BLANK
 		 * 63 (CCC) = BLANK
 		 * All non-defined treated as NOPs
 		 */
-		String testString = "TAT TTT AAC AAG ATA GGG TTT AAG TAC TTT TAA TGA GAA TTT CCC ATA CCC TTT AAC ATT GGG ATT AAT";
+		String testString = "TAT TAG TGA GAA TTT AAC AAG ATA GGG TTT AAG TAC TTT TAA TGA GAA TTT CCC ATA CCC TTT AAC ATT GGG ATT AAT";
 		DNA testDNA = DNA.stringToDNA(testString);
 		System.out.println("       DNA: " + testDNA);
 		System.out.println("   Splices: " + Arrays.toString(testDNA.findSplices()));
@@ -36,9 +37,8 @@ public class GenomeTest {
 		}
 		
 		System.out.println("\nExecuting...");
-		Cell c = new Cell();
-		ExecContext e = new ExecContext();
-		testProgram.run(c, e);
+		TestCell c = new TestCell();
+		testProgram.run(c);
 		
 //		char[] testChars = {'E', 'J', 'K', 'M'};
 //		System.out.println(testDNA.toString(testChars));

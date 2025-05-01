@@ -13,22 +13,16 @@ public abstract class Term {
 	}
 	
 	public static abstract class Statement extends Term {
-		public abstract void exec(CellContext c);
+		public void exec(ExecContext c) {
+			// Do nothing
+		}
 	}
 
 	public static abstract class Operator extends Term {
-		public abstract int eval(CellContext c);
+		public abstract int eval(ExecContext c);
 	}
 	
 	public static class Nop extends Statement{
-		public Nop() {
-			// Nah
-		}
-		
-		public void exec(CellContext c) {
-			// Nope
-		}
-		
 		public String toString() {
 			return "Nop()";
 		}
@@ -45,12 +39,24 @@ public abstract class Term {
 			return label;
 		}
 		
-		public void exec(CellContext c) {
-			// Nope
+		public String toString() {
+			return "Label<"+label+">";
+		}
+	}
+	
+	public static class JumpLabel extends Statement {
+		private int target;
+		
+		public JumpLabel(int target) {
+			this.target = target;
+		}
+		
+		public void exec(ExecContext c) {
+			c.labelJump(target);
 		}
 		
 		public String toString() {
-			return "Label<"+label+">";
+			return "JumpLabel<"+target+">";
 		}
 	}
 	
@@ -61,7 +67,7 @@ public abstract class Term {
 			this.a = a;
 		}
 		
-		public void exec(CellContext c) {
+		public void exec(ExecContext c) {
 			System.out.println("PRINT: " + a.eval(c));
 		}
 		
@@ -79,7 +85,7 @@ public abstract class Term {
 			this.i = i;
 		}
 		
-		public void exec(CellContext c) {
+		public void exec(ExecContext c) {
 			c.memSet(i, a.eval(c));
 		}
 		
@@ -95,7 +101,7 @@ public abstract class Term {
 			this.a = a;
 		}
 		
-		public int eval(CellContext c) {
+		public int eval(ExecContext c) {
 			return c.memGet(a);
 		}
 		
@@ -111,7 +117,7 @@ public abstract class Term {
 			this.val = val;
 		}
 		
-		public int eval(CellContext c) {
+		public int eval(ExecContext c) {
 			return val;
 		}
 		
@@ -128,7 +134,7 @@ public abstract class Term {
 			this.b = b;
 		}
 		
-		public int eval(CellContext c) {
+		public int eval(ExecContext c) {
 			return a.eval(c) + b.eval(c);
 		}
 		

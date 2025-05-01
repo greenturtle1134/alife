@@ -48,10 +48,11 @@ public class Program {
 		return new Program(statements, labels);
 	}
 	
-	public void run(CellContext c, ExecContext e) {
-		// TODO The main feature not implemented here is jumping
-		for (Statement s : statements) {
-			s.exec(c);
+	public void run(TestCell c) {
+		ExecContext e = new ExecContext(c, 0, this.labels);
+		while (e.i >= 0 && e.i < statements.length) {
+			statements[e.i].exec(e);
+			e.i++;
 		}
 	}
 }

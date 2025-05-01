@@ -127,6 +127,8 @@ public class Parser {
 				return new Term.Print(nextOperator(0));
 			case 16:
 				return new Term.Label(nextCodon(BYTE_ZERO) * 64 + nextCodon(BYTE_ZERO));
+			case 18:
+				return new Term.JumpLabel(nextCodon(BYTE_ZERO) * 64 + nextCodon(BYTE_ZERO));
 			default:
 				return new Term.Nop();
 		}

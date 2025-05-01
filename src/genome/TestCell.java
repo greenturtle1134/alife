@@ -1,9 +1,9 @@
 package genome;
 
-public class Cell implements CellContext{
+public class TestCell {
 	private int[] memory;
 	
-	public Cell() {
+	public TestCell() {
 		// Dummy implementation for now
 		this.memory = new int[65];
 	}
