@@ -87,6 +87,8 @@ public class Parser {
 			return new Term.Add(nextOperator(0), nextOperator(0));
 		case 5: 
 			return new Term.Read(64);
+		case 19:
+			return new Term.LT(nextOperator(0), nextOperator(0));
 		default: // Codon not recognized as operator
 			i--;
 			return null;
@@ -128,7 +130,7 @@ public class Parser {
 			case 16:
 				return new Term.Label(nextCodon(BYTE_ZERO) * 64 + nextCodon(BYTE_ZERO));
 			case 18:
-				return new Term.JumpLabel(nextCodon(BYTE_ZERO) * 64 + nextCodon(BYTE_ZERO));
+				return new Term.JumpLabel(nextCodon(BYTE_ZERO) * 64 + nextCodon(BYTE_ZERO), nextOperator(1));
 			default:
 				return new Term.Nop();
 		}

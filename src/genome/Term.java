@@ -46,17 +46,21 @@ public abstract class Term {
 	
 	public static class JumpLabel extends Statement {
 		private int target;
+		private Operator cond;
 		
-		public JumpLabel(int target) {
+		public JumpLabel(int target, Operator cond) {
 			this.target = target;
+			this.cond = cond;
 		}
 		
 		public void exec(ExecContext c) {
-			c.labelJump(target);
+			if (cond.eval(c) != 0) {
+				c.labelJump(target);
+			}
 		}
 		
 		public String toString() {
-			return "JumpLabel<"+target+">";
+			return "JumpLabel<"+target+">(" + cond + ")";
 		}
 	}
 	
@@ -140,6 +144,28 @@ public abstract class Term {
 		
 		public String toString() {
 			return "Add(" + a + "," + b + ")";
+		}
+	}
+	
+	public static class LT extends Operator {
+		private Operator a, b;
+		
+		public LT(Operator a, Operator b) {
+			this.a = a;
+			this.b = b;
+		}
+		
+		public int eval(ExecContext c) {
+			if (a.eval(c) < b.eval(c)) {
+				return 1;
+			}
+			else {
+				return 0;
+			}
+		}
+		
+		public String toString() {
+			return "LT(" + a + "," + b + ")";
 		}
 	}
 }

@@ -17,12 +17,13 @@ public class GenomeTest {
 		 * 16 (TAA) = Label
 		 * 17 (TAT) = START
 		 * 18 (TAG) = LABELJUMP
+		 * 19 (TAC) = LT
 		 * 21 (TTT) = BLANK
 		 * 42 (GGG) = BLANK
 		 * 63 (CCC) = BLANK
 		 * All non-defined treated as NOPs
 		 */
-		String testString = "TAT TAG TGA GAA TTT AAC AAG ATA GGG TTT AAG TAC TTT TAA TGA GAA TTT CCC ATA CCC TTT AAC ATT GGG ATT AAT";
+		String testString = "TAT TAA AAA GGG AAA GGG AAC ATT AAG AAG ATA ATT TAG AAA GGG AAA GGG TAC ATT AAG AGA AAT";
 		DNA testDNA = DNA.stringToDNA(testString);
 		System.out.println("       DNA: " + testDNA);
 		System.out.println("   Splices: " + Arrays.toString(testDNA.findSplices()));
