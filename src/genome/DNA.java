@@ -8,7 +8,7 @@ public class DNA {
 //	public static final char[] NUCLEOTIDES = {'E', 'J', 'P', 'X'};
 	
 	public static final int C_START = 17;
-	public static final int C_END = 1;
+	public static final int C_END = 19;
 	
 	private int[] dna;
 	private int length;

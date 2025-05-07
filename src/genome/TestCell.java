@@ -5,7 +5,7 @@ public class TestCell {
 	
 	public TestCell() {
 		// Dummy implementation for now
-		this.memory = new int[65];
+		this.memory = new int[64];
 	}
 
 	public int memGet(int i) {

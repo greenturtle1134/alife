@@ -9,21 +9,26 @@ public class GenomeTest {
 		/*
 		 * Initial test with:
 		 * 0 (AAA)  = BLANK / ESCAPE
-		 * 1 (AAT)  = STOP
-		 * 2 (AAG)  = INT (and take one codon)
-		 * 3 (AAC)  = ADD
-		 * 4 (ATA)  = PRINT (statement)
-		 * 5 (ATT)  = ANS
-		 * 16 (TAA) = Label
+		 * 1 (AAT)  = LOAD(<source>)
+		 * 2 (AAG)  = INT(<value>)
+		 * 3 (AAC)  = STORE(<dest>, value)
+		 * 4 (ATA)  = PRINT()
+		 * 5 (ATT)  = ANS()
+		 * 16 (TAA) = Label(<name1>, <name2>)
 		 * 17 (TAT) = START
-		 * 18 (TAG) = LABELJUMP
-		 * 19 (TAC) = LT
+		 * 18 (TAG) = LABELJUMP(<name1>, <name2>)
+		 * 19 (TAC) = STOP
 		 * 21 (TTT) = BLANK
+		 * 24 (TGA) = ADD(a, b)
+		 * 25 (TGT) = SUB(a, b)
+		 * 26 (TGG) = MULT(a, b)
+		 * 27 (TGC) = DIV(a, b)
+		 * 28 (TCA) = LT(a, b)
 		 * 42 (GGG) = BLANK
 		 * 63 (CCC) = BLANK
 		 * All non-defined treated as NOPs
 		 */
-		String testString = "TAT TAA AAA GGG AAA GGG AAC ATT AAG AAG ATA ATT TAG AAA GGG AAA GGG TAC ATT AAG AGA AAT";
+		String testString = "TAT AAG AAT TAA AAG GAA AAC AAT TGA AAG AAT AAT AAT TGG ATT AAT AAT TAG AAG GAA TCA AAT AAT AAG ATA ATA ATT TAC";
 		DNA testDNA = DNA.stringToDNA(testString);
 		System.out.println("       DNA: " + testDNA);
 		System.out.println("   Splices: " + Arrays.toString(testDNA.findSplices()));

@@ -84,7 +84,7 @@ public abstract class Term {
 		private Operator a;
 		private int i;
 		
-		public Store(Operator a, int i) {
+		public Store(int i, Operator a) {
 			this.a = a;
 			this.i = i;
 		}
@@ -144,6 +144,63 @@ public abstract class Term {
 		
 		public String toString() {
 			return "Add(" + a + "," + b + ")";
+		}
+	}
+	
+	public static class Sub extends Operator {
+		private Operator a, b;
+		
+		public Sub(Operator a, Operator b) {
+			this.a = a;
+			this.b = b;
+		}
+		
+		public int eval(ExecContext c) {
+			return a.eval(c) - b.eval(c);
+		}
+		
+		public String toString() {
+			return "Sub(" + a + "," + b + ")";
+		}
+	}
+	
+	public static class Mult extends Operator {
+		private Operator a, b;
+		
+		public Mult(Operator a, Operator b) {
+			this.a = a;
+			this.b = b;
+		}
+		
+		public int eval(ExecContext c) {
+			return a.eval(c) * b.eval(c);
+		}
+		
+		public String toString() {
+			return "Mult(" + a + "," + b + ")";
+		}
+	}
+	
+	public static class Div extends Operator {
+		private Operator a, b;
+		
+		public Div(Operator a, Operator b) {
+			this.a = a;
+			this.b = b;
+		}
+		
+		public int eval(ExecContext c) {
+			int b0 = b.eval(c);
+			if (b0 != 0) {
+				return a.eval(c) / b.eval(c);
+			}
+			else {
+				return a.eval(c);
+			}
+		}
+		
+		public String toString() {
+			return "Div(" + a + "," + b + ")";
 		}
 	}
 	

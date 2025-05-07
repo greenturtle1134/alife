@@ -81,13 +81,21 @@ public class Parser {
 		switch (c) {
 		case -1: // End of sequence reached
 			return null;
+		case 1:
+			return new Term.Read(nextCodon());
 		case 2:
 			return new Term.Int(nextCodon());
-		case 3:
-			return new Term.Add(nextOperator(0), nextOperator(0));
 		case 5: 
-			return new Term.Read(64);
-		case 19:
+			return new Term.Read(0);
+		case 24:
+			return new Term.Add(nextOperator(0), nextOperator(0));
+		case 25:
+			return new Term.Sub(nextOperator(0), nextOperator(0));
+		case 26:
+			return new Term.Mult(nextOperator(0), nextOperator(0));
+		case 27:
+			return new Term.Div(nextOperator(0), nextOperator(0));
+		case 28:
 			return new Term.LT(nextOperator(0), nextOperator(0));
 		default: // Codon not recognized as operator
 			i--;
@@ -119,12 +127,14 @@ public class Parser {
 	public Statement nextStatement() {
 		Operator res = nextOperator();
 		if (res != null) {
-			return new Term.Store(res, 64);
+			return new Term.Store(0, res);
 		}
 		byte c = nextCodon();
 		switch (c) {
 			case -1: // End of sequence reached
 				return null;
+			case 3:
+				return new Term.Store(nextCodon(BYTE_ZERO), nextOperator(0));
 			case 4:
 				return new Term.Print(nextOperator(0));
 			case 16:
