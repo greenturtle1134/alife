@@ -12,7 +12,7 @@ public class GenomeTest {
 		 * 1 (AAT)  = LOAD(<source>)
 		 * 2 (AAG)  = INT(<value>)
 		 * 3 (AAC)  = STORE(<dest>, value)
-		 * 4 (ATA)  = PRINT()
+		 * 4 (ATA)  = PRINT(value)
 		 * 5 (ATT)  = ANS()
 		 * 16 (TAA) = Label(<name1>, <name2>)
 		 * 17 (TAT) = START
