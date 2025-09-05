@@ -28,7 +28,7 @@ public class World {
 		for (Cell c : cells) {
 			c.tick();
 			// TODO: very simple friction model
-			c.addForce(c.dx*-0.1, c.dy*-0.1);
+			c.addForce(c.getDx()*-0.1, c.getDy()*-0.1);
 		}
 		
 		for (Cell c : cells) {
