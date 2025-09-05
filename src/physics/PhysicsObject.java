@@ -2,8 +2,8 @@ package physics;
 
 public abstract class PhysicsObject {
 	protected World world;
-	public double x, y;
-	public double dx, dy;
+	private double x, y;
+	private double dx, dy;
 	private double ddx, ddy;
 
 	public PhysicsObject(World world, double x, double y, double dx, double dy) {
@@ -20,6 +20,38 @@ public abstract class PhysicsObject {
 		return world;
 	}
 	
+	public double getX() {
+		return x;
+	}
+
+	public void setX(double x) {
+		this.x = x;
+	}
+
+	public double getY() {
+		return y;
+	}
+
+	public void setY(double y) {
+		this.y = y;
+	}
+
+	public double getDx() {
+		return dx;
+	}
+
+	public void setDx(double dx) {
+		this.dx = dx;
+	}
+
+	public double getDy() {
+		return dy;
+	}
+
+	public void setDy(double dy) {
+		this.dy = dy;
+	}
+
 	public void addForce(double ddx, double ddy) {
 		this.ddx += ddx;
 		this.ddy += ddy;
