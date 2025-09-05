@@ -8,9 +8,12 @@ public class Cell extends PhysicsObject {
 	private double swimFB, swimLR;
 	private DNA dna;
 	private Program program;
+	private int nrg;
+	private double radius;
 
-	public Cell(World world, double x, double y, double facing, DNA dna) {
+	public Cell(World world, double x, double y, double radius, double facing, DNA dna) {
 		super(world, x, y, 0, 0);
+		this.radius = radius;
 		this.facing = facing;
 		this.swimFB = 0;
 		this.swimLR = 0;
@@ -23,8 +26,8 @@ public class Cell extends PhysicsObject {
 		return facing;
 	}
 	
-	public double setFacing() {
-		return facing;
+	public void setFacing(double facing) {
+		this.facing = facing;
 	}
 
 	public double getSwimFB() {
