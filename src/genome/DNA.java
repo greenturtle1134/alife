@@ -2,6 +2,12 @@ package genome;
 
 import java.util.ArrayList;
 
+/**
+ * An object representing the DNA sequence.
+ * The DNA is represented as a bit string with 2 bits assigned to each nucleotide, stored with an array of ints.
+ * 
+ * This file contains the logic for start/end recognition and splicing.
+ */
 public class DNA {
 	public static final char[] DEFAULT_NUCLEOTIDES = {'A', 'T', 'G', 'C'};
 //	public static final char[] NUCLEOTIDES = {'K', 'X', 'P', 'M'};
@@ -19,18 +25,38 @@ public class DNA {
 		this.length = length;
 	}
 
+	/**
+	 * Retrieves a nucleotide
+	 * @param i - the index within the DNA to retrieve
+	 * @return int value representing the nucleotide (0-3)
+	 */
 	public int idx(int i) {
+		// TODO: throw an exception if index out of bounds
 		return dna[i / 16] >> 2*(i % 16) & 3;
 	}
 
+	/**
+	 * Retrieves a codon (group of 3 nucleotides).
+	 * Note that the endianess is reversed (i.e. the first nucleotide is the most significant bits).
+	 * @param i - the starting index for the codon
+	 * @return int value representing the codon
+	 */
 	public int idxCodon(int i) {
 		return (idx(i) << 4) + (idx(i+1) << 2) + idx(i+2);
 	}
 	
+	/**
+	 * Gets the length of the DNA sequence
+	 */
 	public int getLength() {
 		return length;
 	}
 	
+	/**
+	 * Displays the DNA as a string using the supplied nucleotide names
+	 * @param nucleotides - nucleotide names to use
+	 * @return The string representation
+	 */
 	public String toString(char[] nucleotides) {
 		StringBuilder res = new StringBuilder();
 		for (int i=0; i<length; i++) {
@@ -44,6 +70,12 @@ public class DNA {
 		return this.toString(DEFAULT_NUCLEOTIDES);
 	}
 	
+	/**
+	 * Parses a String to a DNA object using the supplied nucleotides
+	 * @param s - the string to parse
+	 * @param nucleotides - nucleotide names to use
+	 * @return DNA object
+	 */
 	public static DNA stringToDNA(String s, char[] nucleotides) {
 		s = s.toUpperCase().replaceAll("[^ATGC]", "");
 		int[] res = new int[(s.length()-1) / 16 + 1];
@@ -58,10 +90,18 @@ public class DNA {
 		return new DNA(res, s.length());
 	}
 	
+	/**
+	 * Parses a String to a DNA object
+	 * @param s - the string to parse
+	 * @return DNA object
+	 */
 	public static DNA stringToDNA(String s) {
 		return stringToDNA(s, DEFAULT_NUCLEOTIDES);
 	}
 	
+	/**
+	 * Helper class representing the start and end of a splice
+	 */
 	public class SplicePair {
 		private final int start, end;
 		
@@ -79,6 +119,10 @@ public class DNA {
 		}
 	}
 	
+	/**
+	 * Finds splices (subsegments of DNA beginning with the start codon and terminating on a stop codon)
+	 * @return Array of SplicePair objects representing all splices in the DNA
+	 */
 	public SplicePair[] findSplices() {
 		ArrayList<SplicePair> res = new ArrayList<SplicePair>();
 		for (int i = 0; i < length-2; i++) {
@@ -94,6 +138,11 @@ public class DNA {
 		return res.toArray(new SplicePair[res.size()]);
 	}
 	
+	/**
+	 * Takes a list of splices and applies them to create a codon list
+	 * @param splices - Array of SplicePair objects, such as produced by findSplices()
+	 * @return Array of bytes representing the list of codons produced
+	 */
 	public byte[] makeSplices(SplicePair[] splices) {
 		int resLength = 0;
 		for (SplicePair s : splices) {

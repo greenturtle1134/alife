@@ -4,6 +4,11 @@ import java.util.Arrays;
 
 import genome.Term.*;
 
+/**
+ * Object representing a codon sequence in the process of parsing.
+ * 
+ * This file contains the logic for codon interpretation.
+ */
 public class Parser {
 	
 	private static final byte BYTE_ZERO = (byte) 0;
@@ -16,6 +21,13 @@ public class Parser {
 	private byte[] codons;
 	private int i;
 	
+	/**
+	 * Removes all "blank" codons (taking blank-escape into account) from a codon list.
+	 * This is a step that is applied pre-parsing.
+	 * 
+	 * @param codons - the codon list to process
+	 * @return Same codon list without blanks
+	 */
 	public static byte[] stripBlanks (byte[] codons) {
 		byte[] res = new byte[codons.length];
 		int c = 0;
@@ -41,7 +53,7 @@ public class Parser {
 	}
 	
 	/**
-	 * Checks if the parser is currently at the end of the message
+	 * Checks if the parser is currently at the end of the codon sequence
 	 */
 	public boolean isEnd() {
 		return i >= codons.length;
@@ -121,7 +133,7 @@ public class Parser {
 	/**
 	 * Parse the next statement.
 	 * If the end of the sequence is reached, returns null.
-	 * If the next codon cannot be interpreted as a statement (or operator), returns a Nop.
+	 * If the next codon cannot be interpreted as a statement (or operator), parses it as a NOP and advances past it.
 	 * @return the next statement
 	 */
 	public Statement nextStatement() {
