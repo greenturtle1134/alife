@@ -93,4 +93,11 @@ public class Vector {
 	public Vector normalize() {
 		return this.mult(1 / this.norm());
 	}
+	
+	/**
+	 * Creates a zero vector
+	 */
+	public static Vector zero() {
+		return new Vector(0, 0);
+	}
 }
