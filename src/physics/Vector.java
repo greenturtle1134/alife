@@ -97,7 +97,14 @@ public class Vector {
 	/**
 	 * Creates a zero vector
 	 */
-	public static Vector zero() {
+	public static Vector getZeroVector() {
 		return new Vector(0, 0);
+	}
+	
+	
+	public Vector zero() {
+		this.x = 0;
+		this.y = 0;
+		return this; 
 	}
 }

@@ -26,14 +26,18 @@ public class World {
 	
 	public void tick() {
 		// Awaiting real implementation
-//		for (Cell c : cells) {
-//			c.tick();
-//			// TODO: very simple friction model
-//			c.addForce(c.getDx()*-0.1, c.getDy()*-0.1);
-//		}
-//		
-//		for (Cell c : cells) {
-//			c.move();
-//		}
+		for (PhysicsEntity e : entities) {
+			e.tickAcc.y -= 9.8;
+		}
+		
+		// Tick step
+		for (PhysicsEntity e : entities) {
+			e.tick();
+		}
+		
+		// Move step
+		for (PhysicsEntity e : entities) {
+			e.move();
+		}
 	}
 }
