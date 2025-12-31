@@ -1,5 +1,10 @@
 package physics;
 
+/**
+ * Represents an entity with position and velocity.
+ * Such entities will be stepped by the World.
+ * Currently this means only balls but who knows if there'll be more later.
+ */
 public abstract class PhysicsEntity {
 	protected World world;
 	protected Vector pos;
@@ -50,6 +55,7 @@ public abstract class PhysicsEntity {
 	public void move() {
 		this.pos.add(this.vel);
 		this.vel.add(this.tickAcc);
+		this.pos.add(this.tickAcc.mult(0.5)); // "trapezoidal integration" correction
 		this.tickAcc.zero();
 	}
 }

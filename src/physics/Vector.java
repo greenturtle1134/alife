@@ -101,10 +101,18 @@ public class Vector {
 		return new Vector(0, 0);
 	}
 	
-	
+	/**
+	 * Zeros out the current vector
+	 * @return itself after operation
+	 */
 	public Vector zero() {
 		this.x = 0;
 		this.y = 0;
 		return this; 
+	}
+	
+	@Override
+	public String toString() {
+		return "(" + this.x + ", " + this.y + ")";
 	}
 }
