@@ -6,6 +6,7 @@ import javax.swing.JFrame;
 
 import display.DisplayPanel;
 import physics.Ball;
+import physics.LineWall;
 import physics.Vector;
 import physics.World;
 
@@ -15,11 +16,16 @@ public class Test {
 		// Test displaying a world
 		World world = new World(100, 100);
 		Ball ball1 = new Ball(world, new Vector(30, 40), new Vector(1, 0), 10);
-		Ball ball2 = new Ball(world, new Vector(90, 50), new Vector(-2, 0), 10);
+		Ball ball2 = new Ball(world, new Vector(80, 50), new Vector(-2, 0), 10);
 		Ball ball3 = new Ball(world, new Vector(50, 70), new Vector(0, -2), 10);
 		world.addEntity(ball1);
 		world.addEntity(ball2);
 		world.addEntity(ball3);
+		
+		world.addWall(new LineWall(10, 10, 10, 90));
+		world.addWall(new LineWall(10, 90, 90, 90));
+		world.addWall(new LineWall(90, 90, 90, 10));
+		world.addWall(new LineWall(90, 10, 10, 10));
 		
 		JFrame f = new JFrame("Test title");
 		DisplayPanel d = new DisplayPanel(world, 0, 0, 4);
@@ -30,7 +36,7 @@ public class Test {
         f.setLocationRelativeTo(null);     
         f.setVisible(true);
 		
-		for (int i=0; i<100; i++) {
+		while (true) {
 //			System.out.println("Ball 1: " + ball1.getPos() + " " + ball1.getVel() + " Ball 2: " + ball2.getPos() + " " + ball2.getVel());
 			d.repaint();
 			try {

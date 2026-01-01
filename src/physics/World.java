@@ -8,6 +8,7 @@ import utils.Utils;
 public class World {
 	private int width, height;
 	private ArrayList<Ball> entities;
+	private ArrayList<AbstractWall> walls;
 
 	public int getWidth() {
 		return width;
@@ -21,10 +22,15 @@ public class World {
 		this.width = width;
 		this.height = height;
 		this.entities = new ArrayList<Ball>();
+		this.walls = new ArrayList<AbstractWall>();
 	}
 	
 	public void addEntity(Ball cell) {
 		this.entities.add(cell);
+	}
+	
+	public void addWall(AbstractWall wall) {
+		this.walls.add(wall);
 	}
 	
 	public void computeForces() {
@@ -43,6 +49,19 @@ public class World {
 					// Do a collision
 					// Force on a is in direction of (a-b)
 					Vector force = Vector.sub(a.pos, b.pos).normalize().mult(0.1 * (a.radius + b.radius - d));
+					a.tickAcc.add(force);
+				}
+			}
+		}
+		
+		// Add ball-wall collision accelerations
+		for (AbstractWall w : walls) {
+			for (Ball a : entities) {
+				double d = Vector.dist(a.pos, w.getCenter());
+				if (d < a.radius + w.getEffectiveRadius()) {
+					// Effective "collision"
+					Vector relative = a.pos.copy().sub(w.getCenter());
+					Vector force = w.getForce(relative, a.radius);
 					a.tickAcc.add(force);
 				}
 			}
@@ -90,11 +109,17 @@ public class World {
 	public void draw(Graphics g, double zoom) {
 		g.clearRect(0, 0, Utils.round(this.width * zoom), Utils.round(this.height * zoom));
 		
+		// Draw balls
 		for (Ball e : entities) {
 			int x = Utils.round(e.pos.x * zoom);
 			int y = Utils.round(e.pos.y * zoom);
 			int r = Utils.round(e.radius * zoom);
 			g.drawOval(x - r, y - r, 2 * r, 2 * r);
+		}
+		
+		// Draw walls
+		for (AbstractWall w : walls) {
+			w.draw(g, zoom);
 		}
 	}
 }

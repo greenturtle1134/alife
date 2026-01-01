@@ -21,6 +21,14 @@ public class Vector {
 	}
 	
 	/**
+	 * Copy the contents of this vector
+	 * @return the copy
+	 */
+	public Vector copy() {
+		return new Vector(this.x, this.y);
+	}
+	
+	/**
 	 * Vector addition, mutating this vector
 	 * @param that - vector to add
 	 * @return itself after operation
