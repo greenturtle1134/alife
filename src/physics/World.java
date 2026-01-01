@@ -66,6 +66,11 @@ public class World {
 				}
 			}
 		}
+		
+		// Add drag
+		for (Ball a : entities) {
+			a.tickAcc.add(Vector.mult(a.vel, -0.01));
+		}
 	}
 	
 	public void tick() {
@@ -111,10 +116,7 @@ public class World {
 		
 		// Draw balls
 		for (Ball e : entities) {
-			int x = Utils.round(e.pos.x * zoom);
-			int y = Utils.round(e.pos.y * zoom);
-			int r = Utils.round(e.radius * zoom);
-			g.drawOval(x - r, y - r, 2 * r, 2 * r);
+			e.draw(g, zoom);
 		}
 		
 		// Draw walls

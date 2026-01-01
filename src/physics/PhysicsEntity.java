@@ -1,5 +1,7 @@
 package physics;
 
+import java.awt.Graphics;
+
 /**
  * Represents an entity with position and velocity.
  * Such entities will be stepped by the World.
@@ -55,4 +57,6 @@ public abstract class PhysicsEntity {
 	}
 	
 	public abstract void tick();
+	
+	public abstract void draw(Graphics g, double zoom);
 }
