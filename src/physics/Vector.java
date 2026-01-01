@@ -10,6 +10,17 @@ public class Vector {
 	}
 	
 	/**
+	 * Overwrite the contents of this vector
+	 * @param that - vector to copy from
+	 * @returns itself after operation
+	 */
+	public Vector set(Vector that) {
+		this.x = that.x;
+		this.y = that.y;
+		return this;
+	}
+	
+	/**
 	 * Vector addition, mutating this vector
 	 * @param that - vector to add
 	 * @return itself after operation

@@ -9,12 +9,16 @@ public abstract class PhysicsEntity {
 	protected World world;
 	protected Vector pos;
 	protected Vector vel;
+	protected Vector lastPos;
+	protected Vector lastVel;
 	protected Vector tickAcc;
 
 	public PhysicsEntity(World world, Vector pos, Vector vel) {
 		this.world = world;
 		this.pos = pos;
 		this.vel = vel;
+		this.lastPos = pos;
+		this.lastVel = vel;
 		this.tickAcc = Vector.getZeroVector();
 	}
 
@@ -51,11 +55,4 @@ public abstract class PhysicsEntity {
 	}
 	
 	public abstract void tick();
-	
-	public void move() {
-		this.pos.add(this.vel);
-		this.vel.add(this.tickAcc);
-		this.pos.add(this.tickAcc.mult(0.5)); // "trapezoidal integration" correction
-		this.tickAcc.zero();
-	}
 }
