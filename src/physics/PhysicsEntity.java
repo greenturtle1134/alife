@@ -32,7 +32,7 @@ public abstract class PhysicsEntity {
 		this.world = world;
 	}
 
-	public Vector oos() {
+	public Vector pos() {
 		return pos;
 	}
 

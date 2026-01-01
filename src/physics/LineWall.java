@@ -2,7 +2,7 @@ package physics;
 
 import java.awt.Graphics;
 
-import utils.Utils;
+import static utils.Utils.round;
 
 public class LineWall extends AbstractWall {
 	
@@ -46,10 +46,10 @@ public class LineWall extends AbstractWall {
 	@Override
 	public void draw(Graphics g, double zoom) {
 		g.drawLine(
-			Utils.round((center.x - extent.x) * zoom),
-			Utils.round((center.y - extent.y) * zoom),
-			Utils.round((center.x + extent.x) * zoom),
-			Utils.round((center.y + extent.y) * zoom)
+			round((center.x - extent.x) * zoom),
+			round((center.y - extent.y) * zoom),
+			round((center.x + extent.x) * zoom),
+			round((center.y + extent.y) * zoom)
 		);
 	}
 

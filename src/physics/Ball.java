@@ -2,7 +2,7 @@ package physics;
 
 import java.awt.Graphics;
 
-import utils.Utils;
+import static utils.Utils.round;
 
 /**
  * Represents an entity that additionally has a radius.
@@ -26,9 +26,9 @@ public class Ball extends PhysicsEntity {
 	
 	@Override
 	public void draw(Graphics g, double zoom) {
-		int x = Utils.round(this.pos.x * zoom);
-		int y = Utils.round(this.pos.y * zoom);
-		int r = Utils.round(this.radius * zoom);
+		int x = round(this.pos.x * zoom);
+		int y = round(this.pos.y * zoom);
+		int r = round(this.radius * zoom);
 		g.drawOval(x - r, y - r, 2 * r, 2 * r);
 	}
 
