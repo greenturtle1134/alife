@@ -32,4 +32,9 @@ public class Ball extends PhysicsEntity {
 		g.drawOval(x - r, y - r, 2 * r, 2 * r);
 	}
 
+	@Override
+	public double mass() {
+		return 1;
+	}
+
 }

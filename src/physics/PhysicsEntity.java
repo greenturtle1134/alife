@@ -3,8 +3,8 @@ package physics;
 import java.awt.Graphics;
 
 /**
- * Represents an entity with position and velocity.
- * Such entities will be stepped by the World.
+ * Represents an entity with position, velocity, and mass.
+ * Such entities will be stepped by the World applying Newton's second law.
  * Currently this means only balls but who knows if there'll be more later.
  */
 public abstract class PhysicsEntity {
@@ -23,7 +23,7 @@ public abstract class PhysicsEntity {
 		this.lastVel = vel;
 		this.tickAcc = Vector.getZeroVector();
 	}
-
+	
 	public World getWorld() {
 		return world;
 	}
@@ -32,29 +32,19 @@ public abstract class PhysicsEntity {
 		this.world = world;
 	}
 
-	public Vector getPos() {
+	public Vector oos() {
 		return pos;
 	}
 
-	public void setPos(Vector pos) {
-		this.pos = pos;
-	}
-
-	public Vector getVel() {
+	public Vector vel() {
 		return vel;
 	}
 
-	public void setVel(Vector vel) {
-		this.vel = vel;
-	}
-
-	public Vector getTickAcc() {
+	public Vector tickAcc() {
 		return tickAcc;
 	}
-
-	public void setTickAcc(Vector tickAcc) {
-		this.tickAcc = tickAcc;
-	}
+	
+	public abstract double mass();
 	
 	public abstract void tick();
 	

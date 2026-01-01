@@ -71,6 +71,11 @@ public class World {
 		for (Ball a : entities) {
 			a.tickAcc.add(Vector.mult(a.vel, -0.01));
 		}
+		
+		// Divide through by masses
+		for (Ball a : entities) {
+			a.tickAcc.mult(1 / a.mass());
+		}
 	}
 	
 	public void tick() {
@@ -80,6 +85,7 @@ public class World {
 		}
 		
 //		// Euler-Richardson algorithm
+		// Tested, but found to not conserve energies
 //		
 //		// Place first estimate into pos and vel, buffer initial position
 //		computeForces();
