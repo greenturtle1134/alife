@@ -1,6 +1,9 @@
 package physics;
 
+import java.awt.Graphics;
 import java.util.ArrayList;
+
+import utils.Utils;
 
 public class World {
 	private int width, height;
@@ -82,5 +85,16 @@ public class World {
 			e.vel.add(e.tickAcc);
 			e.pos.add(e.vel);
 		} 
+	}
+	
+	public void draw(Graphics g, double zoom) {
+		g.clearRect(0, 0, Utils.round(this.width * zoom), Utils.round(this.height * zoom));
+		
+		for (Ball e : entities) {
+			int x = Utils.round(e.pos.x * zoom);
+			int y = Utils.round(e.pos.y * zoom);
+			int r = Utils.round(e.radius * zoom);
+			g.drawOval(x - r, y - r, 2 * r, 2 * r);
+		}
 	}
 }
