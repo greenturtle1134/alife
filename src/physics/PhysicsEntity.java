@@ -5,8 +5,8 @@ import display.Drawable;
 /**
  * Represents an entity with position, velocity, and mass.
  * Such entities will be stepped by the World applying Newton's second law.
- * This class exists to facilitate the remote future possibility of non-ball-shaped physics objects.
- * Currently all the code is set up just for balls.
+ * This class exists to facilitate the remote future possibility of non-ball-shaped physics objects,
+ * currently all the code is set up just for balls.
  */
 public abstract class PhysicsEntity implements Drawable {
 	protected World world;
