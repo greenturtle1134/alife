@@ -2,6 +2,8 @@ package physics;
 
 import java.awt.Graphics;
 
+import display.DrawContext;
+
 import static utils.Utils.round;
 
 public class LineWall extends AbstractWall {
@@ -44,7 +46,10 @@ public class LineWall extends AbstractWall {
 	}
 
 	@Override
-	public void draw(Graphics g, double zoom) {
+	public void draw(DrawContext c) {
+		Graphics g = c.getG();
+		double zoom = c.getZoom();
+		
 		g.drawLine(
 			round((center.x - extent.x) * zoom),
 			round((center.y - extent.y) * zoom),

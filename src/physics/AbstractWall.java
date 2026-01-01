@@ -1,10 +1,11 @@
 package physics;
 
-import java.awt.Graphics;
+import display.DrawContext;
+import display.Drawable;
 
-public abstract class AbstractWall {
+public abstract class AbstractWall implements Drawable {
 	public abstract Vector getCenter();
 	public abstract double getEffectiveRadius();
 	public abstract Vector getForce(Vector relative, double radius);
-	public abstract void draw(Graphics g, double zoom);
+	public abstract void draw(DrawContext c);
 }

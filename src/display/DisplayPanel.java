@@ -29,7 +29,7 @@ public class DisplayPanel extends JPanel {
     		super.paintComponent(g);
 
     		g.translate(this.x, this.y);
-    		world.draw(g, this.zoom);
+    		world.draw(new DrawContext(g, this.zoom));
 	}
 
 }

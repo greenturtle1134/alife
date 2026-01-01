@@ -3,6 +3,7 @@ package physics;
 import java.awt.Graphics;
 import java.util.ArrayList;
 
+import display.DrawContext;
 import utils.Utils;
 
 public class World {
@@ -117,17 +118,20 @@ public class World {
 		} 
 	}
 	
-	public void draw(Graphics g, double zoom) {
+	public void draw(DrawContext c) {
+		Graphics g = c.getG();
+		double zoom = c.getZoom();
+		
 		g.clearRect(0, 0, Utils.round(this.width * zoom), Utils.round(this.height * zoom));
 		
 		// Draw balls
 		for (TestBall e : entities) {
-			e.draw(g, zoom);
+			e.draw(c);
 		}
 		
 		// Draw walls
 		for (AbstractWall w : walls) {
-			w.draw(g, zoom);
+			w.draw(c);
 		}
 	}
 }

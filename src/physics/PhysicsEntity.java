@@ -1,6 +1,6 @@
 package physics;
 
-import java.awt.Graphics;
+import display.Drawable;
 
 /**
  * Represents an entity with position, velocity, and mass.
@@ -8,7 +8,7 @@ import java.awt.Graphics;
  * This class exists to facilitate the remote future possibility of non-ball-shaped physics objects.
  * Currently all the code is set up just for balls.
  */
-public abstract class PhysicsEntity {
+public abstract class PhysicsEntity implements Drawable {
 	protected World world;
 	protected Vector pos;
 	protected Vector vel;
@@ -48,6 +48,4 @@ public abstract class PhysicsEntity {
 	public abstract double mass();
 	
 	public abstract void tick();
-	
-	public abstract void draw(Graphics g, double zoom);
 }
