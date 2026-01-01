@@ -7,7 +7,7 @@ import utils.Utils;
 
 public class World {
 	private int width, height;
-	private ArrayList<Ball> entities;
+	private ArrayList<TestBall> entities;
 	private ArrayList<AbstractWall> walls;
 
 	public int getWidth() {
@@ -21,11 +21,11 @@ public class World {
 	public World(int width, int height) {
 		this.width = width;
 		this.height = height;
-		this.entities = new ArrayList<Ball>();
+		this.entities = new ArrayList<TestBall>();
 		this.walls = new ArrayList<AbstractWall>();
 	}
 	
-	public void addEntity(Ball cell) {
+	public void addEntity(TestBall cell) {
 		this.entities.add(cell);
 	}
 	
@@ -37,13 +37,13 @@ public class World {
 		// Awaiting real implementation
 		
 		// Zero all acceleration accumulators
-		for (Ball a : entities) {
+		for (TestBall a : entities) {
 			a.tickAcc.zero();
 		}
 		
 		// Add ball-ball collision accelerations
-		for (Ball a : entities) {
-			for (Ball b : entities) {
+		for (TestBall a : entities) {
+			for (TestBall b : entities) {
 				double d = Vector.dist(a.pos, b.pos);
 				if (a != b && d < a.radius + b.radius) {
 					// Do a collision
@@ -56,7 +56,7 @@ public class World {
 		
 		// Add ball-wall collision accelerations
 		for (AbstractWall w : walls) {
-			for (Ball a : entities) {
+			for (TestBall a : entities) {
 				double d = Vector.dist(a.pos, w.getCenter());
 				if (d < a.radius + w.getEffectiveRadius()) {
 					// Effective "collision"
@@ -68,19 +68,19 @@ public class World {
 		}
 		
 		// Add drag
-		for (Ball a : entities) {
+		for (TestBall a : entities) {
 			a.tickAcc.add(Vector.mult(a.vel, -0.01));
 		}
 		
 		// Divide through by masses
-		for (Ball a : entities) {
+		for (TestBall a : entities) {
 			a.tickAcc.mult(1 / a.mass());
 		}
 	}
 	
 	public void tick() {
 		// Tick step
-		for (Ball e : entities) {
+		for (TestBall e : entities) {
 			e.tick();
 		}
 		
@@ -109,7 +109,7 @@ public class World {
 		
 		// Euler-Cromer algorithm: update velocity, then update position with updated velocity
 		computeForces();
-		for (Ball e : entities) {
+		for (TestBall e : entities) {
 			e.lastPos.set(e.pos);
 			e.lastVel.set(e.vel);
 			e.vel.add(e.tickAcc);
@@ -121,7 +121,7 @@ public class World {
 		g.clearRect(0, 0, Utils.round(this.width * zoom), Utils.round(this.height * zoom));
 		
 		// Draw balls
-		for (Ball e : entities) {
+		for (TestBall e : entities) {
 			e.draw(g, zoom);
 		}
 		

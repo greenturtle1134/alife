@@ -5,7 +5,8 @@ import java.awt.Graphics;
 /**
  * Represents an entity with position, velocity, and mass.
  * Such entities will be stepped by the World applying Newton's second law.
- * Currently this means only balls but who knows if there'll be more later.
+ * This class exists to facilitate the remote future possibility of non-ball-shaped physics objects.
+ * Currently all the code is set up just for balls.
  */
 public abstract class PhysicsEntity {
 	protected World world;
