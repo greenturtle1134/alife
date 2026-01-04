@@ -19,6 +19,7 @@ public class Cell extends BallEntity {
 	private int i;
 	
 	private CellInternals internals;
+	private CellState state;
 	
 	public Cell(
 			World world,
@@ -27,15 +28,17 @@ public class Cell extends BallEntity {
 			double facing,
 			DNA dna,
 			int i,
-			CellInternals internals
+			CellInternals internals,
+			CellState state
 			) {
 		super(world, pos, vel);
 		this.facing = facing;
 		this.dna = dna;
+		this.i = i;
 		this.program = Program.parseProgram(dna);
 		
 		this.internals = internals;
-		this.i = i;
+		this.state = state;
 	}
 	
 	public int getI() {
@@ -52,6 +55,10 @@ public class Cell extends BallEntity {
 	
 	public CellInternals getInternals() {
 		return internals;
+	}
+	
+	public CellState getState() {
+		return state;
 	}
 
 	public Program getProgram() {

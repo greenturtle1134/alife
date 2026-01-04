@@ -98,30 +98,6 @@ public class World {
 			e.tick();
 		}
 		
-		/*
-		// Euler-Richardson algorithm rejected
-		
-		// Place first estimate into pos and vel, buffer initial position
-		computeForces();
-		for (Ball e : entities) {
-			e.lastPos.set(e.pos);
-			e.lastVel.set(e.vel);
-			e.pos.add(Vector.mult(e.vel, 0.5));
-			e.vel.add(Vector.mult(e.tickAcc, 0.5));
-		}
-		
-		// Make second estimate based on first estimate
-		computeForces();
-		
-		// Reset to initial position and use second estimate
-		for (Ball e : entities) {
-			e.pos.set(e.lastPos);
-			e.vel.set(e.lastVel);
-			e.pos.add(e.vel);
-			e.vel.add(e.tickAcc);
-		}
-		*/
-		
 		// Euler-Cromer algorithm: update velocity, then update position with updated velocity
 		computeForces();
 		for (BallEntity e : entities) {
