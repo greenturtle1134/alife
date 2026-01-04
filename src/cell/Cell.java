@@ -33,7 +33,7 @@ public class Cell extends BallEntity {
 			double moveF,
 			double moveR
 			) {
-		super(world, pos, vel, radius);
+		super(world, pos, vel);
 		this.facing = facing;
 		this.dna = dna;
 		this.program = Program.parseProgram(dna);
@@ -123,13 +123,19 @@ public class Cell extends BallEntity {
 		
 		int x = round(this.pos.x * zoom);
 		int y = round(this.pos.y * zoom);
-		int r = round(this.radius * zoom);
+		int r = round(this.radius() * zoom);
 		g.drawOval(x - r, y - r, 2 * r, 2 * r);
 		
-		int x1 = round(Math.cos(facing) * this.radius * zoom);
-		int y1 = round(Math.sin(facing) * this.radius * zoom);
+		int x1 = round(Math.cos(facing) * this.radius() * zoom);
+		int y1 = round(Math.sin(facing) * this.radius() * zoom);
 		
 		g.drawLine(x, y, x + x1, y + y1);
+	}
+	
+	@Override
+	public double radius() {
+		// TODO implement radius
+		return 10;
 	}
 
 	@Override

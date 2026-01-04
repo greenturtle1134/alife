@@ -6,12 +6,11 @@ package physics;
  * This will include cells and other such things.
  */
 public abstract class BallEntity extends PhysicsEntity {
-	
-	protected double radius;
 
-	public BallEntity(World world, Vector pos, Vector vel, double radius) {
+	public BallEntity(World world, Vector pos, Vector vel) {
 		super(world, pos, vel);
-		this.radius = radius;
 	}
+	
+	public abstract double radius();
 
 }

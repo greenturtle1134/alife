@@ -54,10 +54,10 @@ public class World {
 		for (BallEntity a : entities) {
 			for (BallEntity b : entities) {
 				double d = Vector.dist(a.pos, b.pos);
-				if (a != b && d < a.radius + b.radius) {
+				if (a != b && d < a.radius() + b.radius()) {
 					// Do a collision
 					// Force on a is in direction of (a-b)
-					Vector force = Vector.sub(a.pos, b.pos).normalize().mult(0.1 * (a.radius + b.radius - d));
+					Vector force = Vector.sub(a.pos, b.pos).normalize().mult(0.1 * (a.radius() + b.radius() - d));
 					a.tickAcc.add(force);
 				}
 			}
@@ -67,10 +67,10 @@ public class World {
 		for (AbstractWall w : walls) {
 			for (BallEntity a : entities) {
 				double d = Vector.dist(a.pos, w.getCenter());
-				if (d < a.radius + w.getEffectiveRadius()) {
+				if (d < a.radius() + w.getEffectiveRadius()) {
 					// Effective "collision"
 					Vector relative = a.pos.copy().sub(w.getCenter());
-					Vector force = w.getForce(relative, a.radius);
+					Vector force = w.getForce(relative, a.radius());
 					a.tickAcc.add(force);
 				}
 			}

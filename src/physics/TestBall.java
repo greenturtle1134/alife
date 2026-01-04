@@ -12,10 +12,12 @@ import display.DrawContext;
  */
 public class TestBall extends BallEntity {
 	
+	private double radius;
 	private double mass;
 	
 	public TestBall(World world, Vector pos, Vector vel, double radius, double mass) {
-		super(world, pos, vel, radius);
+		super(world, pos, vel);
+		this.radius = radius;
 		this.mass = mass;
 	}
 
@@ -33,6 +35,11 @@ public class TestBall extends BallEntity {
 		int y = round(this.pos.y * zoom);
 		int r = round(this.radius * zoom);
 		g.drawOval(x - r, y - r, 2 * r, 2 * r);
+	}
+	
+	@Override
+	public double radius() {
+		return radius;
 	}
 
 	@Override
