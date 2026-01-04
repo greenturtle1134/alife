@@ -109,10 +109,10 @@ public abstract class Term {
 				amt = -amt;
 			}
 			if (isRL) {
-				c.setMoveR(amt);
+				c.getInternals().moveR = amt;
 			}
 			else {
-				c.setMoveF(amt);
+				c.getInternals().moveF = amt;
 			}
 		}
 		

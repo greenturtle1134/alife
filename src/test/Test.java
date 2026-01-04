@@ -7,6 +7,7 @@ import java.util.Map;
 import javax.swing.JFrame;
 
 import cell.Cell;
+import cell.CellInternals;
 import display.DisplayPanel;
 import genome.DNA;
 import genome.Parser;
@@ -34,7 +35,8 @@ public class Test {
 		}
 		
 		World world = new World(100, 100);
-		Cell cell = new Cell(world, new Vector(50, 50), new Vector(0, 0), 10, Math.PI / 2, testDNA, 0, 0, 0);
+		CellInternals cellInternals = CellInternals.genDefault();
+		Cell cell = new Cell(world, new Vector(50, 50), new Vector(0, 0), Math.PI / 2, testDNA, 0, cellInternals);
 		world.addCell(cell);
 //		world.addEntity(new TestBall(world, new Vector(50, 70), new Vector(0, -2), 10, 1));
 		

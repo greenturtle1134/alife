@@ -16,31 +16,26 @@ public class Cell extends BallEntity {
 	
 	private DNA dna;
 	private Program program;
-	private int[] memory;
 	private int i;
 	
-	private double moveF;
-	private double moveR;
+	private CellInternals internals;
 	
 	public Cell(
 			World world,
 			Vector pos,
 			Vector vel,
-			double radius,
 			double facing,
 			DNA dna,
 			int i,
-			double moveF,
-			double moveR
+			CellInternals internals
 			) {
 		super(world, pos, vel);
 		this.facing = facing;
 		this.dna = dna;
 		this.program = Program.parseProgram(dna);
-		this.memory = new int[64];
+		
+		this.internals = internals;
 		this.i = i;
-		this.moveF = moveF;
-		this.moveR = moveR;
 	}
 	
 	public int getI() {
@@ -51,32 +46,16 @@ public class Cell extends BallEntity {
 		this.i = i;
 	}
 
-	public double getMoveF() {
-		return moveF;
-	}
-
-	public void setMoveF(double moveF) {
-		this.moveF = moveF;
-	}
-
-	public double getMoveR() {
-		return moveR;
-	}
-
-	public void setMoveR(double moveR) {
-		this.moveR = moveR;
-	}
-
 	public DNA getDna() {
 		return dna;
+	}
+	
+	public CellInternals getInternals() {
+		return internals;
 	}
 
 	public Program getProgram() {
 		return program;
-	}
-
-	public int[] getMemory() {
-		return memory;
 	}
 
 	public void run(int steps) {
@@ -90,8 +69,8 @@ public class Cell extends BallEntity {
 	}
 
 	public int memGet(int i) {
-		if (i < memory.length) {
-			return memory[i];
+		if (i < internals.memory.length) {
+			return internals.memory[i];
 		}
 		else {
 			return 0;
@@ -99,8 +78,8 @@ public class Cell extends BallEntity {
 	}
 	
 	public void memSet(int i, int x) {
-		if (i < memory.length) {
-			memory[i] = x;
+		if (i < internals.memory.length) {
+			internals.memory[i] = x;
 		}
 	}
 	
@@ -150,6 +129,6 @@ public class Cell extends BallEntity {
 	}
 	
 	public Vector moveAcc() {
-		return Vector.fromOrientation(facing, this.moveF, this.moveR);
+		return Vector.fromOrientation(facing, internals.moveF, internals.moveR);
 	}
 }
