@@ -3,12 +3,14 @@ package physics;
 import java.awt.Graphics;
 import java.util.ArrayList;
 
+import cell.Cell;
 import display.DrawContext;
 import utils.Utils;
 
 public class World {
 	private int width, height;
-	private ArrayList<TestBall> entities;
+	private ArrayList<BallEntity> entities;
+	private ArrayList<Cell> cells;
 	private ArrayList<AbstractWall> walls;
 
 	public int getWidth() {
@@ -22,11 +24,17 @@ public class World {
 	public World(int width, int height) {
 		this.width = width;
 		this.height = height;
-		this.entities = new ArrayList<TestBall>();
+		this.entities = new ArrayList<BallEntity>();
+		this.cells = new ArrayList<Cell>();
 		this.walls = new ArrayList<AbstractWall>();
 	}
 	
-	public void addEntity(TestBall cell) {
+	public void addCell(Cell cell) {
+		this.addEntity(cell);
+		this.cells.add(cell);
+	}
+	
+	public void addEntity(BallEntity cell) {
 		this.entities.add(cell);
 	}
 	
@@ -38,13 +46,13 @@ public class World {
 		// Awaiting real implementation
 		
 		// Zero all acceleration accumulators
-		for (TestBall a : entities) {
+		for (BallEntity a : entities) {
 			a.tickAcc.zero();
 		}
 		
 		// Add ball-ball collision accelerations
-		for (TestBall a : entities) {
-			for (TestBall b : entities) {
+		for (BallEntity a : entities) {
+			for (BallEntity b : entities) {
 				double d = Vector.dist(a.pos, b.pos);
 				if (a != b && d < a.radius + b.radius) {
 					// Do a collision
@@ -57,7 +65,7 @@ public class World {
 		
 		// Add ball-wall collision accelerations
 		for (AbstractWall w : walls) {
-			for (TestBall a : entities) {
+			for (BallEntity a : entities) {
 				double d = Vector.dist(a.pos, w.getCenter());
 				if (d < a.radius + w.getEffectiveRadius()) {
 					// Effective "collision"
@@ -69,48 +77,54 @@ public class World {
 		}
 		
 		// Add drag
-		for (TestBall a : entities) {
+		for (BallEntity a : entities) {
 			a.tickAcc.add(Vector.mult(a.vel, -0.01));
 		}
 		
+		// Cells accelerate
+		for (Cell c : cells) {
+			c.tickAcc.add(c.moveAcc());
+		}
+		
 		// Divide through by masses
-		for (TestBall a : entities) {
+		for (BallEntity a : entities) {
 			a.tickAcc.mult(1 / a.mass());
 		}
 	}
 	
 	public void tick() {
 		// Tick step
-		for (TestBall e : entities) {
+		for (BallEntity e : entities) {
 			e.tick();
 		}
 		
-//		// Euler-Richardson algorithm
-		// Tested, but found to not conserve energies
-//		
-//		// Place first estimate into pos and vel, buffer initial position
-//		computeForces();
-//		for (Ball e : entities) {
-//			e.lastPos.set(e.pos);
-//			e.lastVel.set(e.vel);
-//			e.pos.add(Vector.mult(e.vel, 0.5));
-//			e.vel.add(Vector.mult(e.tickAcc, 0.5));
-//		}
-//		
-//		// Make second estimate based on first estimate
-//		computeForces();
-//		
-//		// Reset to initial position and use second estimate
-//		for (Ball e : entities) {
-//			e.pos.set(e.lastPos);
-//			e.vel.set(e.lastVel);
-//			e.pos.add(e.vel);
-//			e.vel.add(e.tickAcc);
-//		}
+		/*
+		// Euler-Richardson algorithm rejected
+		
+		// Place first estimate into pos and vel, buffer initial position
+		computeForces();
+		for (Ball e : entities) {
+			e.lastPos.set(e.pos);
+			e.lastVel.set(e.vel);
+			e.pos.add(Vector.mult(e.vel, 0.5));
+			e.vel.add(Vector.mult(e.tickAcc, 0.5));
+		}
+		
+		// Make second estimate based on first estimate
+		computeForces();
+		
+		// Reset to initial position and use second estimate
+		for (Ball e : entities) {
+			e.pos.set(e.lastPos);
+			e.vel.set(e.lastVel);
+			e.pos.add(e.vel);
+			e.vel.add(e.tickAcc);
+		}
+		*/
 		
 		// Euler-Cromer algorithm: update velocity, then update position with updated velocity
 		computeForces();
-		for (TestBall e : entities) {
+		for (BallEntity e : entities) {
 			e.lastPos.set(e.pos);
 			e.lastVel.set(e.vel);
 			e.vel.add(e.tickAcc);
@@ -125,7 +139,7 @@ public class World {
 		g.clearRect(0, 0, Utils.round(this.width * zoom), Utils.round(this.height * zoom));
 		
 		// Draw balls
-		for (TestBall e : entities) {
+		for (BallEntity e : entities) {
 			e.draw(c);
 		}
 		

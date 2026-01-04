@@ -130,6 +130,14 @@ public class Vector {
 		return this; 
 	}
 	
+	/**
+	 * Creates a Vector with the specified components rotated to the specified angle
+	 */
+	public static Vector fromOrientation(double angle, double x, double y) {
+		// TODO check that I remembered rotation matrices correctly
+		return new Vector(Math.cos(angle) * x - Math.sin(angle) * y, Math.sin(angle) * x + Math.cos(angle) * y);
+	}
+	
 	@Override
 	public String toString() {
 		return "(" + this.x + ", " + this.y + ")";

@@ -1,11 +1,16 @@
 package test;
 
 import java.awt.Dimension;
+import java.util.Arrays;
+import java.util.Map;
 
 import javax.swing.JFrame;
 
+import cell.Cell;
 import display.DisplayPanel;
-import physics.TestBall;
+import genome.DNA;
+import genome.Parser;
+import genome.Program;
 import physics.LineWall;
 import physics.Vector;
 import physics.World;
@@ -13,10 +18,24 @@ import physics.World;
 public class Test {
 
 	public static void main(String[] args) {
-		// Test displaying a world
+		// Test parsing DNA into a cell
+		String testString = "TAT TCT AAG AAT TAC";
+		DNA testDNA = DNA.stringToDNA(testString);
+		System.out.println("       DNA: " + testDNA);
+		System.out.println("   Splices: " + Arrays.toString(testDNA.findSplices()));
+		System.out.println("    Codons: " + Arrays.toString(testDNA.makeSplices(testDNA.findSplices())));
+		System.out.println("W/o blanks: " + Arrays.toString(Parser.stripBlanks(testDNA.makeSplices(testDNA.findSplices()))));
+		Program testProgram = Program.parseProgram(testDNA);
+		System.out.println("   Program: " + Arrays.toString(testProgram.getStatements()));
+		System.out.println("    Labels: ");
+		Map<Integer, Integer> labels = testProgram.getLabels();
+		for (int l : labels.keySet()) {
+			System.out.println("       - " + String.format("%04X", l) + ": line " + labels.get(l));
+		}
+		
 		World world = new World(100, 100);
-		world.addEntity(new TestBall(world, new Vector(30, 50), new Vector(1, 0), 10, 10));
-		world.addEntity(new TestBall(world, new Vector(50, 50), new Vector(0, 0), 10, 1));
+		Cell cell = new Cell(world, new Vector(50, 50), new Vector(0, 0), 10, Math.PI / 2, testDNA, 0, 0, 0);
+		world.addCell(cell);
 //		world.addEntity(new TestBall(world, new Vector(50, 70), new Vector(0, -2), 10, 1));
 		
 		world.addWall(new LineWall(10, 10, 10, 90));
@@ -32,17 +51,17 @@ public class Test {
         f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         f.setLocationRelativeTo(null);     
         f.setVisible(true);
-		
-		while (true) {
-//			System.out.println("Ball 1: " + ball1.getPos() + " " + ball1.getVel() + " Ball 2: " + ball2.getPos() + " " + ball2.getVel());
+        
+        while (true) {
 			d.repaint();
 			try {
-				Thread.sleep(10);
+				Thread.sleep(100);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
 			world.tick();
 		}
+		
 		
 //		// The copying speed test
 //		Vector[] vectors = new Vector[1000];

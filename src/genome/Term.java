@@ -1,5 +1,7 @@
 package genome;
 
+import cell.Cell;
+
 public abstract class Term {
 	// Should there be a children() method here?
 	
@@ -13,16 +15,18 @@ public abstract class Term {
 	}
 	
 	public static abstract class Statement extends Term {
-		public void exec(ExecContext c) {
-			// Do nothing
-		}
+		public abstract void exec(Cell c);
 	}
 
 	public static abstract class Operator extends Term {
-		public abstract int eval(ExecContext c);
+		public abstract int eval(Cell c);
 	}
 	
 	public static class Nop extends Statement{
+		public void exec(Cell c) {
+			// Do nothing
+		}
+		
 		public String toString() {
 			return "Nop()";
 		}
@@ -33,6 +37,10 @@ public abstract class Term {
 		
 		public Label(int label) {
 			this.label = label;
+		}
+		
+		public void exec(Cell c) {
+			// Do nothing
 		}
 		
 		public int getLabel() {
@@ -53,7 +61,7 @@ public abstract class Term {
 			this.cond = cond;
 		}
 		
-		public void exec(ExecContext c) {
+		public void exec(Cell c) {
 			if (cond.eval(c) != 0) {
 				c.labelJump(target);
 			}
@@ -61,22 +69,6 @@ public abstract class Term {
 		
 		public String toString() {
 			return "JumpLabel<"+target+">(" + cond + ")";
-		}
-	}
-	
-	public static class Print extends Statement {
-		private Operator a;
-		
-		public Print(Operator a) {
-			this.a = a;
-		}
-		
-		public void exec(ExecContext c) {
-			System.out.println("PRINT: " + a.eval(c));
-		}
-		
-		public String toString() {
-			return "Print("+a+")";
 		}
 	}
 	
@@ -89,12 +81,43 @@ public abstract class Term {
 			this.i = i;
 		}
 		
-		public void exec(ExecContext c) {
+		public void exec(Cell c) {
 			c.memSet(i, a.eval(c));
 		}
 		
 		public String toString() {
 			return "$"+regName(i) + " <- " + a;
+		}
+	}
+	
+	public static class Move extends Statement {
+		private Operator a;
+		private boolean isRL;
+		private boolean isNeg;
+		
+		public static final String[] DIRECTION_STRINGS = {"F", "B", "R", "L"};
+		
+		public Move(Operator a, boolean isRL, boolean isNeg) {
+			this.a = a;
+			this.isRL = isRL;
+			this.isNeg = isNeg;
+		}
+		
+		public void exec(Cell c) {
+			int amt = this.a.eval(c);
+			if (isNeg) {
+				amt = -amt;
+			}
+			if (isRL) {
+				c.setMoveR(amt);
+			}
+			else {
+				c.setMoveF(amt);
+			}
+		}
+		
+		public String toString() {
+			return "Move"+DIRECTION_STRINGS[(isRL ? 2 : 0) + (isNeg ? 1 : 0)] + "(" + a + ")";	
 		}
 	}
 	
@@ -105,7 +128,7 @@ public abstract class Term {
 			this.a = a;
 		}
 		
-		public int eval(ExecContext c) {
+		public int eval(Cell c) {
 			return c.memGet(a);
 		}
 		
@@ -121,7 +144,7 @@ public abstract class Term {
 			this.val = val;
 		}
 		
-		public int eval(ExecContext c) {
+		public int eval(Cell c) {
 			return val;
 		}
 		
@@ -138,7 +161,7 @@ public abstract class Term {
 			this.b = b;
 		}
 		
-		public int eval(ExecContext c) {
+		public int eval(Cell c) {
 			return a.eval(c) + b.eval(c);
 		}
 		
@@ -155,7 +178,7 @@ public abstract class Term {
 			this.b = b;
 		}
 		
-		public int eval(ExecContext c) {
+		public int eval(Cell c) {
 			return a.eval(c) - b.eval(c);
 		}
 		
@@ -172,7 +195,7 @@ public abstract class Term {
 			this.b = b;
 		}
 		
-		public int eval(ExecContext c) {
+		public int eval(Cell c) {
 			return a.eval(c) * b.eval(c);
 		}
 		
@@ -189,7 +212,7 @@ public abstract class Term {
 			this.b = b;
 		}
 		
-		public int eval(ExecContext c) {
+		public int eval(Cell c) {
 			int b0 = b.eval(c);
 			if (b0 != 0) {
 				return a.eval(c) / b.eval(c);
@@ -212,7 +235,7 @@ public abstract class Term {
 			this.b = b;
 		}
 		
-		public int eval(ExecContext c) {
+		public int eval(Cell c) {
 			if (a.eval(c) < b.eval(c)) {
 				return 1;
 			}

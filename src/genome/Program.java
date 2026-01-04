@@ -1,23 +1,25 @@
 package genome;
 
 import java.util.ArrayList;
-import java.util.TreeMap;
+import java.util.HashMap;
+import java.util.Map;
 
 import genome.Term.Statement;
 
 public class Program {
 	private Statement[] statements;
-	private TreeMap<Integer, Integer> labels;
+	private Map<Integer, Integer> labels;
 	
 	public Statement[] getStatements() {
 		return this.statements;
 	}
 	
-	public TreeMap<Integer, Integer> getLabels() {
+	public Map<Integer, Integer> getLabels() {
 		return this.labels;
 	}
 	
-	private Program(Statement[] statements, TreeMap<Integer, Integer> labels) {
+	// TODO change this back to private when testing is done
+	public Program(Statement[] statements, Map<Integer, Integer> labels) {
 		this.statements = statements;
 		this.labels = labels;
 	}
@@ -37,7 +39,7 @@ public class Program {
 		Statement[] statements = statementList.toArray(new Statement[statementList.size()]);
 		
 		// Locate labels
-		TreeMap<Integer, Integer> labels = new TreeMap<Integer, Integer>();
+		Map<Integer, Integer> labels = new HashMap<Integer, Integer>();
 		for (int i = 0; i<statements.length; i++) {
 			if (statements[i] instanceof Term.Label) {
 				Term.Label label = (Term.Label) statements[i];
@@ -46,13 +48,5 @@ public class Program {
 		}
 		
 		return new Program(statements, labels);
-	}
-	
-	public void run(TestCell c) {
-		ExecContext e = new ExecContext(c, 0, this.labels);
-		while (e.i >= 0 && e.i < statements.length) {
-			statements[e.i].exec(e);
-			e.i++;
-		}
 	}
 }

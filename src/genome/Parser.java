@@ -83,6 +83,21 @@ public class Parser {
 	}
 	
 	/**
+	 * As nextOperator(), but with a default value.
+	 * @param defaultVal - integer
+	 * @return the next operator, or Int(defaultVal) if none exists
+	 */
+	public Operator nextOperator(int defaultVal) {
+		Operator res = nextOperator();
+		if (res != null) {
+			return res;
+		}
+		else {
+			return new Term.Int(defaultVal);
+		}
+	}
+	
+	/**
 	 * Parses the next operator.
 	 * If the end of the sequence is reached, returns null.
 	 * If the next symbol cannot be recognized as an operator, returns null and does not advance pointer.
@@ -116,21 +131,6 @@ public class Parser {
 	}
 	
 	/**
-	 * As nextOperator(), but with a default value.
-	 * @param defaultVal - integer
-	 * @return the next operator, or Int(defaultVal) if none exists
-	 */
-	public Operator nextOperator(int defaultVal) {
-		Operator res = nextOperator();
-		if (res != null) {
-			return res;
-		}
-		else {
-			return new Term.Int(defaultVal);
-		}
-	}
-	
-	/**
 	 * Parse the next statement.
 	 * If the end of the sequence is reached, returns null.
 	 * If the next codon cannot be interpreted as a statement (or operator), parses it as a NOP and advances past it.
@@ -139,7 +139,7 @@ public class Parser {
 	public Statement nextStatement() {
 		Operator res = nextOperator();
 		if (res != null) {
-			return new Term.Store(0, res);
+			return new Term.Store(0, res); // Term is an operator = store into ANS
 		}
 		byte c = nextCodon();
 		switch (c) {
@@ -147,12 +147,14 @@ public class Parser {
 				return null;
 			case 3:
 				return new Term.Store(nextCodon(BYTE_ZERO), nextOperator(0));
-			case 4:
-				return new Term.Print(nextOperator(0));
 			case 16:
 				return new Term.Label(nextCodon(BYTE_ZERO) * 64 + nextCodon(BYTE_ZERO));
 			case 18:
 				return new Term.JumpLabel(nextCodon(BYTE_ZERO) * 64 + nextCodon(BYTE_ZERO), nextOperator(1));
+			case 29:
+				return new Term.Move(nextOperator(0), false, false);
+			case 30:
+				return new Term.Move(nextOperator(0), false, true);
 			default:
 				return new Term.Nop();
 		}
