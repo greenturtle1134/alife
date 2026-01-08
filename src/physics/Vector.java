@@ -1,7 +1,7 @@
 package physics;
 
 // Fine I'll do it myself
-public class Vector {
+public class Vector implements Cloneable {
 	public double x, y;
 	
 	public Vector(double x, double y) {
@@ -20,11 +20,8 @@ public class Vector {
 		return this;
 	}
 	
-	/**
-	 * Copy the contents of this vector
-	 * @return the copy
-	 */
-	public Vector copy() {
+	@Override
+	public Vector clone() {
 		return new Vector(this.x, this.y);
 	}
 	
