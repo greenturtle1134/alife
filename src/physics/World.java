@@ -70,7 +70,7 @@ public class World {
 				if (d < a.radius() + w.getEffectiveRadius()) {
 					// Effective "collision"
 					Vector relative = a.pos.clone().sub(w.getCenter());
-					Vector force = w.getForce(relative, a.radius());
+					Vector force = w.getForce(relative, a.radius()).mult(a.mass());
 					a.tickAcc.add(force);
 				}
 			}

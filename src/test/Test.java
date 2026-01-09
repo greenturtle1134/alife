@@ -37,7 +37,7 @@ public class Test {
 		
 		World world = new World(100, 100);
 		CellInternals cellInternals = CellInternals.genDefault();
-		CellState cellState = new CellState();
+		CellState cellState = new CellState(10, 100);
 		Cell cell = new Cell(world, new Vector(50, 50), new Vector(0, 0), Math.PI / 2, testDNA, 0, cellInternals, cellState);
 		world.addCell(cell);
 //		world.addEntity(new TestBall(world, new Vector(50, 70), new Vector(0, -2), 10, 1));

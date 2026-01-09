@@ -121,13 +121,12 @@ public class Cell extends BallEntity {
 	@Override
 	public double radius() {
 		// TODO implement radius
-		return 10;
+		return Math.sqrt(state.body);
 	}
 
 	@Override
 	public double mass() {
-		// TODO implement mass
-		return 1;
+		return state.body;
 	}
 
 	@Override
