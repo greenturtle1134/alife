@@ -10,8 +10,8 @@ public class DisplayPanel extends JPanel {
 	private static final long serialVersionUID = 1L;
 	
 	private World world;
-	private int x, y;
-	private double zoom;
+	int x, y;
+	double zoom;
 
 	public DisplayPanel(World world) {
 		this(world, 0, 0, 1);
