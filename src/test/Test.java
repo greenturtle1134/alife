@@ -39,13 +39,13 @@ public class Test {
 			world.addEntity(new TestBall(world, new Vector(random.nextDouble() * 50 + 25, random.nextDouble() * 50 + 25), new Vector(0, 0), 10, 1));
 		}
 		
-		world.addWall(new LineWall(10, 10, 10, 90));
-		world.addWall(new LineWall(10, 90, 90, 90));
-		world.addWall(new LineWall(90, 90, 90, 10));
-		world.addWall(new LineWall(90, 10, 10, 10));
+//		world.addWall(new LineWall(10, 10, 10, 90));
+//		world.addWall(new LineWall(10, 90, 90, 90));
+//		world.addWall(new LineWall(90, 90, 90, 10));
+//		world.addWall(new LineWall(90, 10, 10, 10));
 
 		
-		Application application = new Application(world, testName, 7.0, 10);
+		Application application = new Application(world, testName, 7.0, 20);
 		application.run();
 		
 		

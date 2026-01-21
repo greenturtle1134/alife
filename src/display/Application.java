@@ -32,7 +32,7 @@ public class Application {
 			frame.repaint();
 			world.tick();
 			long tickTime = System.nanoTime() - start;
-			System.out.println(tickTime);
+//			System.out.println(tickTime);
 			try {
 				Thread.sleep(targetFrameMillis);
 			} catch (InterruptedException e) {

@@ -76,6 +76,22 @@ public class World {
 			}
 		}
 		
+		// Add ball-edge collisions. Currently these are always on but they might become toggleable later
+		for (BallEntity a : entities) {
+			if (a.pos.x < a.radius()) {
+				a.tickAcc.add(new Vector(a.radius() - a.pos.x, 0));
+			}
+			if (this.width - a.pos.x < a.radius()) {
+				a.tickAcc.add(new Vector(this.width - a.pos.x - a.radius(), 0));
+			}
+			if (a.pos.y < a.radius()) {
+				a.tickAcc.add(new Vector(0, a.radius() - a.pos.y));
+			}
+			if (this.height - a.pos.y < a.radius()) {
+				a.tickAcc.add(new Vector(0, this.width - a.pos.y - a.radius()));
+			}
+		}
+		
 		// Add drag
 		for (BallEntity a : entities) {
 			a.tickAcc.add(Vector.mult(a.vel, -0.01));
