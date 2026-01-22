@@ -49,4 +49,12 @@ public class CostSettings {
 	public void setCapacityFactor(Substance s, double x) {
 		capacityFactors[s.id] = x; 
 	}
+	
+	public static CostSettings defaults() {
+		double[] substanceCosts = {1, 1, 0.1, 2};
+		double[] substanceRefunds = {1, 0.8, 0, 1};
+		double[] substanceMaints = {0, 0, 0, 0};
+		double[] capacityFactors = {1, 1, 1, 1};
+		return new CostSettings(substanceCosts, substanceRefunds, substanceMaints, capacityFactors);
+	}
 }

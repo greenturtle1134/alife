@@ -167,8 +167,17 @@ public class Cell extends BallEntity {
 		
 		int x1 = round(Math.cos(facing) * this.radius() * zoom);
 		int y1 = round(Math.sin(facing) * this.radius() * zoom);
-		
 		g.drawLine(x, y, x + x1, y + y1);
+		
+		drawArc(c, x, y, this.nrg() / this.getCapacity(Substance.NRG), 0.5);
+	}
+	
+	public void drawArc(DrawContext c, int x, int y, double arcRatio, double arcRadius) {
+		Graphics g = c.getG();
+		double zoom = c.getZoom();
+		
+		int r = round(this.radius() * arcRadius * zoom);
+		g.drawArc(x - r, y - r, 2 * r, 2 * r, round(-(facing / Math.PI + arcRatio) * 180), round(360 * arcRatio));
 	}
 	
 	@Override
@@ -197,7 +206,7 @@ public class Cell extends BallEntity {
 		}
 		else {
 			// Default assuming linear capacity all substances. Nonlinear may be added later
-			return body() * world.settings.getCapacityFactor(s);
+			return body() * world.costSettings.getCapacityFactor(s);
 		}
 	}
 
@@ -210,11 +219,14 @@ public class Cell extends BallEntity {
 	}
 	
 	/**
-	 * Builds a substance. Takes into account remaining capacity and nrg available. Redirects to burn if amount is negative.
+	 * Builds a substance. Takes into account remaining capacity and nrg available. Redirects to burn if amount is negative. Forbids building nonsensical substances.
 	 * @param s - Substance to build
 	 * @param amount - Amount of substance to build
 	 */
 	public void build(Substance s, double amount) {
+		if (s == Substance.NRG) {
+			return;
+		}
 		if (amount == 0.0) {
 			return;
 		}
@@ -223,8 +235,8 @@ public class Cell extends BallEntity {
 		}
 		
 		// If insufficient nrg, clamp it
-		if (nrg() < amount * world.settings.getCost(s)) {
-			amount = nrg() / world.settings.getCost(s);
+		if (nrg() < amount * world.costSettings.getCost(s)) {
+			amount = nrg() / world.costSettings.getCost(s);
 		}
 		
 		// If insufficient capacity, clamp it
@@ -235,15 +247,18 @@ public class Cell extends BallEntity {
 		
 		// Verified that nrg will not go negative and substance will not exceed capacity; do the build
 		this.substances[s.id] += amount;
-		this.substances[Substance.NRG.id] -= amount * world.settings.getCost(s);
+		this.substances[Substance.NRG.id] -= amount * world.costSettings.getCost(s);
 	}
 	
 	/**
-	 * Burns a substance. Takes into account remaining substance. If burning requires energy, remaining nrg taken into account as well.
+	 * Burns a substance. Takes into account remaining substance. If burning requires energy, remaining nrg taken into account as well. Forbids burning nonsensical substances.
 	 * @param s - Substance to burn
 	 * @param amount - Amount of substance to burn
 	 */
 	public void burn(Substance s, double amount) {
+		if (s == Substance.NRG) {
+			return;
+		}
 		if (amount == 0.0) {
 			return;
 		}
@@ -253,20 +268,20 @@ public class Cell extends BallEntity {
 		
 		// If insufficient substance, clamp it
 		if (substances[s.id] < amount) {
-			amount = substances[s.id] / world.settings.getCost(s);
+			amount = substances[s.id] / world.costSettings.getCost(s);
 		}
 		
 		// If costs energy to burn and insufficient nrg, clamp it
-		if (world.settings.getRefund(s) < 0 && nrg() < -world.settings.getRefund(s) * amount) {
-			amount = nrg() / (-world.settings.getRefund(s));
+		if (world.costSettings.getRefund(s) < 0 && nrg() < -world.costSettings.getRefund(s) * amount) {
+			amount = nrg() / (-world.costSettings.getRefund(s));
 		}
 		
 		// Verified that this amount can be burned
 		this.substances[s.id] -= amount;
 		
 		// Give or take energy, or set to the max if overflow
-		if (nrg() + world.settings.getRefund(s) * amount < getCapacity(Substance.NRG)) {
-			this.substances[Substance.NRG.id] += world.settings.getRefund(s) * amount;
+		if (nrg() + world.costSettings.getRefund(s) * amount < getCapacity(Substance.NRG)) {
+			this.substances[Substance.NRG.id] += world.costSettings.getRefund(s) * amount;
 		}
 		else {
 			this.substances[Substance.NRG.id] = getCapacity(Substance.NRG);

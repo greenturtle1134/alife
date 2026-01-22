@@ -13,7 +13,7 @@ public class World {
 	private ArrayList<BallEntity> entities;
 	private ArrayList<Cell> cells;
 	private ArrayList<AbstractWall> walls;
-	public CostSettings settings;
+	public CostSettings costSettings;
 
 	public int getWidth() {
 		return width;
@@ -23,12 +23,13 @@ public class World {
 		return height;
 	}
 
-	public World(int width, int height) {
+	public World(int width, int height, CostSettings costSettings) {
 		this.width = width;
 		this.height = height;
 		this.entities = new ArrayList<BallEntity>();
 		this.cells = new ArrayList<Cell>();
 		this.walls = new ArrayList<AbstractWall>();
+		this.costSettings = costSettings;
 	}
 	
 	public void addCell(Cell cell) {

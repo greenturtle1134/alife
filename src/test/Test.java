@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.Random;
 
 import cell.Cell;
+import cell.CostSettings;
 import display.Application;
 import genome.DNA;
 import genome.Parser;
@@ -32,9 +33,9 @@ public class Test {
 			System.out.println("       - " + String.format("%04X", l) + ": line " + labels.get(l));
 		}
 		
-		World world = new World(100, 100);
+		World world = new World(100, 100, CostSettings.defaults());
 		
-		Cell cell = new Cell(world, new Vector(50, 50), new Vector(0, 0), Math.PI / 2, testDNA, 10, 100);
+		Cell cell = new Cell(world, new Vector(50, 50), new Vector(0, 0), Math.PI / 2, testDNA, 90, 100);
 		world.addCell(cell);
 		
 		Random random = new Random(10);
