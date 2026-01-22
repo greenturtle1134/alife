@@ -1,6 +1,7 @@
 package genome;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -26,7 +27,7 @@ public class Program {
 	
 	public static Program parseProgram(DNA dna) {
 		// Splice DNA and create parser
-		byte[] codons = Parser.stripBlanks(dna.makeSplices(dna.findSplices()));
+		byte[] codons = dna.makeSplices(dna.findSplices(DNA.TATA)); // TODO adjust to start sequence I actually want later
 		Parser parser = new Parser(codons);
 		
 		// Parse statements one by one

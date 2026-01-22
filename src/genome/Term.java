@@ -48,6 +48,10 @@ public abstract class Term {
 	public static class Action extends Statement{
 		private int action;
 		
+		public Action(int action) {
+			this.action = action;
+		}
+		
 		public void exec(Cell c) {
 			// TODO implement actions
 		}
@@ -472,10 +476,10 @@ public abstract class Term {
 		}
 	}
 	
-	public static class EQ extends Operator {
+	public static class Eq extends Operator {
 		private Operator a, b;
 		
-		public EQ(Operator a, Operator b) {
+		public Eq(Operator a, Operator b) {
 			this.a = a;
 			this.b = b;
 		}
@@ -494,10 +498,10 @@ public abstract class Term {
 		}
 	}
 	
-	public static class NEQ extends Operator {
+	public static class Neq extends Operator {
 		private Operator a, b;
 		
-		public NEQ(Operator a, Operator b) {
+		public Neq(Operator a, Operator b) {
 			this.a = a;
 			this.b = b;
 		}
@@ -651,40 +655,74 @@ public abstract class Term {
 	// TODO: Implement the AddTo if I want them
 	
 	public static class Build extends Statement {
-		private Operator x;
+		private Operator target;
 		private Operator amount;
 		
-		public Build(Operator x, Operator amount) {
-			this.x = x;
+		public Build(Operator amount, Operator target) {
+			this.target = target;
 			this.amount = amount;
 		}
 		
 		public void exec(Cell c) {
-			c.build(Substance.numToSubstance(x.eval(c)), amount.eval(c));
+			c.build(Substance.numToSubstance(target.eval(c)), amount.eval(c));
 		}
 		
 		public String toString() {
-			return "Build(" + x + "," + amount + ")";
+			return "Build(" + amount + "," + target + ")";
 		}
 	}
 	
 	public static class Burn extends Statement {
-		private Operator x;
+		private Operator target;
 		private Operator amount;
 		
-		public Burn(Operator x, Operator amount) {
-			this.x = x;
+		public Burn(Operator amount, Operator target) {
+			this.target = target;
 			this.amount = amount;
 		}
 		
 		public void exec(Cell c) {
-			c.burn(Substance.numToSubstance(x.eval(c)), amount.eval(c));
+			c.burn(Substance.numToSubstance(target.eval(c)), amount.eval(c));
 		}
 		
 		public String toString() {
-			return "Burn(" + x + "," + amount + ")";
+			return "Burn(" + amount + "," + target + ")";
 		}
 	}
 	
-	// TODO implement Expel and Attack
+	public static class Expel extends Statement {
+		private Operator target;
+		private Operator amount;
+		
+		public Expel(Operator amount, Operator target) {
+			this.target = target;
+			this.amount = amount;
+		}
+		
+		public void exec(Cell c) {
+			// TODO implement Expel
+		}
+		
+		public String toString() {
+			return "Expel(" + amount + "," + target + ")";
+		}
+	}
+	
+	public static class Attack extends Statement {
+		private Operator target;
+		private Operator amount;
+		
+		public Attack(Operator amount, Operator target) {
+			this.target = target;
+			this.amount = amount;
+		}
+		
+		public void exec(Cell c) {
+			// TODO implement Attack
+		}
+		
+		public String toString() {
+			return "Attack(" + amount + "," + target + ")";
+		}
+	}
 }

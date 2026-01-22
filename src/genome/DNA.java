@@ -13,8 +13,8 @@ public class DNA {
 //	public static final char[] NUCLEOTIDES = {'K', 'X', 'P', 'M'};
 //	public static final char[] NUCLEOTIDES = {'E', 'J', 'P', 'X'};
 	
-	public static final int C_START = 17;
-	public static final int C_END = 19;
+	public static final int[] TATA = {1, 0, 1, 0, 0, 0}; // TODO currently for testing purposes
+	public static final int STOP_CODON = 3;
 	
 	private int[] dna;
 	private int length;
@@ -91,7 +91,7 @@ public class DNA {
 	}
 	
 	/**
-	 * Parses a String to a DNA object
+	 * Parses a String to a DNA object using the DEFAULT_NUCLEOTIDES set
 	 * @param s - the string to parse
 	 * @return DNA object
 	 */
@@ -120,15 +120,39 @@ public class DNA {
 	}
 	
 	/**
-	 * Finds splices (subsegments of DNA beginning with the start codon and terminating on a stop codon)
+	 * Finds "starts" based on a substring search
+	 * @param startSequence - 
+	 * @return ArrayList of the located starts, each index is the first nucleotide after the start sequence
+	 */
+	public ArrayList<Integer> findStarts(int[] startSequence) {
+		ArrayList<Integer> res = new ArrayList<Integer>();
+		for (int i = 0; i < length-startSequence.length; i++) {
+			boolean skip = false;
+			for (int j = 0; j < startSequence.length; j++) {
+				if (idx(i+j) != startSequence[j]) {
+					skip = true;
+					break;
+				}
+			}
+			if (!skip) {
+				res.add(i + startSequence.length);
+			}
+		}
+		return res;
+	}
+	
+	/**
+	 * Finds splices (subsegments of DNA beginning with the start sequence and terminating on a stop codon)
+	 * @param startSequence - Array of nucleotides defining the start sequence to look for
 	 * @return Array of SplicePair objects representing all splices in the DNA
 	 */
-	public SplicePair[] findSplices() {
+	public SplicePair[] findSplices(int[] startSequence) {
 		ArrayList<SplicePair> res = new ArrayList<SplicePair>();
-		for (int i = 0; i < length-2; i++) {
-			if (idxCodon(i) == C_START) {
-				int end = i+3;
-				while (end < length-2 && idxCodon(end-3) != C_END) {
+		ArrayList<Integer> starts = findStarts(startSequence);
+		for (Integer i : starts) {
+			if (i < length - 2) {
+				int end = i + 3;
+				while (end < length-2 && idxCodon(end) != STOP_CODON) {
 					end += 3;
 				}
 				res.add(new SplicePair(i, end));

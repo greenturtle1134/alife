@@ -8,7 +8,6 @@ import cell.Cell;
 import cell.CostSettings;
 import display.Application;
 import genome.DNA;
-import genome.Parser;
 import genome.Program;
 import physics.TestBall;
 import physics.Vector;
@@ -19,12 +18,11 @@ public class Test {
 	public static void main(String[] args) {
 		String testName = "Testing many balls and a cell";
 		
-		String testString = "TAT TCT AAG AAT TAC";
+		String testString = "TATAAA GTA TAC TAT CAA TAC";
 		DNA testDNA = DNA.stringToDNA(testString);
 		System.out.println("       DNA: " + testDNA);
-		System.out.println("   Splices: " + Arrays.toString(testDNA.findSplices()));
-		System.out.println("    Codons: " + Arrays.toString(testDNA.makeSplices(testDNA.findSplices())));
-		System.out.println("W/o blanks: " + Arrays.toString(Parser.stripBlanks(testDNA.makeSplices(testDNA.findSplices()))));
+		System.out.println("   Splices: " + Arrays.toString(testDNA.findSplices(DNA.TATA)));
+		System.out.println("    Codons: " + Arrays.toString(testDNA.makeSplices(testDNA.findSplices(DNA.TATA))));
 		Program testProgram = Program.parseProgram(testDNA);
 		System.out.println("   Program: " + Arrays.toString(testProgram.getStatements()));
 		System.out.println("    Labels: ");
