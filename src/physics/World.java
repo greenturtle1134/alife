@@ -4,6 +4,7 @@ import java.awt.Graphics;
 import java.util.ArrayList;
 
 import cell.Cell;
+import cell.CostSettings;
 import display.DrawContext;
 import utils.Utils;
 
@@ -12,6 +13,7 @@ public class World {
 	private ArrayList<BallEntity> entities;
 	private ArrayList<Cell> cells;
 	private ArrayList<AbstractWall> walls;
+	public CostSettings settings;
 
 	public int getWidth() {
 		return width;

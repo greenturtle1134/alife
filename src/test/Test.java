@@ -1,9 +1,14 @@
 package test;
 
+import java.util.Arrays;
+import java.util.Map;
 import java.util.Random;
 
+import cell.Cell;
 import display.Application;
-import physics.LineWall;
+import genome.DNA;
+import genome.Parser;
+import genome.Program;
 import physics.TestBall;
 import physics.Vector;
 import physics.World;
@@ -11,32 +16,30 @@ import physics.World;
 public class Test {
 
 	public static void main(String[] args) {
-		String testName = "Testing many balls";
+		String testName = "Testing many balls and a cell";
 		
-//		String testString = "TAT TCT AAG AAT TAC";
-//		DNA testDNA = DNA.stringToDNA(testString);
-//		System.out.println("       DNA: " + testDNA);
-//		System.out.println("   Splices: " + Arrays.toString(testDNA.findSplices()));
-//		System.out.println("    Codons: " + Arrays.toString(testDNA.makeSplices(testDNA.findSplices())));
-//		System.out.println("W/o blanks: " + Arrays.toString(Parser.stripBlanks(testDNA.makeSplices(testDNA.findSplices()))));
-//		Program testProgram = Program.parseProgram(testDNA);
-//		System.out.println("   Program: " + Arrays.toString(testProgram.getStatements()));
-//		System.out.println("    Labels: ");
-//		Map<Integer, Integer> labels = testProgram.getLabels();
-//		for (int l : labels.keySet()) {
-//			System.out.println("       - " + String.format("%04X", l) + ": line " + labels.get(l));
-//		}
+		String testString = "TAT TCT AAG AAT TAC";
+		DNA testDNA = DNA.stringToDNA(testString);
+		System.out.println("       DNA: " + testDNA);
+		System.out.println("   Splices: " + Arrays.toString(testDNA.findSplices()));
+		System.out.println("    Codons: " + Arrays.toString(testDNA.makeSplices(testDNA.findSplices())));
+		System.out.println("W/o blanks: " + Arrays.toString(Parser.stripBlanks(testDNA.makeSplices(testDNA.findSplices()))));
+		Program testProgram = Program.parseProgram(testDNA);
+		System.out.println("   Program: " + Arrays.toString(testProgram.getStatements()));
+		System.out.println("    Labels: ");
+		Map<Integer, Integer> labels = testProgram.getLabels();
+		for (int l : labels.keySet()) {
+			System.out.println("       - " + String.format("%04X", l) + ": line " + labels.get(l));
+		}
 		
 		World world = new World(100, 100);
 		
-//		CellInternals cellInternals = CellInternals.genDefault();
-//		CellState cellState = new CellState(10, 100);
-//		Cell cell = new Cell(world, new Vector(50, 50), new Vector(0, 0), Math.PI / 2, testDNA, 0, cellInternals, cellState);
-//		world.addCell(cell);
+		Cell cell = new Cell(world, new Vector(50, 50), new Vector(0, 0), Math.PI / 2, testDNA, 10, 100);
+		world.addCell(cell);
 		
 		Random random = new Random(10);
 		for (int i=0; i<10; i++) {
-			world.addEntity(new TestBall(world, new Vector(random.nextDouble() * 50 + 25, random.nextDouble() * 50 + 25), new Vector(0, 0), 10, 1));
+			world.addEntity(new TestBall(world, new Vector(random.nextDouble() * 50 + 25, random.nextDouble() * 50 + 25), new Vector(0, 0), random.nextDouble() * 10 + 5, 1));
 		}
 		
 //		world.addWall(new LineWall(10, 10, 10, 90));
