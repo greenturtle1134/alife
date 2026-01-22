@@ -131,7 +131,7 @@ public class Vector implements Cloneable {
 	 * Creates a Vector with the specified components rotated to the specified angle
 	 */
 	public static Vector fromOrientation(double angle, double x, double y) {
-		// TODO check that I remembered rotation matrices correctly
+		// Rotation that's counterclockwise in the +x/+y axes, but in +x/-y it's clockwise which is my convention... huh
 		return new Vector(Math.cos(angle) * x - Math.sin(angle) * y, Math.sin(angle) * x + Math.cos(angle) * y);
 	}
 	

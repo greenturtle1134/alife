@@ -31,7 +31,9 @@ public class DNA {
 	 * @return int value representing the nucleotide (0-3)
 	 */
 	public int idx(int i) {
-		// TODO: throw an exception if index out of bounds
+		if (i < 0 || i >= length) {
+			throw new IndexOutOfBoundsException("Index " + i + " out of bounds for length " + length);
+		}
 		return dna[i / 16] >> 2*(i % 16) & 3;
 	}
 

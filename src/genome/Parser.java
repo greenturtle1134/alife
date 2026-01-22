@@ -1,8 +1,7 @@
 package genome;
 
-import java.util.Arrays;
-
-import genome.Term.*;
+import genome.Term.Operator;
+import genome.Term.Statement;
 
 /**
  * Object representing a codon sequence in the process of parsing.
