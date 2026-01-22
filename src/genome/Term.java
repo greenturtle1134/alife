@@ -1,9 +1,9 @@
 package genome;
 
 import cell.Cell;
+import cell.Substance;
 
 public abstract class Term {
-	// Should there be a children() method here?
 	
 	public static String regName(int x) {
 		if (x == 64) {
@@ -29,6 +29,35 @@ public abstract class Term {
 		
 		public String toString() {
 			return "Nop()";
+		}
+	}
+
+	public static String actionName(int x) {
+		switch (x) {
+		case 0:
+			return "Repro";
+		case 1:
+			return "AllStop";
+		case 2:
+			return "BreakTies";
+		default:
+			return x+"";
+		}
+	}
+	
+	public static class Action extends Statement{
+		private int action;
+		
+		public void exec(Cell c) {
+			// TODO implement actions
+		}
+		
+		public int getAction() {
+			return action;
+		}
+		
+		public String toString() {
+			return "Action<" + actionName(action) + ">";
 		}
 	}
 	
@@ -72,70 +101,86 @@ public abstract class Term {
 		}
 	}
 	
-	public static class Store extends Statement {
-		private Operator a;
-		private int i;
+	// TODO *exactly* what jump options do I want to permit? Forward, backward, by codon, relative, absolute?
+	
+//	public static class JumpDelta extends Statement {
+//		private Operator a;
+//		private Operator cond;
+//		
+//		public JumpDelta(Operator a, Operator cond) {
+//			this.a = a;
+//			this.cond = cond;
+//		}
+//		
+//		public void exec(Cell c) {
+//			
+//		}
+//	}
+	
+	public static class Skip extends Statement {
+		private Operator cond;
 		
-		public Store(int i, Operator a) {
-			this.a = a;
-			this.i = i;
+		public Skip(Operator cond) {
+			this.cond = cond;
 		}
 		
 		public void exec(Cell c) {
-			c.memSet(i, a.eval(c));
+			if (cond.eval(c) != 0) {
+				// TODO implement skip
+			}
 		}
 		
 		public String toString() {
-			return "$"+regName(i) + " <- " + a;
+			return "Skip(" + cond + ")";
 		}
 	}
 	
-	public static class Move extends Statement {
-		private Operator a;
-		private boolean isRL;
-		private boolean isNeg;
+	public static class Backskip extends Statement {
+		private Operator cond;
 		
-		public static final String[] DIRECTION_STRINGS = {"F", "B", "R", "L"};
-		
-		public Move(Operator a, boolean isRL, boolean isNeg) {
-			this.a = a;
-			this.isRL = isRL;
-			this.isNeg = isNeg;
+		public Backskip(Operator cond) {
+			this.cond = cond;
 		}
 		
 		public void exec(Cell c) {
-			int amt = this.a.eval(c);
-			if (isNeg) {
-				amt = -amt;
-			}
-			if (isRL) {
-				c.moveR = amt;
-			}
-			else {
-				c.moveF = amt;
+			if (cond.eval(c) != 0) {
+				// TODO implement skip
 			}
 		}
 		
 		public String toString() {
-			return "Move"+DIRECTION_STRINGS[(isRL ? 2 : 0) + (isNeg ? 1 : 0)] + "(" + a + ")";	
+			return "Backskip(" + cond + ")";
 		}
 	}
 	
-	public static class Read extends Operator {
-		private int a;
+	public static class Wait extends Statement {
+		private Operator a;
 		
-		public Read(int a) {
+		public Wait(Operator a) {
 			this.a = a;
 		}
 		
-		public int eval(Cell c) {
-			return c.memGet(a);
+		public void exec(Cell c) {
+			int time = a.eval(c);
+			// TODO implement wait
 		}
 		
 		public String toString() {
-			return "$" + regName(a);
+			return "Wait(" + a + ")";
 		}
 	}
+	
+	public static class Unskip extends Statement{
+		public void exec(Cell c) {
+			// Do nothing
+		}
+		
+		public String toString() {
+			return "Nop()";
+		}
+	}
+	
+	// TODO decide if I want a "restart" statement?
 	
 	public static class Int extends Operator {
 		private int val;
@@ -150,6 +195,162 @@ public abstract class Term {
 		
 		public String toString() {
 			return ""+val;
+		}
+	}
+	
+	public static class Neg extends Operator {
+		private Operator a;
+		
+		public Neg(Operator a) {
+			this.a = a;
+		}
+		
+		public int eval(Cell c) {
+			return -a.eval(c);
+		}
+		
+		public String toString() {
+			return "Neg(" + a + ")";
+		}
+	}
+	
+	public static class Inc extends Operator {
+		private Operator a;
+		
+		public Inc(Operator a) {
+			this.a = a;
+		}
+		
+		public int eval(Cell c) {
+			return a.eval(c) + 1;
+		}
+		
+		public String toString() {
+			return "Inc(" + a + ")";
+		}
+	}
+	
+	public static class Not extends Operator {
+		private Operator a;
+		
+		public Not(Operator a) {
+			this.a = a;
+		}
+		
+		public int eval(Cell c) {
+			return (a.eval(c) == 0) ? 1 : 0;
+		}
+		
+		public String toString() {
+			return "Not(" + a + ")";
+		}
+	}
+	
+	// TODO: Implement integer Pow2 if I want it
+	
+	public static class Double extends Operator {
+		private Operator a;
+		
+		public Double(Operator a) {
+			this.a = a;
+		}
+		
+		public int eval(Cell c) {
+			return a.eval(c) * 2;
+		}
+		
+		public String toString() {
+			return "Double(" + a + ")";
+		}
+	}
+	
+	public static class Half extends Operator {
+		private Operator a;
+		
+		public Half(Operator a) {
+			this.a = a;
+		}
+		
+		public int eval(Cell c) {
+			return a.eval(c) / 2;
+		}
+		
+		public String toString() {
+			return "Half(" + a + ")";
+		}
+	}
+	
+	// TODO implement Times64 and Divide64 if I deem those necessary
+	
+	public static class ReadCodon extends Operator {
+		private int a;
+		
+		public ReadCodon(int a) {
+			this.a = a;
+		}
+		
+		public int eval(Cell c) {
+			return c.memGet(a);
+		}
+		
+		public String toString() {
+			return "$" + regName(a);
+		}
+	}
+	
+	public static class ReadInt extends Operator {
+		private Operator a;
+		
+		public ReadInt(Operator a) {
+			this.a = a;
+		}
+		
+		public int eval(Cell c) {
+			return c.memGet(a.eval(c));
+		}
+		
+		public String toString() {
+			return "$(" + a + ")";
+		}
+	}
+	
+	public static class Amount extends Operator {
+		private Operator a;
+		
+		public Amount(Operator a) {
+			this.a = a;
+		}
+		
+		public int eval(Cell c) {
+			// TODO: implement negatives to get capacity filled if desired
+			Substance s = Substance.numToSubstance(a.eval(c));
+			if (s != null) {
+				return (int) Math.floor(c.substances[s.id]);
+			}
+			else {
+				return 0;
+			}
+		}
+		
+		public String toString() {
+			return "Amount(" + a + ")";
+		}
+	}
+	
+	public static class Sense extends Operator {
+		private Operator a;
+		
+		public Sense(Operator a) {
+			this.a = a;
+		}
+		
+		public int eval(Cell c) {
+			// TODO: Implement Sense
+			return 0;
+		}
+		
+		public String toString() {
+			return "Sense(" + a + ")";
 		}
 	}
 	
@@ -227,6 +428,94 @@ public abstract class Term {
 		}
 	}
 	
+	public static class And extends Operator {
+		private Operator a, b;
+		
+		public And(Operator a, Operator b) {
+			this.a = a;
+			this.b = b;
+		}
+		
+		public int eval(Cell c) {
+			if ((a.eval(c) != 0) && (b.eval(c) != 0)) {
+				return 1;
+			}
+			else {
+				return 0;
+			}
+		}
+		
+		public String toString() {
+			return "And(" + a + "," + b + ")";
+		}
+	}
+	
+	public static class Or extends Operator {
+		private Operator a, b;
+		
+		public Or(Operator a, Operator b) {
+			this.a = a;
+			this.b = b;
+		}
+		
+		public int eval(Cell c) {
+			if ((a.eval(c) != 0) || (b.eval(c) != 0)) {
+				return 1;
+			}
+			else {
+				return 0;
+			}
+		}
+		
+		public String toString() {
+			return "Or(" + a + "," + b + ")";
+		}
+	}
+	
+	public static class EQ extends Operator {
+		private Operator a, b;
+		
+		public EQ(Operator a, Operator b) {
+			this.a = a;
+			this.b = b;
+		}
+		
+		public int eval(Cell c) {
+			if (a.eval(c) == b.eval(c)) {
+				return 1;
+			}
+			else {
+				return 0;
+			}
+		}
+		
+		public String toString() {
+			return "EQ(" + a + "," + b + ")";
+		}
+	}
+	
+	public static class NEQ extends Operator {
+		private Operator a, b;
+		
+		public NEQ(Operator a, Operator b) {
+			this.a = a;
+			this.b = b;
+		}
+		
+		public int eval(Cell c) {
+			if (a.eval(c) == b.eval(c)) {
+				return 0;
+			}
+			else {
+				return 1;
+			}
+		}
+		
+		public String toString() {
+			return "NEQ(" + a + "," + b + ")";
+		}
+	}
+	
 	public static class LT extends Operator {
 		private Operator a, b;
 		
@@ -248,4 +537,154 @@ public abstract class Term {
 			return "LT(" + a + "," + b + ")";
 		}
 	}
+	
+	public static class LEQ extends Operator {
+		private Operator a, b;
+		
+		public LEQ(Operator a, Operator b) {
+			this.a = a;
+			this.b = b;
+		}
+		
+		public int eval(Cell c) {
+			if (a.eval(c) <= b.eval(c)) {
+				return 1;
+			}
+			else {
+				return 0;
+			}
+		}
+		
+		public String toString() {
+			return "LEQ(" + a + "," + b + ")";
+		}
+	}
+	
+	// I implemented Move in this odd way. Is this truly best?
+	public static class Move extends Statement {
+		private Operator a;
+		private boolean isRL;
+		private boolean isNeg;
+		
+		public static final String[] DIRECTION_STRINGS = {"F", "B", "R", "L"};
+		
+		public Move(Operator a, boolean isRL, boolean isNeg) {
+			this.a = a;
+			this.isRL = isRL;
+			this.isNeg = isNeg;
+		}
+		
+		public void exec(Cell c) {
+			int amt = this.a.eval(c);
+			if (isNeg) {
+				amt = -amt;
+			}
+			if (isRL) {
+				c.moveR = amt;
+			}
+			else {
+				c.moveF = amt;
+			}
+		}
+		
+		public String toString() {
+			return "Move"+DIRECTION_STRINGS[(isRL ? 2 : 0) + (isNeg ? 1 : 0)] + "(" + a + ")";	
+		}
+	}
+	
+	public static class Turn extends Statement {
+		private Operator a;
+		private boolean isFine;
+		private boolean isLeft;
+		
+		public Turn(Operator a, boolean isFine, boolean isLeft) {
+			this.a = a;
+			this.isFine = isFine;
+			this.isLeft = isLeft;
+		}
+		
+		public void exec(Cell c) {
+			// TODO: implement turning
+		}
+		
+		public String toString() {
+			return (isFine ? "TurnFine" : "Turn") + (isLeft ? "L" : "R") + "(" + a + ")";
+		}
+	}
+	
+	public static class StoreCodon extends Statement {
+		private Operator a;
+		private int i;
+		
+		public StoreCodon(int i, Operator a) {
+			this.a = a;
+			this.i = i;
+		}
+		
+		public void exec(Cell c) {
+			c.memSet(i, a.eval(c));
+		}
+		
+		public String toString() {
+			return "$"+regName(i) + " <- " + a;
+		}
+	}
+	
+	public static class StoreInt extends Statement {
+		private Operator a;
+		private Operator index;
+		
+		public StoreInt(Operator index, Operator a) {
+			this.a = a;
+			this.index = index;
+		}
+		
+		public void exec(Cell c) {
+			c.memSet(index.eval(c), a.eval(c));
+		}
+		
+		public String toString() {
+			return "$("+ a + ") <- " + a;
+		}
+	}
+	
+	// TODO: Implement the AddTo if I want them
+	
+	public static class Build extends Statement {
+		private Operator x;
+		private Operator amount;
+		
+		public Build(Operator x, Operator amount) {
+			this.x = x;
+			this.amount = amount;
+		}
+		
+		public void exec(Cell c) {
+			c.build(Substance.numToSubstance(x.eval(c)), amount.eval(c));
+		}
+		
+		public String toString() {
+			return "Build(" + x + "," + amount + ")";
+		}
+	}
+	
+	public static class Burn extends Statement {
+		private Operator x;
+		private Operator amount;
+		
+		public Burn(Operator x, Operator amount) {
+			this.x = x;
+			this.amount = amount;
+		}
+		
+		public void exec(Cell c) {
+			c.burn(Substance.numToSubstance(x.eval(c)), amount.eval(c));
+		}
+		
+		public String toString() {
+			return "Burn(" + x + "," + amount + ")";
+		}
+	}
+	
+	// TODO implement Expel and Attack
 }

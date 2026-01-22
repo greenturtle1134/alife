@@ -11,4 +11,18 @@ public enum Substance {
 	private Substance(int id) {
 		this.id = id;
 	}
+	
+	public static Substance numToSubstance(int x) {
+		switch (x) {
+		case 0:
+			return NRG;
+		case 1:
+			return BODY;
+		case 2:
+			return NUCLEIC;
+		case 3:
+			return CHLOROPHYLL;
+		}
+		return null;
+	}
 }
