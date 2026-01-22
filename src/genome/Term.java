@@ -3,6 +3,8 @@ package genome;
 import cell.Cell;
 import cell.Substance;
 
+import static utils.Utils.fractionRound; 
+
 public abstract class Term {
 	
 	public static String regName(int x) {
@@ -326,13 +328,30 @@ public abstract class Term {
 		}
 		
 		public int eval(Cell c) {
-			// TODO: implement negatives to get capacity filled if desired
-			Substance s = Substance.numToSubstance(a.eval(c));
-			if (s != null) {
-				return (int) Math.floor(c.substances[s.id]);
+			int a0 = a.eval(c);
+			if (a0 >= 0) { // Positive value: give amount of substance
+				Substance s = Substance.numToSubstance(a0);
+				if (s != null) {
+					return (int) Math.floor(c.substances[s.id]);
+				}
+				else {
+					return 0;
+				}
 			}
-			else {
-				return 0;
+			else { // Negative value: give quantity filled
+				a0 = -a0;
+				if (a0 == 1) {
+					// Special case: if BODY quantity is requested, get NRG quantity instead
+					// This does kind of hardcode that 0=Nrg and 1=Body but ehh
+					a0 = 0;
+				}
+				Substance s = Substance.numToSubstance(a0);
+				if (s != null) {
+					return fractionRound(c.substances[s.id] / c.getCapacity(s), 64);
+				}
+				else {
+					return 0;
+				}
 			}
 		}
 		

@@ -18,7 +18,7 @@ public class Test {
 	public static void main(String[] args) {
 		String testName = "Testing many balls and a cell";
 		
-		String testString = "TATAAA GTA TAC TAT CAA TAC";
+		String testString = "TATAAA AGT AAA TAC TAT AGA AAA CGA AAT TGT GAA AAT AGT AAT GCG GAA AAT TTA AGA GTG TAC TGA TAT CAA GTG TAC TTA AAT CGA AAT AGA AAT";
 		DNA testDNA = DNA.stringToDNA(testString);
 		System.out.println("       DNA: " + testDNA);
 		System.out.println("   Splices: " + Arrays.toString(testDNA.findSplices(DNA.TATA)));
@@ -40,13 +40,7 @@ public class Test {
 		for (int i=0; i<10; i++) {
 			world.addEntity(new TestBall(world, new Vector(random.nextDouble() * 50 + 25, random.nextDouble() * 50 + 25), new Vector(0, 0), random.nextDouble() * 10 + 5, 1));
 		}
-		
-//		world.addWall(new LineWall(10, 10, 10, 90));
-//		world.addWall(new LineWall(10, 90, 90, 90));
-//		world.addWall(new LineWall(90, 90, 90, 10));
-//		world.addWall(new LineWall(90, 10, 10, 10));
 
-		
 		Application application = new Application(world, testName, 7.0, 20);
 		application.run();
 		

@@ -268,7 +268,7 @@ public class Cell extends BallEntity {
 		
 		// If insufficient substance, clamp it
 		if (substances[s.id] < amount) {
-			amount = substances[s.id] / world.costSettings.getCost(s);
+			amount = substances[s.id];
 		}
 		
 		// If costs energy to burn and insufficient nrg, clamp it
