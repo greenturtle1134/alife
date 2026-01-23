@@ -55,7 +55,18 @@ public abstract class Term {
 		}
 		
 		public void exec(Cell c) {
-			// TODO implement actions
+			switch (action) {
+			case 0: // Repro
+				// TODO implement Repro
+				break;
+			case 1: // AllStop
+				c.moveF = 0;
+				c.moveR = 0;
+				break;
+			case 2: // BreakTies
+				// Nothing for now because I haven't implemented ties
+				break;
+			}
 		}
 		
 		public int getAction() {
@@ -168,7 +179,7 @@ public abstract class Term {
 		
 		public void exec(Cell c) {
 			int time = a.eval(c);
-			// TODO implement wait
+			c.setWait(time);
 		}
 		
 		public String toString() {
@@ -627,7 +638,7 @@ public abstract class Term {
 		}
 		
 		public void exec(Cell c) {
-			// TODO: implement turning
+			c.rotRequest += (isLeft ? -1 : 1) * a.eval(c) / (isFine ? 256.0 : 64.0); // TODO maybe a parameter for fine turning ratio?
 		}
 		
 		public String toString() {

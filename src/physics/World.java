@@ -112,9 +112,15 @@ public class World {
 	}
 	
 	public void tick() {
-		// Tick step
+		// Computational tick
 		for (BallEntity e : entities) {
 			e.tick();
+		}
+		
+		// Cells rotate as requested
+		for (Cell e : cells) {
+			e.setFacing(e.getFacing() + e.rotation());
+			e.rotRequest = 0; // TODO should this instead be a method call
 		}
 		
 		// Euler-Cromer algorithm: update velocity, then update position with updated velocity
@@ -124,7 +130,7 @@ public class World {
 			e.lastVel.set(e.vel);
 			e.vel.add(e.tickAcc);
 			e.pos.add(e.vel);
-		} 
+		}
 	}
 	
 	public void draw(DrawContext c) {

@@ -21,11 +21,13 @@ public class Cell extends BallEntity {
 	private DNA dna;
 	private Program program;
 	private int i;
+	private int wait;
 	
 	// "Internals" - fully under control of program
 	public int[] memory;
 	public double moveF;
 	public double moveR;
+	public double rotRequest;
 	
 	// "State" - physical state of cell; currently described using just the substance system
 	public double[] substances;
@@ -40,20 +42,24 @@ public class Cell extends BallEntity {
 			double facing,
 			DNA dna,
 			int i,
+			int wait,
 			double[] substances,
 			int[] memory,
 			double moveF,
-			double moveR
+			double moveR,
+			double rotRequest
 			) {
 		super(world, pos, vel);
 		this.facing = facing;
 		this.dna = dna;
 		this.i = i;
+		this.setWait(wait);
 		this.program = Program.parseProgram(dna);
 		this.substances = substances;
 		this.memory = memory;
 		this.moveF = moveF;
 		this.moveR = moveR;
+		this.rotRequest = rotRequest;
 	}
 	
 	/**
@@ -71,11 +77,13 @@ public class Cell extends BallEntity {
 		this.facing = facing;
 		this.dna = dna;
 		this.i = 0;
+		this.setWait(0);
 		this.program = Program.parseProgram(dna);
 		this.substances = substances;
 		this.memory = new int[64];
 		this.moveF = 0;
 		this.moveR = 0;
+		this.rotRequest = 0;
 	}
 	
 	/**
@@ -94,6 +102,7 @@ public class Cell extends BallEntity {
 		this.facing = facing;
 		this.dna = dna;
 		this.i = 0;
+		this.setWait(0);
 		this.program = Program.parseProgram(dna);
 		this.substances = new double[Substance.SUBSTANCE_COUNT];
 		substances[0] = nrg;
@@ -101,13 +110,21 @@ public class Cell extends BallEntity {
 		this.memory = new int[64];
 		this.moveF = 0;
 		this.moveR = 0;
+		this.rotRequest = 0;
 	}
 	
-	
+	public double getFacing() {
+		return facing;
+	}
+
+	public void setFacing(double facing) {
+		this.facing = facing;
+	}
+
 	public int getI() {
 		return i;
 	}
-
+	
 	public void setI(int i) {
 		this.i = i;
 	}
@@ -120,16 +137,40 @@ public class Cell extends BallEntity {
 		return program;
 	}
 
+	public int getWait() {
+		return wait;
+	}
+
+	public void setWait(int wait) {
+		this.wait = wait;
+	}
+
+	/**
+	 * Runs the cell's program for a number of steps.
+	 * This method should only perform computation, no updates to physical variables.
+	 * @param steps = Number of steps to run for
+	 */
 	public void run(int steps) {
 		for (int j = 0; j < steps; j++) {
+			if (this.wait > 0) { // Either because this cycle set it, or it's left over from another cycle
+				break;
+			}
 			this.program.getStatements()[this.i].exec(this);
 			this.i++;
 			if (this.i >= this.program.getStatements().length) {
 				this.i = 0;
 			}
 		}
+		if (this.wait > 0) {
+			this.wait--; // Wait of 1 only stops the current execution
+		}
 	}
 
+	/**
+	 * Gets cell's memory at a particular index
+	 * @param i - index to retrieve
+	 * @return value of memory at that index
+	 */
 	public int memGet(int i) {
 		if (i < memory.length) {
 			return memory[i];
@@ -139,16 +180,30 @@ public class Cell extends BallEntity {
 		}
 	}
 	
+	/**
+	 * Writes to cell memory
+	 * @param i - index to write to
+	 * @param x = value to write
+	 */
 	public void memSet(int i, int x) {
 		if (i < memory.length) {
 			memory[i] = x;
 		}
 	}
 	
+	/**
+	 * Moves the execution pointer forward or backward by a given amount
+	 * @param x - amount to change it by
+	 */
 	public void deltaJump(int x) {
 		this.i += x;
 	}
 	
+	/**
+	 * Jumps to a particular label.
+	 * Specifically, sets the pointer to that label; the default +1 advancement then moves it to the command after that label.
+	 * @param label - label to jump to
+	 */
 	public void labelJump(int label) {
 		if (this.program.getLabels().containsKey(label)) {
 			this.i = this.program.getLabels().get(label);
@@ -172,6 +227,14 @@ public class Cell extends BallEntity {
 		drawArc(c, x, y, this.nrg() / this.getCapacity(Substance.NRG), 0.5);
 	}
 	
+	/**
+	 * Helper to draw an indicator arc within the cell
+	 * @param c - DrawContext to use
+	 * @param x = x location of cell center
+	 * @param y - y location of cell center
+	 * @param arcRatio - value to display on the arc, from 0 to 1
+	 * @param arcRadius - fraction of the cell's radius to use for the arc, from 0 to 1
+	 */
 	public void drawArc(DrawContext c, int x, int y, double arcRatio, double arcRadius) {
 		Graphics g = c.getG();
 		double zoom = c.getZoom();
@@ -195,13 +258,34 @@ public class Cell extends BallEntity {
 		this.run(1);
 	}
 	
+	/**
+	 * Retrieves the move intent of this cell.
+	 * Takes into account movement limits but not any scaling factor
+	 * (i.e. result is in "cell's program space").
+	 */
 	public Vector moveAcc() {
+		// TODO insert limit control here
 		return Vector.fromOrientation(facing, moveF, moveR);
 	}
 	
+	/**
+	 * Retrieves the rotation intent of this cell, from -1 to 1 in units of revolutions
+	 */
+	public double rotation() {
+		// TODO insert limit control here
+		return this.rotRequest;
+	}
+	
+	/**
+	 * Gets the cell's capacity for a substance.
+	 * This is the actual physical capacity; exceptions in the program level are handled elsewhere.
+	 * Uncapped quantities (i.e. body) will return Double.POSITIVE_INFINITY.
+	 * @param s - the substance to query
+	 * @return the capacity
+	 */
 	public double getCapacity(Substance s) {
 		if (s == Substance.BODY) {
-			// Body has no cap and this should never be called. TODO: should this return a special value or throw an exception?
+			// Body has no cap and this should never be called.
 			return Double.POSITIVE_INFINITY;
 		}
 		else {
@@ -209,11 +293,17 @@ public class Cell extends BallEntity {
 			return body() * world.costSettings.getCapacityFactor(s);
 		}
 	}
-
+	
+	/**
+	 * Gets current nrg of the cell
+	 */
 	public double nrg() {
 		return substances[Substance.NRG.id];
 	}
-
+	
+	/**
+	 * Gets current body of the cell
+	 */
 	public double body() {
 		return substances[Substance.BODY.id];
 	}
