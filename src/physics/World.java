@@ -5,6 +5,7 @@ import java.util.ArrayList;
 
 import cell.Cell;
 import cell.CostSettings;
+import cell.Substance;
 import display.DrawContext;
 import utils.Utils;
 
@@ -115,6 +116,11 @@ public class World {
 		// Computational tick
 		for (BallEntity e : entities) {
 			e.tick();
+		}
+		
+		// Impose costs
+		for (Cell e : cells) {
+			e.setSubstance(Substance.NRG.id, e.nrg() - e.costs());
 		}
 		
 		// Cells rotate as requested

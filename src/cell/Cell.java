@@ -3,6 +3,7 @@ package cell;
 import static utils.Utils.round;
 
 import java.awt.Graphics;
+import java.util.Arrays;
 
 import display.DrawContext;
 import genome.DNA;
@@ -33,7 +34,7 @@ public class Cell extends BallEntity {
 	public double[] substances;
 	
 	/**
-	 * "Full constructor": creates a Cell object by specifying all fields
+	 * "Full constructor": creates a Cell object by specifying all fields. Copies of the substance and memory arrays will be made.
 	 */
 	public Cell(
 			World world,
@@ -55,15 +56,15 @@ public class Cell extends BallEntity {
 		this.i = i;
 		this.setWait(wait);
 		this.program = Program.parseProgram(dna);
-		this.substances = substances;
-		this.memory = memory;
+		this.substances = Arrays.copyOf(substances, Substance.SUBSTANCE_COUNT);
+		this.memory = Arrays.copyOf(memory, 64);
 		this.moveF = moveF;
 		this.moveR = moveR;
 		this.rotRequest = rotRequest;
 	}
 	
 	/**
-	 * "Physical constructor": initializes Cell with only physical values, internal values set to defaults
+	 * "Physical constructor": initializes Cell with only physical values, internal values set to defaults. A copy of the substance array will be made.
 	 */
 	public Cell(
 			World world,
@@ -79,7 +80,7 @@ public class Cell extends BallEntity {
 		this.i = 0;
 		this.setWait(0);
 		this.program = Program.parseProgram(dna);
-		this.substances = substances;
+		this.substances = Arrays.copyOf(substances, Substance.SUBSTANCE_COUNT);;
 		this.memory = new int[64];
 		this.moveF = 0;
 		this.moveR = 0;
@@ -143,6 +144,15 @@ public class Cell extends BallEntity {
 
 	public void setWait(int wait) {
 		this.wait = wait;
+	}
+	
+	public double getSubstance(int s) {
+		return this.substances[s];
+	}
+	
+	public void setSubstance(int s, double x) {
+		// TODO: The Cell should enforce substance within bounds here
+		this.substances[s] = x;
 	}
 
 	/**
@@ -224,7 +234,7 @@ public class Cell extends BallEntity {
 		int y1 = round(Math.sin(facing) * this.radius() * zoom);
 		g.drawLine(x, y, x + x1, y + y1);
 		
-		drawArc(c, x, y, this.nrg() / this.getCapacity(Substance.NRG), 0.5);
+		drawArc(c, x, y, this.nrg() / this.getCapacity(Substance.NRG.id), 0.5);
 	}
 	
 	/**
@@ -283,8 +293,8 @@ public class Cell extends BallEntity {
 	 * @param s - the substance to query
 	 * @return the capacity
 	 */
-	public double getCapacity(Substance s) {
-		if (s == Substance.BODY) {
+	public double getCapacity(int s) {
+		if (s == Substance.BODY.id) {
 			// Body has no cap and this should never be called.
 			return Double.POSITIVE_INFINITY;
 		}
@@ -313,8 +323,8 @@ public class Cell extends BallEntity {
 	 * @param s - Substance to build
 	 * @param amount - Amount of substance to build
 	 */
-	public void build(Substance s, double amount) {
-		if (s == Substance.NRG) {
+	public void build(int s, double amount) {
+		if (s == Substance.NRG.id) {
 			return;
 		}
 		if (amount == 0.0) {
@@ -331,12 +341,12 @@ public class Cell extends BallEntity {
 		
 		// If insufficient capacity, clamp it
 		// Concerning DNA: I think I'm going to keep the getCapacity as the true capacity and make an exception for reported capacity
-		if (substances[s.id] + amount > getCapacity(s)) {
-			amount = getCapacity(s) - substances[s.id];
+		if (substances[s] + amount > getCapacity(s)) {
+			amount = getCapacity(s) - substances[s];
 		}
 		
 		// Verified that nrg will not go negative and substance will not exceed capacity; do the build
-		this.substances[s.id] += amount;
+		this.substances[s] += amount;
 		this.substances[Substance.NRG.id] -= amount * world.costSettings.getCost(s);
 	}
 	
@@ -345,9 +355,9 @@ public class Cell extends BallEntity {
 	 * @param s - Substance to burn
 	 * @param amount - Amount of substance to burn
 	 */
-	public void burn(Substance s, double amount) {
-		if (s == Substance.NRG) {
-			return;
+	public void burn(int s, double amount) {
+		if (s == Substance.NRG.id) {
+			return; // NRG cannot be burnt, that's stupid
 		}
 		if (amount == 0.0) {
 			return;
@@ -357,8 +367,8 @@ public class Cell extends BallEntity {
 		}
 		
 		// If insufficient substance, clamp it
-		if (substances[s.id] < amount) {
-			amount = substances[s.id];
+		if (substances[s] < amount) {
+			amount = substances[s];
 		}
 		
 		// If costs energy to burn and insufficient nrg, clamp it
@@ -367,14 +377,27 @@ public class Cell extends BallEntity {
 		}
 		
 		// Verified that this amount can be burned
-		this.substances[s.id] -= amount;
+		this.substances[s] -= amount;
 		
 		// Give or take energy, or set to the max if overflow
-		if (nrg() + world.costSettings.getRefund(s) * amount < getCapacity(Substance.NRG)) {
+		if (nrg() + world.costSettings.getRefund(s) * amount < getCapacity(Substance.NRG.id)) {
 			this.substances[Substance.NRG.id] += world.costSettings.getRefund(s) * amount;
 		}
 		else {
-			this.substances[Substance.NRG.id] = getCapacity(Substance.NRG);
+			this.substances[Substance.NRG.id] = getCapacity(Substance.NRG.id);
 		}
+	}
+	
+	/**
+	 * Get the total nrg spend by this cell on this tick, given its current movement intents and substance counts
+	 * @return
+	 */
+	public double costs() {
+		// TODO Very simplistic cost model right now! When buildables are added will have to take them into account
+		double res = (Math.abs(moveF) + Math.abs(moveR)) * world.costSettings.getMovementCost() + this.rotRequest * world.costSettings.getRotationCost();
+		for (int i = 0; i<substances.length; i++) {
+			res += substances[i] * world.costSettings.getMaint(i);
+		}
+		return res;
 	}
 }

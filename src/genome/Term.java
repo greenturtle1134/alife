@@ -341,9 +341,9 @@ public abstract class Term {
 		public int eval(Cell c) {
 			int a0 = a.eval(c);
 			if (a0 >= 0) { // Positive value: give amount of substance
-				Substance s = Substance.numToSubstance(a0);
-				if (s != null) {
-					return (int) Math.floor(c.substances[s.id]);
+				int s = Substance.numToID(a0);
+				if (s != -1) {
+					return (int) Math.floor(c.substances[s]);
 				}
 				else {
 					return 0;
@@ -356,9 +356,9 @@ public abstract class Term {
 					// This does kind of hardcode that 0=Nrg and 1=Body but ehh
 					a0 = 0;
 				}
-				Substance s = Substance.numToSubstance(a0);
-				if (s != null) {
-					return fractionRound(c.substances[s.id] / c.getCapacity(s), 64);
+				int s = Substance.numToID(a0);
+				if (s != -1) {
+					return fractionRound(c.substances[s] / c.getCapacity(s), 64);
 				}
 				else {
 					return 0;
@@ -694,7 +694,7 @@ public abstract class Term {
 		}
 		
 		public void exec(Cell c) {
-			c.build(Substance.numToSubstance(target.eval(c)), amount.eval(c));
+			c.build(Substance.numToID(target.eval(c)), amount.eval(c));
 		}
 		
 		public String toString() {
@@ -712,7 +712,7 @@ public abstract class Term {
 		}
 		
 		public void exec(Cell c) {
-			c.burn(Substance.numToSubstance(target.eval(c)), amount.eval(c));
+			c.burn(Substance.numToID(target.eval(c)), amount.eval(c));
 		}
 		
 		public String toString() {

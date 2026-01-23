@@ -12,17 +12,17 @@ public enum Substance {
 		this.id = id;
 	}
 	
-	public static Substance numToSubstance(int x) {
+	public static int numToID(int x) {
 		switch (x) {
 		case 0:
-			return NRG;
+			return NRG.id;
 		case 1:
-			return BODY;
+			return BODY.id;
 		case 2:
-			return NUCLEIC;
+			return NUCLEIC.id;
 		case 3:
-			return CHLOROPHYLL;
+			return CHLOROPHYLL.id;
 		}
-		return null;
+		return -1;
 	}
 }
