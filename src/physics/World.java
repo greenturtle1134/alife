@@ -191,4 +191,17 @@ public class World {
 			g.drawOval(x - r, y - r, 2 * r, 2 * r);
 		}
 	}
+	
+	public Cell cellAtPoint(Vector point) {
+		Cell res = null;
+		double best = Double.POSITIVE_INFINITY;
+		for (Cell c : cells) {
+			double d = Vector.dist(c.pos(), point);
+			if (d < c.radius() && d < best) {
+				best = d;
+				res = c;
+			}
+		}
+		return res;
+	}
 }
