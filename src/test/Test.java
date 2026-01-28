@@ -19,7 +19,7 @@ public class Test {
 		String testName = "Testing many balls and a cell";
 		
 //		String testString = "TATAAA AGT AAA TAC TAT AGA AAA CGA AAT TGT GAA AAT AGT AAT GCG GAA AAT TTA AGA GTG TAC TGA TAT CAA GTG TAC TTA AAT CGA AAT AGA AAT";
-		String testString = "TATAAA CTA TTA ATA";
+		String testString = "TATAAA CTA TTA ATA CCA TAT TGT TAG";
 		DNA testDNA = DNA.stringToDNA(testString);
 		System.out.println("       DNA: " + testDNA);
 		System.out.println("   Splices: " + Arrays.toString(testDNA.findSplices(DNA.TATA)));
@@ -34,7 +34,7 @@ public class Test {
 		
 		World world = new World(100, 100, CostSettings.defaults());
 		
-		Cell cell = new Cell(world, new Vector(50, 50), new Vector(0, 0), Math.PI / 2, testDNA, 10, 100);
+		Cell cell = new Cell(world, new Vector(50, 50), new Vector(0, 0), Math.PI / 2, testDNA, 100, 100);
 		world.addCell(cell);
 		
 		Random random = new Random(10);

@@ -2,6 +2,7 @@ package physics;
 
 import static utils.Utils.round;
 
+import java.awt.Color;
 import java.awt.Graphics;
 
 import display.DrawContext;
@@ -30,6 +31,8 @@ public class TestBall extends BallEntity {
 	public void draw(DrawContext c) {
 		Graphics g = c.getG();
 		double zoom = c.getZoom();
+		
+		g.setColor(Color.BLACK);
 		
 		int x = round(this.pos.x * zoom);
 		int y = round(this.pos.y * zoom);

@@ -2,6 +2,7 @@ package cell;
 
 import static utils.Utils.round;
 
+import java.awt.Color;
 import java.awt.Graphics;
 import java.util.Arrays;
 
@@ -243,6 +244,8 @@ public class Cell extends BallEntity {
 		Graphics g = c.getG();
 		double zoom = c.getZoom();
 		
+		g.setColor(Color.BLACK);
+		
 		int x = round(this.pos.x * zoom);
 		int y = round(this.pos.y * zoom);
 		int r = round(this.radius() * zoom);
@@ -253,6 +256,9 @@ public class Cell extends BallEntity {
 		g.drawLine(x, y, x + x1, y + y1);
 		
 		drawArc(c, x, y, this.nrg() / this.getCapacity(Substance.NRG.id), 0.5);
+		
+		g.setColor(Color.GREEN);
+		drawArc(c, x, y, this.getSubstance(Substance.CHLOROPHYLL.id) / this.getCapacity(Substance.CHLOROPHYLL.id), 0.8);
 	}
 	
 	/**
@@ -337,7 +343,8 @@ public class Cell extends BallEntity {
 	}
 	
 	/**
-	 * Builds a substance. Takes into account remaining capacity and nrg available. Redirects to burn if amount is negative. Forbids building nonsensical substances.
+	 * Builds a substance. Takes into account remaining capacity and nrg available.
+	 * Redirects to burn if amount is negative. Forbids building nonsensical substances.
 	 * @param s - Substance to build
 	 * @param amount - Amount of substance to build
 	 */

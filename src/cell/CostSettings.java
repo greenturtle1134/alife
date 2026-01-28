@@ -67,10 +67,11 @@ public class CostSettings {
 	}
 
 	public static CostSettings defaults() {
+		// Substances: Nrg, Body, DNA, Chlorophyll
 		double[] substanceCosts = {1, 1, 0.1, 2};
-		double[] substanceRefunds = {1, 0.8, 0, 1};
+		double[] substanceRefunds = {1, 0.8, 0.05, 1};
 		double[] substanceMaints = {0, 0, 0, 0};
 		double[] capacityFactors = {1, 1, 1, 1};
-		return new CostSettings(substanceCosts, substanceRefunds, substanceMaints, capacityFactors, 1, 1);
+		return new CostSettings(substanceCosts, substanceRefunds, substanceMaints, capacityFactors, 1, 0.1);
 	}
 }

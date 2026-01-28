@@ -4,6 +4,7 @@ import static utils.Utils.nearZero;
 import static utils.Utils.round;
 
 import java.awt.Graphics;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -146,6 +147,8 @@ public class World {
 			e.vel.add(e.tickAcc);
 			e.pos.add(e.vel);
 		}
+		
+		System.out.println(Arrays.toString(cells.get(0).substances));
 	}
 	
 	public void draw(DrawContext c) {
