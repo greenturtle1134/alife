@@ -1,7 +1,6 @@
 package physics;
 
 import static utils.Utils.nearZero;
-import static utils.Utils.round;
 
 import java.awt.Color;
 import java.awt.Graphics;

@@ -1,11 +1,9 @@
 package display;
 
 import java.awt.Dimension;
-import java.util.Arrays;
 
 import javax.swing.JFrame;
 
-import cell.Cell;
 import physics.World;
 
 public class Application {

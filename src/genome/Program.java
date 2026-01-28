@@ -18,8 +18,7 @@ public class Program {
 		return this.labels;
 	}
 	
-	// TODO change this back to private when testing is done
-	public Program(Statement[] statements, Map<Integer, Integer> labels) {
+	private Program(Statement[] statements, Map<Integer, Integer> labels) {
 		this.statements = statements;
 		this.labels = labels;
 	}
