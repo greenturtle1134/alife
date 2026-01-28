@@ -168,9 +168,8 @@ public class World {
 	
 	public void draw(DrawContext c) {
 		Graphics g = c.getG();
-		double zoom = c.getZoom();
 		
-		g.clearRect(0, 0, round(this.width * zoom), round(this.height * zoom));
+		g.clearRect(0, 0, c.toZoom(this.width), c.toZoom(this.height));
 		
 		// Draw balls
 		for (BallEntity e : entities) {
@@ -184,9 +183,9 @@ public class World {
 		
 		// Draw the selection envelope
 		if (selectedCell != null) {
-			int x = round(selectedCell.pos.x * zoom);
-			int y = round(selectedCell.pos.y * zoom);
-			int r = round(selectedCell.radius() * zoom * 1.1);
+			int x = c.toZoom(selectedCell.pos.x);
+			int y = c.toZoom(selectedCell.pos.y);
+			int r = c.toZoom(selectedCell.radius() * 1.1);
 			g.setColor(Color.YELLOW);
 			g.drawOval(x - r, y - r, 2 * r, 2 * r);
 		}

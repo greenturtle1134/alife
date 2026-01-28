@@ -242,17 +242,16 @@ public class Cell extends BallEntity {
 	@Override
 	public void draw(DrawContext c) {
 		Graphics g = c.getG();
-		double zoom = c.getZoom();
 		
 		g.setColor(Color.BLACK);
 		
-		int x = round(this.pos.x * zoom);
-		int y = round(this.pos.y * zoom);
-		int r = round(this.radius() * zoom);
+		int x = c.toZoom(this.pos.x);
+		int y = c.toZoom(this.pos.y);
+		int r = c.toZoom(this.radius());
 		g.drawOval(x - r, y - r, 2 * r, 2 * r);
 		
-		int x1 = round(Math.cos(facing) * this.radius() * zoom);
-		int y1 = round(Math.sin(facing) * this.radius() * zoom);
+		int x1 = c.toZoom(Math.cos(facing) * this.radius());
+		int y1 = c.toZoom(Math.sin(facing) * this.radius());
 		g.drawLine(x, y, x + x1, y + y1);
 		
 		drawArc(c, x, y, this.nrg() / this.getCapacity(Substance.NRG.id), 0.5);
@@ -271,9 +270,8 @@ public class Cell extends BallEntity {
 	 */
 	public void drawArc(DrawContext c, int x, int y, double arcRatio, double arcRadius) {
 		Graphics g = c.getG();
-		double zoom = c.getZoom();
 		
-		int r = round(this.radius() * arcRadius * zoom);
+		int r = c.toZoom(this.radius() * arcRadius);
 		g.drawArc(x - r, y - r, 2 * r, 2 * r, round(-(facing / Math.PI + arcRatio) * 180), round(360 * arcRatio));
 	}
 	
