@@ -3,6 +3,7 @@ package physics;
 import static utils.Utils.nearZero;
 import static utils.Utils.round;
 
+import java.awt.Color;
 import java.awt.Graphics;
 import java.util.Arrays;
 import java.util.LinkedList;
@@ -19,6 +20,7 @@ public class World {
 	private List<Cell> cells;
 	private List<AbstractWall> walls;
 	public CostSettings costSettings;
+	public Cell selectedCell; // may want to go to private when not debugging
 
 	public int getWidth() {
 		return width;
@@ -40,6 +42,10 @@ public class World {
 	public void addCell(Cell cell) {
 		this.addEntity(cell);
 		this.cells.add(cell);
+	}
+	
+	public List<Cell> getCells() {
+		return this.cells;
 	}
 	
 	public void addEntity(BallEntity cell) {
@@ -148,7 +154,16 @@ public class World {
 			e.pos.add(e.vel);
 		}
 		
-		System.out.println(Arrays.toString(cells.get(0).substances));
+		// Print debug output
+		if (selectedCell != null) {
+			if (selectedCell.isDead()) {
+				System.out.println("Selected cell has died.");
+				selectedCell = null;
+			}
+			else {
+				System.out.println(Arrays.toString(selectedCell.substances));
+			}
+		}
 	}
 	
 	public void draw(DrawContext c) {
@@ -165,6 +180,15 @@ public class World {
 		// Draw walls
 		for (AbstractWall w : walls) {
 			w.draw(c);
+		}
+		
+		// Draw the selection envelope
+		if (selectedCell != null) {
+			int x = round(selectedCell.pos.x * zoom);
+			int y = round(selectedCell.pos.y * zoom);
+			int r = round(selectedCell.radius() * zoom * 1.1);
+			g.setColor(Color.YELLOW);
+			g.drawOval(x - r, y - r, 2 * r, 2 * r);
 		}
 	}
 }

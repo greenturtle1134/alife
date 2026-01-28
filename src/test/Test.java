@@ -36,6 +36,7 @@ public class Test {
 		
 		Cell cell = new Cell(world, new Vector(50, 50), new Vector(0, 0), Math.PI / 2, testDNA, 100, 100);
 		world.addCell(cell);
+		world.selectedCell = cell;
 		
 		Random random = new Random(10);
 		for (int i=0; i<10; i++) {

@@ -1,9 +1,11 @@
 package display;
 
 import java.awt.Dimension;
+import java.util.Arrays;
 
 import javax.swing.JFrame;
 
+import cell.Cell;
 import physics.World;
 
 public class Application {
@@ -32,7 +34,6 @@ public class Application {
 			frame.repaint();
 			world.tick();
 			long tickTime = System.nanoTime() - start;
-//			System.out.println(tickTime);
 			try {
 				Thread.sleep(targetFrameMillis);
 			} catch (InterruptedException e) {
