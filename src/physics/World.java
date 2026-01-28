@@ -123,7 +123,7 @@ public class World {
 		
 		// Impose costs and kill cells
 		for (Cell e : cells) {
-			e.setSubstance(Substance.NRG.id, e.nrg() - e.costs());
+			e.addSubstance(Substance.NRG.id, -e.costs());
 			if (nearZero(e.nrg()) || nearZero(e.body())) {
 				e.kill();
 			}

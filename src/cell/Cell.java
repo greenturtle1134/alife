@@ -154,6 +154,24 @@ public class Cell extends BallEntity {
 		// This method will NOT enforce limits for now
 		this.substances[s] = x;
 	}
+	
+	/**
+	 * Changes substance amount; unlike the setSubstance method this DOES respect limits.
+	 * Negatives values can be supplied to remove
+	 * @param s - substance ID to modify
+	 * @param x - amount to change it by
+	 * @return the amount by which the substance was successfully changed, in case it's necessary
+	 */
+	public double addSubstance(int s, double x) {
+		if (substances[s] + x > getCapacity(s)) {
+			x = getCapacity(s) - substances[s];
+		}
+		else if (substances[s] + x < 0) {
+			x = substances[s];
+		}
+		substances[s] += x;
+		return x;
+	}
 
 	/**
 	 * Runs the cell's program for a number of steps.

@@ -8,18 +8,15 @@ import display.Drawable;
  * This class exists to facilitate the remote future possibility of non-ball-shaped physics objects,
  * currently all the code is set up just for balls.
  */
-public abstract class PhysicsEntity implements Drawable {
-	protected World world;
+public abstract class PhysicsEntity extends Entity implements Drawable {
 	protected Vector pos;
 	protected Vector vel;
 	protected Vector lastPos;
 	protected Vector lastVel;
 	protected Vector tickAcc;
 	
-	// Dead param; being dead means it should be deleted from all lists immediately
-	private boolean dead;
-
 	public PhysicsEntity(World world, Vector pos, Vector vel) {
+		super();
 		this.world = world;
 		this.pos = pos;
 		this.vel = vel;
@@ -28,14 +25,6 @@ public abstract class PhysicsEntity implements Drawable {
 		this.tickAcc = Vector.getZeroVector();
 	}
 	
-	public World getWorld() {
-		return world;
-	}
-
-	public void setWorld(World world) {
-		this.world = world;
-	}
-
 	public Vector pos() {
 		return pos;
 	}
@@ -48,15 +37,5 @@ public abstract class PhysicsEntity implements Drawable {
 		return tickAcc;
 	}
 	
-	public void kill() {
-		dead = true;
-	}
-	
-	public boolean isDead() {
-		return dead;
-	}
-	
 	public abstract double mass();
-	
-	public abstract void tick();
 }
