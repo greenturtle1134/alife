@@ -1,19 +1,22 @@
 package physics;
 
+import static utils.Utils.nearZero;
+import static utils.Utils.round;
+
 import java.awt.Graphics;
-import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
 
 import cell.Cell;
 import cell.CostSettings;
 import cell.Substance;
 import display.DrawContext;
-import utils.Utils;
-
+	
 public class World {
 	private int width, height;
-	private ArrayList<BallEntity> entities;
-	private ArrayList<Cell> cells;
-	private ArrayList<AbstractWall> walls;
+	private List<BallEntity> entities;
+	private List<Cell> cells;
+	private List<AbstractWall> walls;
 	public CostSettings costSettings;
 
 	public int getWidth() {
@@ -27,9 +30,9 @@ public class World {
 	public World(int width, int height, CostSettings costSettings) {
 		this.width = width;
 		this.height = height;
-		this.entities = new ArrayList<BallEntity>();
-		this.cells = new ArrayList<Cell>();
-		this.walls = new ArrayList<AbstractWall>();
+		this.entities = new LinkedList<BallEntity>();
+		this.cells = new LinkedList<Cell>();
+		this.walls = new LinkedList<AbstractWall>();
 		this.costSettings = costSettings;
 	}
 	
@@ -118,10 +121,16 @@ public class World {
 			e.tick();
 		}
 		
-		// Impose costs
+		// Impose costs and kill cells
 		for (Cell e : cells) {
 			e.setSubstance(Substance.NRG.id, e.nrg() - e.costs());
+			if (nearZero(e.nrg()) || nearZero(e.body())) {
+				e.kill();
+			}
 		}
+
+		entities.removeIf(obj -> obj.isDead());
+		cells.removeIf(obj -> obj.isDead());
 		
 		// Cells rotate as requested
 		for (Cell e : cells) {
@@ -143,7 +152,7 @@ public class World {
 		Graphics g = c.getG();
 		double zoom = c.getZoom();
 		
-		g.clearRect(0, 0, Utils.round(this.width * zoom), Utils.round(this.height * zoom));
+		g.clearRect(0, 0, round(this.width * zoom), round(this.height * zoom));
 		
 		// Draw balls
 		for (BallEntity e : entities) {

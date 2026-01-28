@@ -15,6 +15,9 @@ public abstract class PhysicsEntity implements Drawable {
 	protected Vector lastPos;
 	protected Vector lastVel;
 	protected Vector tickAcc;
+	
+	// Dead param; being dead means it should be deleted from all lists immediately
+	private boolean dead;
 
 	public PhysicsEntity(World world, Vector pos, Vector vel) {
 		this.world = world;
@@ -43,6 +46,14 @@ public abstract class PhysicsEntity implements Drawable {
 
 	public Vector tickAcc() {
 		return tickAcc;
+	}
+	
+	public void kill() {
+		dead = true;
+	}
+	
+	public boolean isDead() {
+		return dead;
 	}
 	
 	public abstract double mass();

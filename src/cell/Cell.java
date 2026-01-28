@@ -151,7 +151,7 @@ public class Cell extends BallEntity {
 	}
 	
 	public void setSubstance(int s, double x) {
-		// TODO: The Cell should enforce substance within bounds here
+		// This method will NOT enforce limits for now
 		this.substances[s] = x;
 	}
 

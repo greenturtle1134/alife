@@ -12,6 +12,13 @@ public class Utils {
 	public static final double FRACTION_THRESHOLD = 0.0001;
 	
 	/**
+	 * Checks if a quantity is nearly zero (or negative)
+	 */
+	public static boolean nearZero(double x) {
+		return x < FRACTION_THRESHOLD;
+	}
+	
+	/**
 	 * Linearly maps a double from 0 to 1 to an int between 0 and upper in a way such that values approximating 0 are mapped to 0 and approximating 1 are mapped to upper.
 	 * Meant to compensate for floating point errors when converting doubles to ints.
 	 * The width of these approximate regions is determined by FRACTION_THRESHOLD
