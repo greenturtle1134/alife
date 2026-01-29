@@ -5,7 +5,7 @@ import java.util.Map;
 import java.util.Random;
 
 import cell.Cell;
-import cell.CostSettings;
+import cell.WorldSettings;
 import display.Application;
 import genome.DNA;
 import genome.Program;
@@ -32,7 +32,7 @@ public class Test {
 			System.out.println("       - " + String.format("%04X", l) + ": line " + labels.get(l));
 		}
 		
-		World world = new World(100, 100, CostSettings.defaults());
+		World world = new World(100, 100, new WorldSettings());
 		
 		Cell cell = new Cell(world, new Vector(50, 50), new Vector(0, 0), Math.PI / 2, testDNA, 100, 100);
 		world.addCell(cell);
@@ -40,7 +40,8 @@ public class Test {
 		
 		Random random = new Random(10);
 		for (int i=0; i<10; i++) {
-			world.addEntity(new TestBall(world, new Vector(random.nextDouble() * 50 + 25, random.nextDouble() * 50 + 25), new Vector(0, 0), random.nextDouble() * 10 + 5, 1));
+			double r = random.nextDouble() * 10 + 5;
+			world.addEntity(new TestBall(world, new Vector(random.nextDouble() * 80 + 10, random.nextDouble() * 80 + 10), new Vector(0, 0), r, r*r));
 		}
 
 		Application application = new Application(world, testName, 7.0, 20);

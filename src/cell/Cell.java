@@ -322,7 +322,7 @@ public class Cell extends BallEntity {
 		}
 		else {
 			// Default assuming linear capacity all substances. Nonlinear may be added later
-			return body() * world.costSettings.getCapacityFactor(s);
+			return body() * world.settings.getCapacityFactor(s);
 		}
 	}
 	
@@ -358,8 +358,8 @@ public class Cell extends BallEntity {
 		}
 		
 		// If insufficient nrg, clamp it
-		if (nrg() < amount * world.costSettings.getCost(s)) {
-			amount = nrg() / world.costSettings.getCost(s);
+		if (nrg() < amount * world.settings.getCost(s)) {
+			amount = nrg() / world.settings.getCost(s);
 		}
 		
 		// If insufficient capacity, clamp it
@@ -370,7 +370,7 @@ public class Cell extends BallEntity {
 		
 		// Verified that nrg will not go negative and substance will not exceed capacity; do the build
 		this.substances[s] += amount;
-		this.substances[Substance.NRG.id] -= amount * world.costSettings.getCost(s);
+		this.substances[Substance.NRG.id] -= amount * world.settings.getCost(s);
 	}
 	
 	/**
@@ -395,16 +395,16 @@ public class Cell extends BallEntity {
 		}
 		
 		// If costs energy to burn and insufficient nrg, clamp it
-		if (world.costSettings.getRefund(s) < 0 && nrg() < -world.costSettings.getRefund(s) * amount) {
-			amount = nrg() / (-world.costSettings.getRefund(s));
+		if (world.settings.getRefund(s) < 0 && nrg() < -world.settings.getRefund(s) * amount) {
+			amount = nrg() / (-world.settings.getRefund(s));
 		}
 		
 		// Verified that this amount can be burned
 		this.substances[s] -= amount;
 		
 		// Give or take energy, or set to the max if overflow
-		if (nrg() + world.costSettings.getRefund(s) * amount < getCapacity(Substance.NRG.id)) {
-			this.substances[Substance.NRG.id] += world.costSettings.getRefund(s) * amount;
+		if (nrg() + world.settings.getRefund(s) * amount < getCapacity(Substance.NRG.id)) {
+			this.substances[Substance.NRG.id] += world.settings.getRefund(s) * amount;
 		}
 		else {
 			this.substances[Substance.NRG.id] = getCapacity(Substance.NRG.id);
@@ -417,9 +417,9 @@ public class Cell extends BallEntity {
 	 */
 	public double costs() {
 		// TODO Very simplistic cost model right now! When buildables are added will have to take them into account
-		double res = (Math.abs(moveF) + Math.abs(moveR)) * world.costSettings.getMovementCost() + this.rotRequest * world.costSettings.getRotationCost();
+		double res = (Math.abs(moveF) + Math.abs(moveR)) * world.settings.getMovementCost() + this.rotRequest * world.settings.getRotationCost();
 		for (int i = 0; i<substances.length; i++) {
-			res += substances[i] * world.costSettings.getMaint(i);
+			res += substances[i] * world.settings.getMaint(i);
 		}
 		return res;
 	}

@@ -31,5 +31,4 @@ public class DisplayPanel extends JPanel {
     		g.translate(this.x, this.y);
     		world.draw(new DrawContext(g, this.zoom));
 	}
-
 }

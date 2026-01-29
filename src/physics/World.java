@@ -9,7 +9,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import cell.Cell;
-import cell.CostSettings;
+import cell.WorldSettings;
 import cell.Substance;
 import display.DrawContext;
 	
@@ -18,7 +18,7 @@ public class World {
 	private List<BallEntity> entities;
 	private List<Cell> cells;
 	private List<AbstractWall> walls;
-	public CostSettings costSettings;
+	public WorldSettings settings;
 	public Cell selectedCell; // may want to go to private when not debugging
 
 	public int getWidth() {
@@ -29,13 +29,13 @@ public class World {
 		return height;
 	}
 
-	public World(int width, int height, CostSettings costSettings) {
+	public World(int width, int height, WorldSettings settings) {
 		this.width = width;
 		this.height = height;
 		this.entities = new LinkedList<BallEntity>();
 		this.cells = new LinkedList<Cell>();
 		this.walls = new LinkedList<AbstractWall>();
-		this.costSettings = costSettings;
+		this.settings = settings;
 	}
 	
 	public void addCell(Cell cell) {
@@ -70,7 +70,7 @@ public class World {
 				if (a != b && d < a.radius() + b.radius()) {
 					// Do a collision
 					// Force on a is in direction of (a-b)
-					Vector force = Vector.sub(a.pos, b.pos).normalize().mult(0.1 * (a.radius() + b.radius() - d));
+					Vector force = Vector.sub(a.pos, b.pos).normalize().mult(settings.getCollisionFactor() * (a.radius() + b.radius() - d));
 					a.tickAcc.add(force);
 				}
 			}
@@ -83,7 +83,7 @@ public class World {
 				if (d < a.radius() + w.getEffectiveRadius()) {
 					// Effective "collision"
 					Vector relative = a.pos.clone().sub(w.getCenter());
-					Vector force = w.getForce(relative, a.radius()).mult(a.mass());
+					Vector force = w.getForce(relative, a.radius()).mult(settings.getCollisionFactor());
 					a.tickAcc.add(force);
 				}
 			}
@@ -92,27 +92,27 @@ public class World {
 		// Add ball-edge collisions. Currently these are always on but they might become toggleable later
 		for (BallEntity a : entities) {
 			if (a.pos.x < a.radius()) {
-				a.tickAcc.add(new Vector(a.radius() - a.pos.x, 0));
+				a.tickAcc.add(new Vector(a.radius() - a.pos.x, 0).mult(settings.getCollisionFactor()));
 			}
 			if (this.width - a.pos.x < a.radius()) {
-				a.tickAcc.add(new Vector(this.width - a.pos.x - a.radius(), 0));
+				a.tickAcc.add(new Vector(this.width - a.pos.x - a.radius(), 0).mult(settings.getCollisionFactor()));
 			}
 			if (a.pos.y < a.radius()) {
-				a.tickAcc.add(new Vector(0, a.radius() - a.pos.y));
+				a.tickAcc.add(new Vector(0, a.radius() - a.pos.y).mult(settings.getCollisionFactor()));
 			}
 			if (this.height - a.pos.y < a.radius()) {
-				a.tickAcc.add(new Vector(0, this.width - a.pos.y - a.radius()));
+				a.tickAcc.add(new Vector(0, this.width - a.pos.y - a.radius()).mult(settings.getCollisionFactor()));
 			}
 		}
 		
 		// Add drag
 		for (BallEntity a : entities) {
-			a.tickAcc.add(Vector.mult(a.vel, -0.01));
+			a.tickAcc.add(Vector.mult(a.vel, -settings.getDragFactor() * a.radius()));
 		}
 		
 		// Cells accelerate
 		for (Cell c : cells) {
-			c.tickAcc.add(c.moveAcc());
+			c.tickAcc.add(c.moveAcc().mult(settings.getAccelFactor()));
 		}
 		
 		// Divide through by masses
@@ -122,10 +122,14 @@ public class World {
 	}
 	
 	public void tick() {
+		/* COMPUTE STEP */
+		
 		// Computational tick
 		for (BallEntity e : entities) {
 			e.tick();
 		}
+		
+		/* ENERGY STEP */
 		
 		// Impose costs and kill cells
 		for (Cell e : cells) {
@@ -137,6 +141,8 @@ public class World {
 
 		entities.removeIf(obj -> obj.isDead());
 		cells.removeIf(obj -> obj.isDead());
+		
+		/* MOVEMENT STEP */
 		
 		// Cells rotate as requested
 		for (Cell e : cells) {
