@@ -19,7 +19,7 @@ public class Test {
 		String testName = "Testing many balls and a cell";
 		
 //		String testString = "TATAAA AGT AAA TAC TAT AGA AAA CGA AAT TGT GAA AAT AGT AAT GCG GAA AAT TTA AGA GTG TAC TGA TAT CAA GTG TAC TTA AAT CGA AAT AGA AAT";
-		String testString = "TATAAA CTA TTA ATA CCA TAT TTA AAG";
+		String testString = "TATAAA CTA TTA ATA CCA TAT TTA AAG AGT AAA GCA GAG TGA TAG TTA CCC CAA TAT AGA AAA";
 		DNA testDNA = DNA.stringToDNA(testString);
 		System.out.println("       DNA: " + testDNA);
 		System.out.println("   Splices: " + Arrays.toString(testDNA.findSplices(DNA.TATA)));

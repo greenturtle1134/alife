@@ -167,6 +167,7 @@ public class World {
 			}
 			else {
 				System.out.println(Arrays.toString(selectedCell.substances));
+				System.out.println(selectedCell.getProgram().getStatements()[selectedCell.getI()]);
 			}
 		}
 	}

@@ -170,7 +170,7 @@ public class Cell extends BallEntity {
 			x = getCapacity(s) - substances[s];
 		}
 		else if (substances[s] + x < 0) {
-			x = substances[s];
+			x = -substances[s];
 		}
 		substances[s] += x;
 		return x;
@@ -425,7 +425,7 @@ public class Cell extends BallEntity {
 	 */
 	public double costs() {
 		// TODO Very simplistic cost model right now! When buildables are added will have to take them into account
-		double res = (Math.abs(moveF) + Math.abs(moveR)) * world.settings.getMovementCost() + this.rotRequest * world.settings.getRotationCost();
+		double res = (Math.abs(moveF) + Math.abs(moveR)) * world.settings.getMovementCost() + Math.abs(this.rotRequest) * world.settings.getRotationCost();
 		for (int i = 0; i<substances.length; i++) {
 			res += substances[i] * world.settings.getMaint(i);
 		}
