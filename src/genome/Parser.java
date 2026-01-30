@@ -94,16 +94,16 @@ public class Parser {
 		switch (c) {
 		case -1: // End of sequence reached
 			return null; // Backtrack not needed as already at end
-		case 16:
+		case 0:
 			res = new Term.Int(0);
 			break;
-		case 17:
+		case 1:
 			res = new Term.Int(1);
 			break;
-		case 18:
+		case 2:
 			res = new Term.Int(2);
 			break;
-		case 19:
+		case 3:
 			res = new Term.ReadCodon(0); // TODO replace with wherever ANS is
 			break;
 		case 20:
