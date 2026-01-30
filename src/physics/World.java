@@ -18,6 +18,7 @@ public class World {
 	private List<BallEntity> entities;
 	private List<Cell> cells;
 	private List<AbstractWall> walls;
+	private List<Cell> newCells;
 	public WorldSettings settings;
 	public Cell selectedCell; // may want to go to private when not debugging
 
@@ -34,6 +35,7 @@ public class World {
 		this.height = height;
 		this.entities = new LinkedList<BallEntity>();
 		this.cells = new LinkedList<Cell>();
+		this.newCells = new LinkedList<Cell>();
 		this.walls = new LinkedList<AbstractWall>();
 		this.settings = settings;
 	}
@@ -53,6 +55,10 @@ public class World {
 	
 	public void addWall(AbstractWall wall) {
 		this.walls.add(wall);
+	}
+	
+	public void queueCell(Cell cell) {
+		this.newCells.add(cell);
 	}
 	
 	public void computeForces() {
@@ -129,6 +135,13 @@ public class World {
 			e.tick();
 		}
 		
+		/* CREATION STEP */
+		
+		// Add new cells to relevant lists
+		entities.addAll(newCells);
+		cells.addAll(newCells);
+		newCells.clear();
+		
 		/* ENERGY STEP */
 		
 		// Impose costs and kill cells
@@ -139,6 +152,7 @@ public class World {
 			}
 		}
 
+		// Remove killed cells
 		entities.removeIf(obj -> obj.isDead());
 		cells.removeIf(obj -> obj.isDead());
 		

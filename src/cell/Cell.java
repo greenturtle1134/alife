@@ -436,6 +436,10 @@ public class Cell extends BallEntity {
 	 * Cell attempts to reproduce in its current state.
 	 */
 	public void repro() {
+		if (substances[Substance.NUCLEIC.id] < 2 * dna.getLength()) {
+			return;
+		}
+		
 		// TODO implement getting ratio and other split parameters from memory
 		double ratio = 0.5;
 		Vector facingVector = new Vector(Math.cos(facing), Math.sin(facing));
@@ -458,6 +462,6 @@ public class Cell extends BallEntity {
 		
 		this.pos.add(myDisplace);
 		
-		world.addCell(daughter);
+		world.queueCell(daughter);
 	}
 }
