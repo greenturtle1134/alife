@@ -172,7 +172,7 @@ public class World {
 	}
 	
 	public void draw(DrawContext c) {
-		Graphics g = c.getG();
+		Graphics g = c.g;
 		
 		g.clearRect(0, 0, c.toZoom(this.width), c.toZoom(this.height));
 		

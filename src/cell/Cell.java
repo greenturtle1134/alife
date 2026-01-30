@@ -90,6 +90,7 @@ public class Cell extends BallEntity {
 	
 	/**
 	 * "Nrg-body constructor": initializes a cell with only standard resources and defaults the rest of the substances
+	 * i.e. gives the cell enough Nucleic to represent its DNA and nothing else.
 	 */
 	public Cell(
 			World world,
@@ -107,8 +108,9 @@ public class Cell extends BallEntity {
 		this.setWait(0);
 		this.program = Program.parseProgram(dna);
 		this.substances = new double[Substance.SUBSTANCE_COUNT];
-		substances[0] = nrg;
-		substances[1] = body;
+		substances[Substance.NRG.id] = nrg;
+		substances[Substance.BODY.id] = body;
+		substances[Substance.NUCLEIC.id] = dna.getLength();
 		this.memory = new int[64];
 		this.moveF = 0;
 		this.moveR = 0;
@@ -241,7 +243,7 @@ public class Cell extends BallEntity {
 
 	@Override
 	public void draw(DrawContext c) {
-		Graphics g = c.getG();
+		Graphics g = c.g;
 		
 		g.setColor(Color.BLACK);
 		
@@ -258,6 +260,13 @@ public class Cell extends BallEntity {
 		
 		g.setColor(Color.GREEN);
 		drawArc(c, x, y, this.getSubstance(Substance.CHLOROPHYLL.id) / this.getCapacity(Substance.CHLOROPHYLL.id), 0.8);
+		
+		g.setColor(Color.BLACK);
+		drawArc(c, x, y, this.getSubstance(Substance.NUCLEIC.id) / this.getDna().getLength(), 0.12);
+		
+		if (this.getSubstance(Substance.NUCLEIC.id) > this.getDna().getLength()) {
+			drawArc(c, x, y, this.getSubstance(Substance.NUCLEIC.id) / this.getDna().getLength() - 1, 0.10);
+		}
 	}
 	
 	/**
@@ -269,7 +278,7 @@ public class Cell extends BallEntity {
 	 * @param arcRadius - fraction of the cell's radius to use for the arc, from 0 to 1
 	 */
 	public void drawArc(DrawContext c, int x, int y, double arcRatio, double arcRadius) {
-		Graphics g = c.getG();
+		Graphics g = c.g;
 		
 		int r = c.toZoom(this.radius() * arcRadius);
 		g.drawArc(x - r, y - r, 2 * r, 2 * r, round(-(facing / Math.PI + arcRatio) * 180), round(360 * arcRatio));
@@ -320,6 +329,10 @@ public class Cell extends BallEntity {
 			// Body has no cap and this should never be called.
 			return Double.POSITIVE_INFINITY;
 		}
+		else if (s == Substance.NUCLEIC.id) {
+			// For now, cells can produce one copy of their DNA
+			return 2 * dna.getLength();
+		}
 		else {
 			// Default assuming linear capacity all substances. Nonlinear may be added later
 			return body() * world.settings.getCapacityFactor(s);
@@ -342,15 +355,12 @@ public class Cell extends BallEntity {
 	
 	/**
 	 * Builds a substance. Takes into account remaining capacity and nrg available.
-	 * Redirects to burn if amount is negative. Forbids building nonsensical substances.
+	 * Redirects to burn if amount is negative. Forbids building nonsensical substances like nrg, if given -1 also does nothing.
 	 * @param s - Substance to build
 	 * @param amount - Amount of substance to build
 	 */
 	public void build(int s, double amount) {
-		if (s == Substance.NRG.id) {
-			return;
-		}
-		if (amount == 0.0) {
+		if (s == -1 || s == Substance.NRG.id || amount == 0.0) {
 			return;
 		}
 		if (amount < 0) {
@@ -374,15 +384,13 @@ public class Cell extends BallEntity {
 	}
 	
 	/**
-	 * Burns a substance. Takes into account remaining substance. If burning requires energy, remaining nrg taken into account as well. Forbids burning nonsensical substances.
+	 * Burns a substance. Takes into account remaining substance. If burning requires energy, remaining nrg taken into account as well.
+	 * Forbids burning nonsensical substances like nrg, also does nothing if given -1.
 	 * @param s - Substance to burn
 	 * @param amount - Amount of substance to burn
 	 */
 	public void burn(int s, double amount) {
-		if (s == Substance.NRG.id) {
-			return; // NRG cannot be burnt, that's stupid
-		}
-		if (amount == 0.0) {
+		if (s == -1 || s == Substance.NRG.id || amount == 0.0) {
 			return;
 		}
 		if (amount < 0) {
@@ -422,5 +430,34 @@ public class Cell extends BallEntity {
 			res += substances[i] * world.settings.getMaint(i);
 		}
 		return res;
+	}
+	
+	/**
+	 * Cell attempts to reproduce in its current state.
+	 */
+	public void repro() {
+		// TODO implement getting ratio and other split parameters from memory
+		double ratio = 0.5;
+		Vector facingVector = new Vector(Math.cos(facing), Math.sin(facing));
+		Vector childDisplace = Vector.mult(facingVector, this.radius() * (1-ratio));
+		Vector myDisplace = Vector.mult(facingVector, this.radius() * -ratio);
+		double[] childSubstances = Arrays.copyOf(substances, substances.length);
+		for (int i = 0; i<substances.length; i++) {
+			if (i == Substance.NUCLEIC.id) {
+				childSubstances[i] /= 2;
+				substances[i] /= 2;
+			}
+			else {
+				childSubstances[i] *= ratio;
+				substances[i] *= 1-ratio;
+			}
+		}
+		
+		// TODO change to correct DNA copying when implemented
+		Cell daughter = new Cell(world, childDisplace.add(this.pos()), this.vel().clone(), facing, dna, childSubstances);
+		
+		this.pos.add(myDisplace);
+		
+		world.addCell(daughter);
 	}
 }

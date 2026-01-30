@@ -29,8 +29,8 @@ public class TestBall extends BallEntity {
 	
 	@Override
 	public void draw(DrawContext c) {
-		Graphics g = c.getG();
-		double zoom = c.getZoom();
+		Graphics g = c.g;
+		double zoom = c.zoom;
 		
 		g.setColor(Color.BLACK);
 		

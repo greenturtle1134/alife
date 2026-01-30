@@ -57,7 +57,7 @@ public abstract class Term {
 		public void exec(Cell c) {
 			switch (action) {
 			case 0: // Repro
-				// TODO implement Repro
+				c.repro();
 				break;
 			case 1: // AllStop
 				c.moveF = 0;
@@ -352,16 +352,21 @@ public abstract class Term {
 			else { // Negative value: give quantity filled
 				a0 = -a0;
 				if (a0 == 1) {
-					// Special case: if BODY quantity is requested, get NRG quantity instead
+					// Special case: if BODY quantity is requested, get NRG quantity instead (as -0 is not a thing)
 					// This does kind of hardcode that 0=Nrg and 1=Body but ehh
 					a0 = 0;
 				}
 				int s = Substance.numToID(a0);
-				if (s != -1) {
-					return fractionRound(c.substances[s] / c.getCapacity(s), 64);
+				if (s == -1) {
+					// No substance corresponding to this ID
+					return 0;
+				}
+				else if (s == Substance.NUCLEIC.id) {
+					// Special case: return fraction of genome size, not actual capacity
+					return fractionRound(c.substances[s] / c.getDna().getLength(), 64);
 				}
 				else {
-					return 0;
+					return fractionRound(c.substances[s] / c.getCapacity(s), 64);
 				}
 			}
 		}
