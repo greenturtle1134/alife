@@ -10,13 +10,14 @@ public class Application {
 	private World world;
 	private JFrame frame;
 	private DisplayPanel panel;
-	private long targetFrameMillis;
+	private int targetFrameMillis, targetFrameTicks;
 	
-	public Application(World world, String title, double zoom, long targetFrameMillis) {
+	public Application(World world, String title, double zoom, int targetFrameMillis, int targetFrameTicks) {
 		this.world = world;
 		this.frame = new JFrame(title);
 		this.panel = new DisplayPanel(world, 0, 0, zoom);
 		this.targetFrameMillis = targetFrameMillis;
+		this.targetFrameTicks = targetFrameTicks;
 		
         frame.add(panel); //adds DisplayGraphics to the frame for viewing
         panel.setPreferredSize(new Dimension((int) (world.getHeight()*panel.zoom), (int) (world.getWidth()*panel.zoom)));
@@ -27,17 +28,12 @@ public class Application {
 	}
 	
 	public void run() {
-		while (true) {
-			long start = System.nanoTime();
-			frame.repaint();
-			world.tick();
-			long tickTime = System.nanoTime() - start;
-			try {
-				Thread.sleep(targetFrameMillis);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-		}
+		new javax.swing.Timer(targetFrameTicks, e -> {
+		    for (int i = 0; i<10; i++) {
+		    	world.tick();
+		    }
+		    frame.repaint();
+		}).start();
 	}
 	
 	public double getZoom() {

@@ -25,7 +25,7 @@ public class Program {
 	
 	public static Program parseProgram(DNA dna) {
 		// Splice DNA and create parser
-		byte[] codons = dna.makeSplices(dna.findSplices(DNA.TATA)); // TODO adjust to start sequence I actually want later
+		byte[] codons = dna.makeSplices(dna.findSplices(DNA.TATA));
 		Parser parser = new Parser(codons);
 		
 		// Parse statements one by one

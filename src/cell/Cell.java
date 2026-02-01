@@ -264,7 +264,7 @@ public class Cell extends BallEntity {
 		drawArc(c, x, y, this.getSubstance(Substance.CHLOROPHYLL.id) / this.getCapacity(Substance.CHLOROPHYLL.id), 0.8);
 		
 		g.setColor(Color.BLACK);
-		drawArc(c, x, y, this.getSubstance(Substance.NUCLEIC.id) / this.getDna().getLength(), 0.12);
+		drawArc(c, x, y, this.getSubstance(Substance.NUCLEIC.id) / this.getDna().getLength(), 0.15);
 		
 		if (this.getSubstance(Substance.NUCLEIC.id) > this.getDna().getLength()) {
 			drawArc(c, x, y, this.getSubstance(Substance.NUCLEIC.id) / this.getDna().getLength() - 1, 0.10);
@@ -441,9 +441,11 @@ public class Cell extends BallEntity {
 		if (substances[Substance.NUCLEIC.id] < 2 * dna.getLength()) {
 			return;
 		}
-		
 		// TODO implement getting ratio and other split parameters from memory
 		double ratio = 0.5;
+		if (Math.min(ratio, 1-ratio) * this.body() < world.settings.getMinCellBody()) {
+			return;
+		}
 		Vector facingVector = new Vector(Math.cos(facing), Math.sin(facing));
 		Vector childDisplace = Vector.mult(facingVector, this.radius() * (1-ratio));
 		Vector myDisplace = Vector.mult(facingVector, this.radius() * -ratio);

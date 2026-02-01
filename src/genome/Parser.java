@@ -270,9 +270,9 @@ public class Parser {
 			case 61:
 				return new Term.Burn(nextOperator(0), nextOperator(1));
 			case 62:
-				return new Term.Expel(nextOperator(0), nextOperator(0));
+				return new Term.Expel(nextOperator(0), nextOperator(1));
 			case 63:
-				return new Term.Attack(nextOperator(0), nextOperator(0));
+				return new Term.Attack(nextOperator(0), nextOperator(1));
 			default:
 				return new Term.Nop();
 		}

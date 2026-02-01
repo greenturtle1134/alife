@@ -693,7 +693,7 @@ public abstract class Term {
 		private Operator target;
 		private Operator amount;
 		
-		public Build(Operator amount, Operator target) {
+		public Build(Operator target, Operator amount) {
 			this.target = target;
 			this.amount = amount;
 		}
@@ -703,7 +703,7 @@ public abstract class Term {
 		}
 		
 		public String toString() {
-			return "Build(" + amount + "," + target + ")";
+			return "Build(" + target + "," + amount + ")";
 		}
 	}
 	
@@ -711,7 +711,7 @@ public abstract class Term {
 		private Operator target;
 		private Operator amount;
 		
-		public Burn(Operator amount, Operator target) {
+		public Burn(Operator target, Operator amount) {
 			this.target = target;
 			this.amount = amount;
 		}
@@ -721,7 +721,7 @@ public abstract class Term {
 		}
 		
 		public String toString() {
-			return "Burn(" + amount + "," + target + ")";
+			return "Burn(" + target + "," + amount + ")";
 		}
 	}
 	
@@ -729,7 +729,7 @@ public abstract class Term {
 		private Operator target;
 		private Operator amount;
 		
-		public Expel(Operator amount, Operator target) {
+		public Expel(Operator target, Operator amount) {
 			this.target = target;
 			this.amount = amount;
 		}
@@ -739,7 +739,7 @@ public abstract class Term {
 		}
 		
 		public String toString() {
-			return "Expel(" + amount + "," + target + ")";
+			return "Expel(" + target + "," + amount + ")";
 		}
 	}
 	
@@ -747,7 +747,7 @@ public abstract class Term {
 		private Operator target;
 		private Operator amount;
 		
-		public Attack(Operator amount, Operator target) {
+		public Attack(Operator target, Operator amount) {
 			this.target = target;
 			this.amount = amount;
 		}
@@ -757,7 +757,7 @@ public abstract class Term {
 		}
 		
 		public String toString() {
-			return "Attack(" + amount + "," + target + ")";
+			return "Attack(" + target + "," + amount + ")";
 		}
 	}
 }

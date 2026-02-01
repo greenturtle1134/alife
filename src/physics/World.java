@@ -10,8 +10,8 @@ import java.util.LinkedList;
 import java.util.List;
 
 import cell.Cell;
-import cell.WorldSettings;
 import cell.Substance;
+import cell.WorldSettings;
 import display.DrawContext;
 	
 public class World {
@@ -129,6 +129,8 @@ public class World {
 	}
 	
 	public void tick() {
+		long start = System.currentTimeMillis();
+		
 		/* COMPUTE STEP */
 		
 		// Computational tick
@@ -145,9 +147,11 @@ public class World {
 		
 		/* ENERGY STEP */
 		
-		// Impose costs and kill cells
+		// Add and subtract energy, kill cells that run out of energy or other resource
 		for (Cell e : cells) {
-			e.addSubstance(Substance.NRG.id, -e.costs());
+			// TODO resolve order of operations with energy flow! What I actually want to happen is that cell energies are only clamped at the end
+			double photo = Math.min(e.getSubstance(Substance.CHLOROPHYLL.id), lightAtPoint(e.pos())) * settings.getPhotoEnergy();
+			e.addSubstance(Substance.NRG.id, photo-e.costs());
 			if (nearZero(e.nrg()) || nearZero(e.body())) {
 				e.kill();
 			}
@@ -177,14 +181,15 @@ public class World {
 		// Print debug output
 		if (selectedCell != null) {
 			if (selectedCell.isDead()) {
-				System.out.println("Selected cell has died.");
+//				System.out.println("Selected cell has died.");
 				selectedCell = null;
 			}
 			else {
-				System.out.println(Arrays.toString(selectedCell.substances));
-				System.out.println(selectedCell.getProgram().getStatements()[selectedCell.getI()]);
+//				System.out.println(Arrays.toString(selectedCell.substances));
+//				System.out.println(selectedCell.getProgram().getStatements()[selectedCell.getI()]);
 			}
 		}
+		System.out.println("Tick time: " + (System.currentTimeMillis() - start) + ", cells: " + cells.size());
 	}
 	
 	public void draw(DrawContext c) {

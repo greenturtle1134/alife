@@ -5,14 +5,16 @@ public class WorldSettings {
 	private double dragFactor; // Multiplier of drag
 	private double collisionFactor; // Multiplier on force applied to cells when colliding
 	private double[] substanceCosts; // Cost to build one unit of a substance
-	private double[] substanceRefunds; // Energy recouped by burning one unit of a substance
+	private double[] substanceRefunds; // Energy recovered by burning one unit of a substance
 	private double[] substanceMaints; // Cost per tick to maintain one unit of substance
 	private double[] capacityFactors; // Capacity of a substance is multiplied by this value
 	private double movementCost; // Currently, cost to accelerate at 1 cell unit/tick^2; may change when flagella/cilia added
 	private double rotationCost; // Cost of one unit of rotation (i.e. 1/64 of a half-revolution)
+	private double photoEnergy; // nrg to award for each unit of active chlorophyll
+	private double minCellBody; // smallest cell permitted
 
 	public WorldSettings(double accelFactor, double dragFactor, double collisionFactor, double[] substanceCosts, double[] substanceRefunds, double[] substanceMaints,
-			double[] capacityFactors, double movementCost, double rotationCost) {
+			double[] capacityFactors, double movementCost, double rotationCost, double photoEnergy, double minCellBody) {
 		this.accelFactor = accelFactor;
 		this.dragFactor = dragFactor;
 		this.collisionFactor = collisionFactor;
@@ -22,15 +24,17 @@ public class WorldSettings {
 		this.capacityFactors = capacityFactors;
 		this.movementCost = movementCost;
 		this.rotationCost = rotationCost;
+		this.photoEnergy = photoEnergy;
+		this.minCellBody = minCellBody;
 	}
 	
 	public WorldSettings() {
 		this.accelFactor = 1;
-		this.dragFactor = 0.1;
+		this.dragFactor = 0.5;
 		this.collisionFactor = 5;
-		double[] substanceCosts = {1, 1, 0.1, 2};
-		double[] substanceRefunds = {1, 0.8, 0.05, 1};
-		double[] substanceMaints = {0, 0, 0, 0};
+		double[] substanceCosts = {1, 1, 0.1, 1};
+		double[] substanceRefunds = {1, 0.8, 0.05, 0.5};
+		double[] substanceMaints = {0, 0.01, 0, 0.1};
 		double[] capacityFactors = {1, 1, 1, 1};
 		this.substanceCosts = substanceCosts;
 		this.substanceRefunds = substanceRefunds;
@@ -38,6 +42,8 @@ public class WorldSettings {
 		this.capacityFactors = capacityFactors;
 		this.movementCost = 1;
 		this.rotationCost = 1;
+		this.photoEnergy = 0.2;
+		this.minCellBody = 25;
 	}
 
 	public double getAccelFactor() {
@@ -110,5 +116,21 @@ public class WorldSettings {
 
 	public void setRotationCost(double rotationCost) {
 		this.rotationCost = rotationCost;
+	}
+
+	public double getPhotoEnergy() {
+		return photoEnergy;
+	}
+
+	public void setPhotoEnergy(double photoEnergy) {
+		this.photoEnergy = photoEnergy;
+	}
+
+	public double getMinCellBody() {
+		return minCellBody;
+	}
+
+	public void setMinCellBody(double minCellBody) {
+		this.minCellBody = minCellBody;
 	}
 }
