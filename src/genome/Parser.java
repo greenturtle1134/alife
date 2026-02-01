@@ -1,5 +1,6 @@
 package genome;
 
+import cell.Cell;
 import genome.Term.Operator;
 import genome.Term.Statement;
 
@@ -104,12 +105,20 @@ public class Parser {
 			res = new Term.Int(2);
 			break;
 		case 3:
-			res = new Term.ReadCodon(0); // TODO replace with wherever ANS is
+			res = new Term.ReadCodon(Cell.LOC_ANS);
 			break;
 		case 20:
 			res = new Term.Int(nextCodon(BYTE_ZERO));
 			break;
-		// if int variants exist they may go here
+		case 21:
+			res = new Term.Int(-nextCodon(BYTE_ZERO));
+			break;
+		case 22:
+			res = new Term.Int(64 * nextCodon(BYTE_ZERO));
+			break;
+		case 23:
+			res = new Term.Int(64 * -nextCodon(BYTE_ZERO));
+			break;
 		case 24:
 			res = new Term.Neg(nextOperator(0));
 			break;

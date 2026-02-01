@@ -4,6 +4,7 @@ import static utils.Utils.nearZero;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.event.MouseEvent;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
@@ -222,5 +223,27 @@ public class World {
 			}
 		}
 		return res;
+	}
+	
+	public double lightAtPoint(Vector point) {
+		// TODO implement actual light calculations; currently just a point light at the center
+		double dx = point.x - width/2.0;
+		double dy = point.y - height/2.0;
+		double d = Math.sqrt(dx*dx+dy*dy);
+		double r = Math.min(width, height) / 2;
+		return Math.max(0, 200 * (1 - d/r));
+	}
+
+	public void click(double clickX, double clickY, MouseEvent e) {
+		Vector point = new Vector(clickX, clickY);
+		System.out.println(point + " clicked");
+		System.out.println("Light level: " + lightAtPoint(point));
+		this.selectedCell = cellAtPoint(point);
+		if (selectedCell != null) {
+			System.out.println("Cell selected.");
+		}
+		else {
+			System.out.println("No cell selected.");
+		}
 	}
 }

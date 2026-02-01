@@ -14,6 +14,8 @@ import physics.Vector;
 import physics.World;
 
 public class Cell extends BallEntity {
+	public static final int LOC_ANS = 0;
+	
 	/**
 	 * Facing direction of the cell, in radians from the x-axis
 	 */
@@ -424,7 +426,7 @@ public class Cell extends BallEntity {
 	 * @return
 	 */
 	public double costs() {
-		// TODO Very simplistic cost model right now! When buildables are added will have to take them into account
+		// TODO Very simplistic cost model right now! When flagella are added will have to take them into account
 		double res = (Math.abs(moveF) + Math.abs(moveR)) * world.settings.getMovementCost() + Math.abs(this.rotRequest) * world.settings.getRotationCost();
 		for (int i = 0; i<substances.length; i++) {
 			res += substances[i] * world.settings.getMaint(i);

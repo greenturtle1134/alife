@@ -1,6 +1,8 @@
 package display;
 
 import java.awt.Graphics;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 import javax.swing.JPanel;
 
@@ -23,6 +25,19 @@ public class DisplayPanel extends JPanel {
 		this.x = x;
 		this.y = y;
 		this.zoom = zoom;
+		
+		this.setFocusable(true);
+
+        this.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                double clickX = (e.getX() - x) / zoom;
+                double clickY = (e.getY() - y) / zoom;
+                if (clickX >= 0 && clickX < world.getWidth() && clickY >= 0 && clickY < world.getHeight()) {
+                	world.click(clickX, clickY, e);
+                }
+            }
+        });
 	}
 	
 	public void paintComponent (Graphics g) {
