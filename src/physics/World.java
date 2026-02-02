@@ -189,7 +189,7 @@ public class World {
 //				System.out.println(selectedCell.getProgram().getStatements()[selectedCell.getI()]);
 			}
 		}
-		System.out.println("Tick time: " + (System.currentTimeMillis() - start) + ", cells: " + cells.size());
+//		System.out.println("Tick time: " + (System.currentTimeMillis() - start) + ", cells: " + cells.size());
 	}
 	
 	public void draw(DrawContext c) {

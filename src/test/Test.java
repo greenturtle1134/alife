@@ -33,11 +33,11 @@ public class Test {
 			System.out.println("       - " + String.format("%04X", l) + ": line " + labels.get(l));
 		}
 		
-		World world = new World(1000, 1000, new WorldSettings());
+		World world = new World(500, 500, new WorldSettings());
 		
-		Cell cell = new Cell(world, new Vector(500, 500), new Vector(0, 0), Math.PI / 2, testDNA, 25, 25);
+		Cell cell = new Cell(world, new Vector(250, 250), new Vector(0, 0), Math.PI / 2, testDNA, 25, 25);
 		world.addCell(cell);
-		world.selectedCell = cell;
+//		world.selectedCell = cell;
 		
 //		Random random = new Random(10);
 //		for (int i=0; i<10; i++) {
@@ -45,8 +45,8 @@ public class Test {
 //			world.addEntity(new TestBall(world, new Vector(random.nextDouble() * 80 + 10, random.nextDouble() * 80 + 10), new Vector(0, 0), r, r*r));
 //		}
 
-		Application application = new Application(world, testName, 1.0, 10, 1);
-		application.run();
+		Application application = new Application(world, testName, 2.0, 10, 4);
+		application.runSaveVideo("..\\..\\Desktop\\alife screenshots\\frames");
 		
 		
 //		// The copying speed test
