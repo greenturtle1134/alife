@@ -8,6 +8,7 @@ import java.util.Arrays;
 
 import display.DrawContext;
 import genome.DNA;
+import genome.Genome;
 import genome.Program;
 import physics.BallEntity;
 import physics.Vector;
@@ -22,8 +23,7 @@ public class Cell extends BallEntity {
 	private double facing;
 	
 	// DNA and program variables
-	private DNA dna;
-	private Program program;
+	private Genome genome;
 	private int i;
 	private int wait;
 	
@@ -55,10 +55,38 @@ public class Cell extends BallEntity {
 			) {
 		super(world, pos, vel);
 		this.facing = facing;
-		this.dna = dna;
+		this.genome = new Genome(dna);
 		this.i = i;
 		this.setWait(wait);
-		this.program = Program.parseProgram(dna);
+		this.substances = Arrays.copyOf(substances, Substance.SUBSTANCE_COUNT);
+		this.memory = Arrays.copyOf(memory, 64);
+		this.moveF = moveF;
+		this.moveR = moveR;
+		this.rotRequest = rotRequest;
+	}
+	
+	/**
+	 * "Genome constructor": specifies a Genome instead of DNA, intended for use in replication. Copies of the substance and memory arrays will be made.
+	 */
+	public Cell(
+			World world,
+			Vector pos,
+			Vector vel,
+			double facing,
+			Genome genome,
+			int i,
+			int wait,
+			double[] substances,
+			int[] memory,
+			double moveF,
+			double moveR,
+			double rotRequest
+			) {
+		super(world, pos, vel);
+		this.facing = facing;
+		this.genome = genome;
+		this.i = i;
+		this.setWait(wait);
 		this.substances = Arrays.copyOf(substances, Substance.SUBSTANCE_COUNT);
 		this.memory = Arrays.copyOf(memory, 64);
 		this.moveF = moveF;
@@ -77,17 +105,7 @@ public class Cell extends BallEntity {
 			DNA dna,
 			double[] substances
 			) {
-		super(world, pos, vel);
-		this.facing = facing;
-		this.dna = dna;
-		this.i = 0;
-		this.setWait(0);
-		this.program = Program.parseProgram(dna);
-		this.substances = Arrays.copyOf(substances, Substance.SUBSTANCE_COUNT);;
-		this.memory = new int[64];
-		this.moveF = 0;
-		this.moveR = 0;
-		this.rotRequest = 0;
+		this(world, pos, vel, facing, dna, 0, 0, substances, new int[64], 0, 0, 0);
 	}
 	
 	/**
@@ -103,20 +121,10 @@ public class Cell extends BallEntity {
 			double nrg,
 			double body
 			) {
-		super(world, pos, vel);
-		this.facing = facing;
-		this.dna = dna;
-		this.i = 0;
-		this.setWait(0);
-		this.program = Program.parseProgram(dna);
-		this.substances = new double[Substance.SUBSTANCE_COUNT];
+		this(world, pos, vel, facing, dna, new double[Substance.SUBSTANCE_COUNT]);
 		substances[Substance.NRG.id] = nrg;
 		substances[Substance.BODY.id] = body;
 		substances[Substance.NUCLEIC.id] = dna.getLength();
-		this.memory = new int[64];
-		this.moveF = 0;
-		this.moveR = 0;
-		this.rotRequest = 0;
 	}
 	
 	public double getFacing() {
@@ -136,11 +144,11 @@ public class Cell extends BallEntity {
 	}
 
 	public DNA getDna() {
-		return dna;
+		return genome.getDna();
 	}
 
 	public Program getProgram() {
-		return program;
+		return genome.getProgram();
 	}
 
 	public int getWait() {
@@ -188,9 +196,9 @@ public class Cell extends BallEntity {
 			if (this.wait > 0) { // Either because this cycle set it, or it's left over from another cycle
 				break;
 			}
-			this.program.getStatements()[this.i].exec(this);
+			this.getProgram().getStatements()[this.i].exec(this);
 			this.i++;
-			if (this.i >= this.program.getStatements().length) {
+			if (this.i >= this.getProgram().getStatements().length) {
 				this.i = 0;
 			}
 		}
@@ -238,8 +246,8 @@ public class Cell extends BallEntity {
 	 * @param label - label to jump to
 	 */
 	public void labelJump(int label) {
-		if (this.program.getLabels().containsKey(label)) {
-			this.i = this.program.getLabels().get(label);
+		if (this.getProgram().getLabels().containsKey(label)) {
+			this.i = this.getProgram().getLabels().get(label);
 		}
 	}
 
@@ -333,7 +341,7 @@ public class Cell extends BallEntity {
 		}
 		else if (s == Substance.NUCLEIC.id) {
 			// For now, cells can produce one copy of their DNA
-			return 2 * dna.getLength();
+			return 2 * this.getDna().getLength();
 		}
 		else {
 			// Default assuming linear capacity all substances. Nonlinear may be added later
@@ -438,7 +446,7 @@ public class Cell extends BallEntity {
 	 * Cell attempts to reproduce in its current state.
 	 */
 	public void repro() {
-		if (substances[Substance.NUCLEIC.id] < 2 * dna.getLength()) {
+		if (substances[Substance.NUCLEIC.id] < 2 * this.getDna().getLength()) {
 			return;
 		}
 		// TODO implement getting ratio and other split parameters from memory
@@ -462,7 +470,7 @@ public class Cell extends BallEntity {
 		}
 		
 		// TODO change to correct DNA copying when implemented
-		Cell daughter = new Cell(world, childDisplace.add(this.pos()), this.vel().clone(), facing, dna, childSubstances);
+		Cell daughter = new Cell(world, childDisplace.add(this.pos()), this.vel().clone(), facing, genome, 0, 0, childSubstances, new int[64], 0, 0, 0);
 		
 		this.pos.add(myDisplace);
 		
