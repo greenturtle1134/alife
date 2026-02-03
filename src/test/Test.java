@@ -45,8 +45,9 @@ public class Test {
 //			world.addEntity(new TestBall(world, new Vector(random.nextDouble() * 80 + 10, random.nextDouble() * 80 + 10), new Vector(0, 0), r, r*r));
 //		}
 
-		Application application = new Application(world, testName, 2.0, 10, 4);
-		application.runSaveVideo("..\\..\\Desktop\\alife screenshots\\frames");
+		Application application = new Application(world, testName, 2.0, 10, 10);
+		application.run();
+//		application.runSaveVideo("..\\..\\Desktop\\alife screenshots\\frames");
 		
 		
 //		// The copying speed test

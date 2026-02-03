@@ -192,6 +192,9 @@ public class Cell extends BallEntity {
 	 * @param steps = Number of steps to run for
 	 */
 	public void run(int steps) {
+		if (this.getProgram().getStatements().length == 0) {
+			return; // Empty program; do nothing
+		}
 		for (int j = 0; j < steps; j++) {
 			if (this.wait > 0) { // Either because this cycle set it, or it's left over from another cycle
 				break;
