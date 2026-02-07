@@ -11,7 +11,7 @@ public class ProgramHelper {
 	public static final Map<String, Integer> COMMAND_TO_CODON = new HashMap<String, Integer>();
 	
 	public static final Pattern NUMBER = Pattern.compile("-?\\d+");
-	public static final Pattern ADDRESS = Pattern.compile("x-?\\d+");
+	public static final Pattern ADDRESS = Pattern.compile("[x$#]?-?\\d+");
 	
 	static {
 		COMMAND_TO_CODON.put("ans", 3);
@@ -85,7 +85,8 @@ public class ProgramHelper {
 	public static int[] stringsToCodons(String[] strings) {
 		ArrayList<Integer> res = new ArrayList<Integer>();
 		for (String s : strings) {
-			if (NUMBER.matcher(s).find()) {
+			s = s.toLowerCase();
+			if (NUMBER.matcher(s).matches()) {
 				int x = Integer.parseInt(s);
 				if (0 <= x && x <= 2) {
 					// Literal codons exist for these
@@ -100,7 +101,7 @@ public class ProgramHelper {
 					res.add(x);
 				}
 			}
-			else if (ADDRESS.matcher(s).find()) {
+			else if (ADDRESS.matcher(s).matches()) {
 				int x = Integer.parseInt(s.substring(1));
 				if (0 <= x && x < 64) {
 					res.add(x);
@@ -108,6 +109,9 @@ public class ProgramHelper {
 			}
 			else if (COMMAND_TO_CODON.containsKey(s)){
 				res.add(COMMAND_TO_CODON.get(s));
+			}
+			else {
+				System.out.println("Could not parse: " + s);
 			}
 		}
 		int[] res1 = new int[res.size()];

@@ -16,13 +16,10 @@ public class DNA {
 	public static final int[] TATA = {1, 0, 1, 0, 0, 0}; // TODO currently for testing purposes
 	public static final int STOP_CODON = 19;
 	
-	private int[] dna;
-	private int length;
+	private byte[] dna;
 	
-	public DNA(int[] dna, int length) {
-		// TODO: Throw an exception if array length does not match stated length
+	private DNA(byte[] dna) {
 		this.dna = dna;
-		this.length = length;
 	}
 
 	/**
@@ -31,15 +28,15 @@ public class DNA {
 	 * @return int value representing the nucleotide (0-3)
 	 */
 	public int idx(int i) {
-		if (i < 0 || i >= length) {
-			throw new IndexOutOfBoundsException("Index " + i + " out of bounds for length " + length);
+		if (i < 0 || i >= this.getLength()) {
+			throw new IndexOutOfBoundsException("Index " + i + " out of bounds for length " + dna.length);
 		}
-		return dna[i / 16] >> 2*(i % 16) & 3;
+		return dna[i];
 	}
 
 	/**
 	 * Retrieves a codon (group of 3 nucleotides).
-	 * Note that the endianess is reversed (i.e. the first nucleotide is the most significant bits).
+	 * Note that the endianess is reversed (i.e. the first nucleotide is the most significant bit in the output, but the least significant internally).
 	 * @param i - the starting index for the codon
 	 * @return int value representing the codon
 	 */
@@ -51,7 +48,7 @@ public class DNA {
 	 * Gets the length of the DNA sequence
 	 */
 	public int getLength() {
-		return length;
+		return dna.length;
 	}
 	
 	/**
@@ -61,7 +58,7 @@ public class DNA {
 	 */
 	public String toString(char[] nucleotides) {
 		StringBuilder res = new StringBuilder();
-		for (int i=0; i<length; i++) {
+		for (int i=0; i<this.getLength(); i++) {
 			int a = idx(i);
 			res.append(nucleotides[a]);
 		}
@@ -72,6 +69,10 @@ public class DNA {
 		return this.toString(DEFAULT_NUCLEOTIDES);
 	}
 	
+//	public DNA substring(int a, int b) {
+//		
+//	}
+	
 	/**
 	 * Parses a String to a DNA object using the supplied nucleotides
 	 * @param s - the string to parse
@@ -80,16 +81,16 @@ public class DNA {
 	 */
 	public static DNA stringToDNA(String s, char[] nucleotides) {
 		s = s.toUpperCase().replaceAll("[^ATGC]", "");
-		int[] res = new int[(s.length()-1) / 16 + 1];
+		byte[] res = new byte[s.length()];
 		for (int i = 0; i<s.length(); i++) {
-			for (int x = 0; x<4; x++) {
+			for (byte x = 0; x<4; x++) {
 				if (nucleotides[x] == s.charAt(i)) {
-					res[i / 16] += x << 2*(i % 16);
+					res[i] = x;
 					break;
 				}
 			}
 		}
-		return new DNA(res, s.length());
+		return new DNA(res);
 	}
 	
 	/**
@@ -99,6 +100,20 @@ public class DNA {
 	 */
 	public static DNA stringToDNA(String s) {
 		return stringToDNA(s, DEFAULT_NUCLEOTIDES);
+	}
+	
+	/**
+	 * Converts a byte array to a DNA object.
+	 * @param bytes - the array to convert. Bytes larger than 3 have the excess bits removed
+	 * @return DNA object
+	 */
+	public static DNA fromBytes(byte[] bytes) { 
+		for (int i=0; i<bytes.length; i++) {
+			if (bytes[i] > 3) {
+				bytes[i] = (byte) (bytes[i] & 3);
+			}
+		}
+		return new DNA(bytes);
 	}
 	
 	/**
@@ -128,7 +143,7 @@ public class DNA {
 	 */
 	public ArrayList<Integer> findStarts(int[] startSequence) {
 		ArrayList<Integer> res = new ArrayList<Integer>();
-		for (int i = 0; i < length-startSequence.length; i++) {
+		for (int i = 0; i < getLength()-startSequence.length; i++) {
 			boolean skip = false;
 			for (int j = 0; j < startSequence.length; j++) {
 				if (idx(i+j) != startSequence[j]) {
@@ -152,9 +167,9 @@ public class DNA {
 		ArrayList<SplicePair> res = new ArrayList<SplicePair>();
 		ArrayList<Integer> starts = findStarts(startSequence);
 		for (Integer i : starts) {
-			if (i < length - 2) {
+			if (i < getLength() - 2) {
 				int end = i + 3;
-				while (end < length-2 && idxCodon(end) != STOP_CODON) {
+				while (end < getLength()-2 && idxCodon(end) != STOP_CODON) {
 					end += 3;
 				}
 				res.add(new SplicePair(i, end));
