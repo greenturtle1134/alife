@@ -7,6 +7,9 @@ import java.util.Map;
 import java.util.Scanner;
 import java.util.regex.Pattern;
 
+import genome.DNA;
+import genome.Program;
+
 public class ProgramHelper {
 	public static final Map<String, Integer> COMMAND_TO_CODON = new HashMap<String, Integer>();
 	
@@ -18,11 +21,11 @@ public class ProgramHelper {
 		COMMAND_TO_CODON.put("repro", 4);
 		COMMAND_TO_CODON.put("allstop", 5);
 		COMMAND_TO_CODON.put("breakties", 6);
-		COMMAND_TO_CODON.put("label", 7);
-		COMMAND_TO_CODON.put("jumpl", 8);
-//		COMMAND_TO_CODON.put("jumpd", 9);
-//		COMMAND_TO_CODON.put("jumpn", 10);
-		COMMAND_TO_CODON.put("action", 11);
+		COMMAND_TO_CODON.put("action", 7);
+		COMMAND_TO_CODON.put("label", 8);
+		COMMAND_TO_CODON.put("jumpl", 9);
+//		COMMAND_TO_CODON.put("jumpd", 10);
+//		COMMAND_TO_CODON.put("jumpn", 11);
 		COMMAND_TO_CODON.put("skip", 12);
 		COMMAND_TO_CODON.put("backskip", 13);
 		COMMAND_TO_CODON.put("wait", 14);
@@ -145,6 +148,16 @@ public class ProgramHelper {
 		System.out.println("Input: " + Arrays.toString(strings));
 		int[] codons = stringsToCodons(strings);
 		System.out.println("Codons: " + Arrays.toString(codons));
+		byte[] res = new byte[codons.length * 3];
+		for (int i = 0; i<codons.length; i++) {
+			res[3*i] = (byte) ((codons[i] >> 4) & 3);
+			res[3*i+1] = (byte) ((codons[i] >> 2) & 3);
+			res[3*i+2] = (byte) (codons[i] & 3);
+		}
+		DNA result = DNA.join(DNA.stringToDNA("TATAAA"), DNA.fromBytes(res));
+		System.out.println("DNA: " + result);
+		Program testProgram = Program.parseProgram(result);
+		System.out.println("Program: " + Arrays.toString(testProgram.getStatements()));
 		
 		scanner.close();
 	}
