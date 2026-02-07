@@ -15,7 +15,7 @@ import physics.World;
 
 public class Test {
 
-	public static void main(String[] args) {
+	public static void main(String[] args) {		
 		String testName = "Testing cell reproduction";
 		
 //		String testString = "TATAAA AGT AAA TAC TAT AGA AAA CGA AAT TGT GAA AAT AGT AAT GCG GAA AAT TTA AGA GTG TAC TGA TAT CAA GTG TAC TTA AAT CGA AAT AGA AAT";

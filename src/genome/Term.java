@@ -363,7 +363,7 @@ public abstract class Term {
 				}
 				else if (s == Substance.NUCLEIC.id) {
 					// Special case: return fraction of genome size, not actual capacity
-					return fractionRound(c.substances[s] / c.getDna().getLength(), 64);
+					return fractionRound(c.substances[s] / c.getDna().length(), 64);
 				}
 				else {
 					return fractionRound(c.substances[s] / c.getCapacity(s), 64);

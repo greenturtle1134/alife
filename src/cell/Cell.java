@@ -124,7 +124,7 @@ public class Cell extends BallEntity {
 		this(world, pos, vel, facing, dna, new double[Substance.SUBSTANCE_COUNT]);
 		substances[Substance.NRG.id] = nrg;
 		substances[Substance.BODY.id] = body;
-		substances[Substance.NUCLEIC.id] = dna.getLength();
+		substances[Substance.NUCLEIC.id] = dna.length();
 	}
 	
 	public double getFacing() {
@@ -275,10 +275,10 @@ public class Cell extends BallEntity {
 		drawArc(c, x, y, this.getSubstance(Substance.CHLOROPHYLL.id) / this.getCapacity(Substance.CHLOROPHYLL.id), 0.8);
 		
 		g.setColor(Color.BLACK);
-		drawArc(c, x, y, this.getSubstance(Substance.NUCLEIC.id) / this.getDna().getLength(), 0.15);
+		drawArc(c, x, y, this.getSubstance(Substance.NUCLEIC.id) / this.getDna().length(), 0.15);
 		
-		if (this.getSubstance(Substance.NUCLEIC.id) > this.getDna().getLength()) {
-			drawArc(c, x, y, this.getSubstance(Substance.NUCLEIC.id) / this.getDna().getLength() - 1, 0.10);
+		if (this.getSubstance(Substance.NUCLEIC.id) > this.getDna().length()) {
+			drawArc(c, x, y, this.getSubstance(Substance.NUCLEIC.id) / this.getDna().length() - 1, 0.10);
 		}
 	}
 	
@@ -344,7 +344,7 @@ public class Cell extends BallEntity {
 		}
 		else if (s == Substance.NUCLEIC.id) {
 			// For now, cells can produce one copy of their DNA
-			return 2 * this.getDna().getLength();
+			return 2 * this.getDna().length();
 		}
 		else {
 			// Default assuming linear capacity all substances. Nonlinear may be added later
@@ -449,7 +449,7 @@ public class Cell extends BallEntity {
 	 * Cell attempts to reproduce in its current state.
 	 */
 	public void repro() {
-		if (substances[Substance.NUCLEIC.id] < 2 * this.getDna().getLength()) {
+		if (substances[Substance.NUCLEIC.id] < 2 * this.getDna().length()) {
 			return;
 		}
 		// TODO implement getting ratio and other split parameters from memory

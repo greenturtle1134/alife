@@ -1,6 +1,7 @@
 package genome;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
  * An object representing the DNA sequence.
@@ -28,7 +29,7 @@ public class DNA {
 	 * @return int value representing the nucleotide (0-3)
 	 */
 	public int idx(int i) {
-		if (i < 0 || i >= this.getLength()) {
+		if (i < 0 || i >= this.length()) {
 			throw new IndexOutOfBoundsException("Index " + i + " out of bounds for length " + dna.length);
 		}
 		return dna[i];
@@ -47,7 +48,7 @@ public class DNA {
 	/**
 	 * Gets the length of the DNA sequence
 	 */
-	public int getLength() {
+	public int length() {
 		return dna.length;
 	}
 	
@@ -58,20 +59,87 @@ public class DNA {
 	 */
 	public String toString(char[] nucleotides) {
 		StringBuilder res = new StringBuilder();
-		for (int i=0; i<this.getLength(); i++) {
+		for (int i=0; i<this.length(); i++) {
 			int a = idx(i);
 			res.append(nucleotides[a]);
 		}
 		return res.toString();
 	}
 	
+	/**
+	 * Displays the DNA as a string using default nucleotide names
+	 * @return The string representation
+	 */
 	public String toString() {
 		return this.toString(DEFAULT_NUCLEOTIDES);
 	}
 	
-//	public DNA substring(int a, int b) {
-//		
-//	}
+	/**
+	 * Takes a subsequence between a start and end point
+	 * @param a - the start point
+	 * @param b - the end point
+	 * @return The subsequence
+	 */
+	public DNA substring(int a, int b) {
+		return new DNA(Arrays.copyOfRange(dna, a, b)); // Autofill actually got this exactly right, wow
+	}
+	
+	/**
+	 * Takes a subsequence from a start point to the end of the sequence
+	 * @param a - the start point
+	 * @return The subsequence
+	 */
+	public DNA substring(int a) {
+		return substring(a, length());
+	}
+	
+	/**
+	 * Joins two DNA sequences together. Equivalent to calling joinAll on an array of length 2.
+	 * @param a - first sequence
+	 * @param b - second sequence
+	 * @return The joined sequence
+	 */
+	public static DNA join(DNA a, DNA b) {
+		DNA[] inputs = {a, b};
+		return DNA.joinAll(inputs);
+	}
+	
+	/**
+	 * Joins three DNA sequences together. Equivalent to calling joinAll on an array of length 3.
+	 * This is going to occur often enough that I feel it deserves its own method variant.
+	 * @param a - first sequence
+	 * @param b - second sequence
+	 * @param c - third sequence
+	 * @return The joined sequence
+	 */
+	public static DNA join(DNA a, DNA b, DNA c) {
+		DNA[] inputs = {a, b, c};
+		return DNA.joinAll(inputs);
+	}
+	
+	/**
+	 * Joins a sequence of DNA objects together
+	 * @param dnas - array of DNAs
+	 * @return The joined DNA
+	 */
+	public static DNA joinAll(DNA[] dnas) {
+		int sum = 0;
+		int[] lens = new int[dnas.length];
+		for (int i=0; i<dnas.length; i++) {
+			lens[i] = dnas[i].length();
+			sum += dnas[i].length();
+		}
+		
+		byte[] res = new byte[sum];
+		sum = 0;
+		for (int i=0; i<dnas.length; i++) {
+			for (int j=0; j<dnas[i].length(); j++) {
+				res[j+sum] = dnas[i].dna[j];
+			}
+			sum += dnas[i].length();
+		}
+		return new DNA(res);
+	}
 	
 	/**
 	 * Parses a String to a DNA object using the supplied nucleotides
@@ -143,7 +211,7 @@ public class DNA {
 	 */
 	public ArrayList<Integer> findStarts(int[] startSequence) {
 		ArrayList<Integer> res = new ArrayList<Integer>();
-		for (int i = 0; i < getLength()-startSequence.length; i++) {
+		for (int i = 0; i < length()-startSequence.length; i++) {
 			boolean skip = false;
 			for (int j = 0; j < startSequence.length; j++) {
 				if (idx(i+j) != startSequence[j]) {
@@ -167,9 +235,9 @@ public class DNA {
 		ArrayList<SplicePair> res = new ArrayList<SplicePair>();
 		ArrayList<Integer> starts = findStarts(startSequence);
 		for (Integer i : starts) {
-			if (i < getLength() - 2) {
+			if (i < length() - 2) {
 				int end = i + 3;
-				while (end < getLength()-2 && idxCodon(end) != STOP_CODON) {
+				while (end < length()-2 && idxCodon(end) != STOP_CODON) {
 					end += 3;
 				}
 				res.add(new SplicePair(i, end));
