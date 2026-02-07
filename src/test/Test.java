@@ -46,7 +46,6 @@ public class Test {
 //		}
 
 		Application application = new Application(world, testName, 2.0, 10, 10);
-		application.run();
 //		application.runSaveVideo("..\\..\\Desktop\\alife screenshots\\frames");
 		
 		
