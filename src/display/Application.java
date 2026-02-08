@@ -1,8 +1,11 @@
 package display;
 
+import java.awt.BorderLayout;
 import java.awt.Dimension;
 
+import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JPanel;
 import javax.swing.Timer;
 
 import physics.World;
@@ -25,8 +28,14 @@ public class Application {
 		this.targetFrameTicks = targetFrameTicks;
 		this.t = 0;
 		
-        frame.add(panel); //adds DisplayGraphics to the frame for viewing
+        frame.add(panel, BorderLayout.CENTER); //adds DisplayGraphics to the frame for viewing
         panel.setPreferredSize(new Dimension((int) (world.getHeight()*panel.zoom), (int) (world.getWidth()*panel.zoom)));
+        
+		JPanel settingsPanel = new JPanel();
+		JButton testButton = new JButton("test");
+		settingsPanel.add(testButton);
+		frame.add(settingsPanel, BorderLayout.PAGE_START);
+        
         frame.pack();
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setLocationRelativeTo(null);

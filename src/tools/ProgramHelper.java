@@ -1,11 +1,23 @@
 package tools;
 
+import java.awt.Dimension;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
+import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Scanner;
 import java.util.regex.Pattern;
+
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.JTextArea;
 
 import genome.DNA;
 import genome.Program;
@@ -24,6 +36,7 @@ public class ProgramHelper {
 		COMMAND_TO_CODON.put("action", 7);
 		COMMAND_TO_CODON.put("label", 8);
 		COMMAND_TO_CODON.put("jumpl", 9);
+		COMMAND_TO_CODON.put("jumplabel", 9);
 //		COMMAND_TO_CODON.put("jumpd", 10);
 //		COMMAND_TO_CODON.put("jumpn", 11);
 		COMMAND_TO_CODON.put("skip", 12);
@@ -70,9 +83,13 @@ public class ProgramHelper {
 		COMMAND_TO_CODON.put("moveleft", 50);
 		COMMAND_TO_CODON.put("moveright", 51);
 		COMMAND_TO_CODON.put("turnright", 52);
+		COMMAND_TO_CODON.put("turnr", 52);
 		COMMAND_TO_CODON.put("turnleft", 53);
+		COMMAND_TO_CODON.put("turnl", 53);
 		COMMAND_TO_CODON.put("fineright", 54);
+		COMMAND_TO_CODON.put("finer", 54);
 		COMMAND_TO_CODON.put("fineleft", 55);
+		COMMAND_TO_CODON.put("finel", 55);
 		COMMAND_TO_CODON.put("storec", 56);
 		COMMAND_TO_CODON.put("storecodon", 56);
 		COMMAND_TO_CODON.put("storex", 57);
@@ -85,7 +102,7 @@ public class ProgramHelper {
 		COMMAND_TO_CODON.put("attack", 63);
 	}
 	
-	public static int[] stringsToCodons(String[] strings) {
+	public static int[] stringsToCodons(String[] strings, PrintStream out) {
 		ArrayList<Integer> res = new ArrayList<Integer>();
 		for (String s : strings) {
 			s = s.toLowerCase();
@@ -114,7 +131,7 @@ public class ProgramHelper {
 				res.add(COMMAND_TO_CODON.get(s));
 			}
 			else {
-				System.out.println("Could not parse: " + s);
+				out.println("Could not parse: " + s);
 			}
 		}
 		int[] res1 = new int[res.size()];
@@ -123,31 +140,15 @@ public class ProgramHelper {
 		}
 		return res1;
 	}
-	
 
 
-	public static void main(String[] args) {
-		Scanner scanner = new Scanner(System.in);
-		
-		StringBuilder string = new StringBuilder();
 
-		while (true) {
-		    String input = scanner.nextLine();
-
-		    if (input.length() == 0) {
-		    	break;
-		    }
-		    else {
-		    	string.append(input);
-		    	string.append(" ");
-		    }
-		}
-		
-		System.out.println("Compiling program");
-		String[] strings = string.toString().split("\\s+");
-		System.out.println("Input: " + Arrays.toString(strings));
-		int[] codons = stringsToCodons(strings);
-		System.out.println("Codons: " + Arrays.toString(codons));
+	public static void compileProgram(String s, PrintStream out) {
+		out.println("Compiling program");
+		String[] strings = s.split("\\s+");
+		out.println("Input: " + Arrays.toString(strings));
+		int[] codons = stringsToCodons(strings, out);
+		out.println("Codons: " + Arrays.toString(codons));
 		byte[] res = new byte[codons.length * 3];
 		for (int i = 0; i<codons.length; i++) {
 			res[3*i] = (byte) ((codons[i] >> 4) & 3);
@@ -155,10 +156,61 @@ public class ProgramHelper {
 			res[3*i+2] = (byte) (codons[i] & 3);
 		}
 		DNA result = DNA.join(DNA.stringToDNA("TATAAA"), DNA.fromBytes(res));
-		System.out.println("DNA: " + result);
+		out.println("DNA: " + result);
 		Program testProgram = Program.parseProgram(result);
-		System.out.println("Program: " + Arrays.toString(testProgram.getStatements()));
+		out.println("Program: " + Arrays.toString(testProgram.getStatements()));
+	}
+	
+
+
+	public static void main(String[] args) {
+		JFrame frame = new JFrame();
+		JPanel panel = new JPanel();
 		
-		scanner.close();
+        frame.setLayout(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+
+        gbc.gridx = 0;
+        gbc.fill = GridBagConstraints.BOTH;
+        gbc.insets = new Insets(5, 5, 5, 5);
+
+        JTextArea inputArea = new JTextArea();
+        gbc.gridy = 0;
+        gbc.weightx = 1.0;
+        gbc.weighty = 1.0;
+        inputArea.setPreferredSize(new Dimension(800, 150));
+        frame.add(inputArea, gbc);
+
+        JButton button = new JButton("Compile");
+        gbc.gridy = 1;
+        gbc.weighty = 0;
+        gbc.fill = GridBagConstraints.NONE;
+        gbc.anchor = GridBagConstraints.CENTER;
+        frame.add(button, gbc);
+
+        JTextArea outputArea = new JTextArea();
+        gbc.gridy = 2;
+        gbc.weighty = 1.0;
+        gbc.fill = GridBagConstraints.BOTH;
+        outputArea.setPreferredSize(new Dimension(800, 150));
+        outputArea.setEditable(false);
+        frame.add(outputArea, gbc);
+        
+        button.addActionListener(e -> {
+        	ByteArrayOutputStream out = new ByteArrayOutputStream();
+        	String utf8 = StandardCharsets.UTF_8.name();
+        	try {
+				compileProgram(inputArea.getText(), new PrintStream(out, true, utf8));
+	        	outputArea.setText(out.toString(utf8));
+			} catch (UnsupportedEncodingException e1) {
+				e1.printStackTrace();
+			}
+        });
+        
+	    frame.pack();
+	    frame.setTitle("DNA Compiler");
+	    frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+	    frame.setLocationRelativeTo(null);
+	    frame.setVisible(true);
 	}
 }
