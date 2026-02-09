@@ -248,6 +248,8 @@ public class World {
 		this.selectedCell = cellAtPoint(point);
 		if (selectedCell != null) {
 			System.out.println("Cell selected.");
+			System.out.println("DNA: " + selectedCell.getDna());
+			System.out.println("Program: " + selectedCell.getProgram());
 		}
 		else {
 			System.out.println("No cell selected.");

@@ -1,6 +1,7 @@
 package genome;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -21,6 +22,10 @@ public class Program {
 	private Program(Statement[] statements, Map<Integer, Integer> labels) {
 		this.statements = statements;
 		this.labels = labels;
+	}
+	
+	public String toString() {
+		return Arrays.toString(this.statements);
 	}
 	
 	public static Program parseProgram(DNA dna) {
