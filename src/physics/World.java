@@ -5,7 +5,6 @@ import static utils.Utils.nearZero;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.event.MouseEvent;
-import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -13,6 +12,7 @@ import cell.Cell;
 import cell.Substance;
 import cell.WorldSettings;
 import display.DrawContext;
+import mutation.MutationGenerator;
 	
 public class World {
 	private int width, height;
@@ -20,7 +20,8 @@ public class World {
 	private List<Cell> cells;
 	private List<AbstractWall> walls;
 	private List<Cell> newCells;
-	public WorldSettings settings;
+	public final WorldSettings settings;
+	public final MutationGenerator mutationGenerator;
 	public Cell selectedCell; // may want to go to private when not debugging
 
 	public int getWidth() {
@@ -39,6 +40,7 @@ public class World {
 		this.newCells = new LinkedList<Cell>();
 		this.walls = new LinkedList<AbstractWall>();
 		this.settings = settings;
+		this.mutationGenerator = new MutationGenerator();
 	}
 	
 	public void addCell(Cell cell) {

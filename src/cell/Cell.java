@@ -10,6 +10,7 @@ import display.DrawContext;
 import genome.DNA;
 import genome.Genome;
 import genome.Program;
+import mutation.Mutation;
 import physics.BallEntity;
 import physics.Vector;
 import physics.World;
@@ -216,7 +217,7 @@ public class Cell extends BallEntity {
 	 * @return value of memory at that index
 	 */
 	public int memGet(int i) {
-		if (i < memory.length) {
+		if (i < memory.length && i >= 0) {
 			return memory[i];
 		}
 		else {
@@ -230,7 +231,7 @@ public class Cell extends BallEntity {
 	 * @param x = value to write
 	 */
 	public void memSet(int i, int x) {
-		if (i < memory.length) {
+		if (i < memory.length && i >= 0) {
 			memory[i] = x;
 		}
 	}
@@ -449,6 +450,7 @@ public class Cell extends BallEntity {
 	 * Cell attempts to reproduce in its current state.
 	 */
 	public void repro() {
+		// Reject division if not enough Nucleic or cell too small
 		if (substances[Substance.NUCLEIC.id] < 2 * this.getDna().length()) {
 			return;
 		}
@@ -457,6 +459,8 @@ public class Cell extends BallEntity {
 		if (Math.min(ratio, 1-ratio) * this.body() < world.settings.getMinCellBody()) {
 			return;
 		}
+		
+		// Compute location of child cell
 		Vector facingVector = new Vector(Math.cos(facing), Math.sin(facing));
 		Vector childDisplace = Vector.mult(facingVector, this.radius() * (1-ratio));
 		Vector myDisplace = Vector.mult(facingVector, this.radius() * -ratio);
@@ -472,11 +476,12 @@ public class Cell extends BallEntity {
 			}
 		}
 		
-		// TODO change to correct DNA copying when implemented
-		Cell daughter = new Cell(world, childDisplace.add(this.pos()), this.vel().clone(), facing, genome, 0, 0, childSubstances, new int[64], 0, 0, 0);
-		
-		this.pos.add(myDisplace);
-		
+		// Generate mutation, compute new genome, and create new cell
+		Mutation m = world.mutationGenerator.generateMutation(getDna());
+		Cell daughter = new Cell(world, childDisplace.add(this.pos()), this.vel().clone(), facing, genome.applyMutation(m), 0, 0, childSubstances, new int[64], 0, 0, 0);
 		world.queueCell(daughter);
+		
+		// Move the original cell
+		this.pos.add(myDisplace);
 	}
 }

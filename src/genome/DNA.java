@@ -2,6 +2,7 @@ package genome;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.random.RandomGenerator;
 
 /**
  * An object representing the DNA sequence.
@@ -75,6 +76,14 @@ public class DNA {
 	}
 	
 	/**
+	 * Returns a copy of the byte array corresponding to this DNA
+	 * @return byte array
+	 */
+	public byte[] toBytes() {
+		return this.dna.clone();
+	}
+	
+	/**
 	 * Takes a subsequence between a start and end point
 	 * @param a - the start point
 	 * @param b - the end point
@@ -91,6 +100,18 @@ public class DNA {
 	 */
 	public DNA substring(int a) {
 		return substring(a, length());
+	}
+	
+	/**
+	 * Produces the reverse of this DNA fragment
+	 * @return the reversed DNA
+	 */
+	public DNA reverse() {
+		byte[] res = new byte[this.length()];
+		for (int i = 0; i<res.length; i++) {
+			res[res.length - i] = dna[i];
+		}
+		return DNA.fromBytes(res);
 	}
 	
 	/**
@@ -182,6 +203,34 @@ public class DNA {
 			}
 		}
 		return new DNA(bytes);
+	}
+	
+	/**
+	 * Generates a random DNA of specified length
+	 * @param length - length of DNA to generate
+	 * @param rng - random generator to use
+	 * @return the generated DNA
+	 */
+	public static DNA random(int length, RandomGenerator rng) {
+		byte[] res = new byte[length];
+		for (int i = 0; i<length; i++) {
+			res[i] = (byte) rng.nextInt(4);
+		}
+		return DNA.fromBytes(res);
+	}
+	
+	/**
+	 * Generates a random DNA of the same length as a given one, where every nucleotide is different from the given one
+	 * @param dna - DNA to be different from
+	 * @param rng - random generator to use
+	 * @return the generated DNA
+	 */
+	public static DNA randomUnequal(DNA dna, RandomGenerator rng) {
+		byte[] res = new byte[dna.length()];
+		for (int i = 0; i<res.length; i++) {
+			res[i] = (byte) ((rng.nextInt(3) + dna.dna[i]) % 4);
+		}
+		return DNA.fromBytes(res);
 	}
 	
 	/**
