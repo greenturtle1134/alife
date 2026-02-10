@@ -36,6 +36,7 @@ public class DisplayPanel extends JPanel {
                 if (clickX >= 0 && clickX < world.getWidth() && clickY >= 0 && clickY < world.getHeight()) {
                 	world.click(clickX, clickY, e);
                 }
+                repaint();
             }
         });
 	}

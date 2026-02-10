@@ -32,8 +32,16 @@ public class Application {
         panel.setPreferredSize(new Dimension((int) (world.getHeight()*panel.zoom), (int) (world.getWidth()*panel.zoom)));
         
 		JPanel settingsPanel = new JPanel();
-		JButton testButton = new JButton("test");
-		settingsPanel.add(testButton);
+		JButton startButton = new JButton("Start / Stop");
+		startButton.addActionListener(e -> {
+			if (this.loop.isRunning()) {
+				this.loop.stop();
+			}
+			else {
+				this.loop.start();
+			}
+		});
+		settingsPanel.add(startButton);
 		frame.add(settingsPanel, BorderLayout.PAGE_START);
         
         frame.pack();
@@ -47,8 +55,6 @@ public class Application {
 		    }
 		    frame.repaint();
 		});
-        
-        this.loop.start();
 	}
 	
 //	public void runSaveVideo(String path) {
