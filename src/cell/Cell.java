@@ -379,6 +379,7 @@ public class Cell extends BallEntity {
 		}
 		if (amount < 0) {
 			burn(s, -amount);
+			return;
 		}
 		
 		// If insufficient nrg, clamp it
@@ -409,6 +410,7 @@ public class Cell extends BallEntity {
 		}
 		if (amount < 0) {
 			burn(s, -amount);
+			return;
 		}
 		
 		// If insufficient substance, clamp it
