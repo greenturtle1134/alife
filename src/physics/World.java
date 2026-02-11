@@ -44,7 +44,7 @@ public class World {
 		this.walls = new LinkedList<AbstractWall>();
 		this.settings = settings;
 		this.mutationGenerator = new MutationGenerator();
-		this.cache = new CellPosCache(10);
+		this.cache = new CellPosCache(25);
 	}
 	
 	public void addCell(Cell cell) {
@@ -94,6 +94,15 @@ public class World {
 			a.tickAcc.add(force);
 			b.tickAcc.add(force.mult(-1));
 		}
+//		for (BallEntity a : entities) {
+//			for (BallEntity b : entities) {
+//				double d = Vector.dist(a.pos(), b.pos());
+//				if (d < a.radius() + b.radius() && a != b) {
+//					Vector force = Vector.sub(a.pos(), b.pos()).normalize().mult(settings.getCollisionFactor() * (a.radius() + b.radius() - d));
+//					a.tickAcc.add(force);
+//				}
+//			}
+//		}
 		
 		// Add ball-wall collision accelerations
 		for (AbstractWall w : walls) {
@@ -140,9 +149,7 @@ public class World {
 		}
 	}
 	
-	public void tick() {
-		long start = System.currentTimeMillis();
-		
+	public void tick() {		
 		/* COMPUTE STEP */
 		
 		// Computational tick
@@ -201,7 +208,6 @@ public class World {
 //				System.out.println(selectedCell.getProgram().getStatements()[selectedCell.getI()]);
 			}
 		}
-//		System.out.println("Tick time: " + (System.currentTimeMillis() - start) + ", cells: " + cells.size());
 	}
 	
 	public void draw(DrawContext c) {

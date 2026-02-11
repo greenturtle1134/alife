@@ -5,6 +5,7 @@ import java.awt.Dimension;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
@@ -43,6 +44,11 @@ public class Application {
 		});
 		settingsPanel.add(startButton);
 		frame.add(settingsPanel, BorderLayout.PAGE_START);
+		
+		JPanel statusPanel = new JPanel();
+		JLabel fpsLabel = new JLabel("ms/frame: ");
+		statusPanel.add(fpsLabel);
+		frame.add(statusPanel, BorderLayout.PAGE_END);
         
         frame.pack();
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -50,9 +56,12 @@ public class Application {
         frame.setVisible(true);
         
         this.loop = new Timer(targetFrameMillis, e -> {
+        	long start = System.currentTimeMillis();
 		    for (int i = 0; i<this.targetFrameTicks; i++) {
 		    	world.tick();
 		    }
+		    long end = System.currentTimeMillis();
+		    fpsLabel.setText("ms/frame: " + (end - start));
 		    frame.repaint();
 		});
 	}

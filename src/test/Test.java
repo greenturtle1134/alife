@@ -16,7 +16,7 @@ import physics.World;
 public class Test {
 
 	public static void main(String[] args) {		
-		String testName = "Testing cell reproduction";
+		String testName = "alife test";
 		
 //		String testString = "TATAAA AGT AAA TAC TAT AGA AAA CGA AAT TGT GAA AAT AGT AAT GCG GAA AAT TTA AGA GTG TAC TGA TAT CAA GTG TAC TTA AAT CGA AAT AGA AAT";
 //		String testString = "TATAAA CTA TTA ATA CCA AAT TTA AAG AGT AAA GCA GAG TGA AAG TTG AAG ATA AGA AAA TAC AAA";
@@ -47,7 +47,7 @@ public class Test {
 //			world.addEntity(new TestBall(world, new Vector(random.nextDouble() * 80 + 10, random.nextDouble() * 80 + 10), new Vector(0, 0), r, r*r));
 //		}
 
-		Application application = new Application(world, testName, 2.0, 10, 10);
+		Application application = new Application(world, testName, 1.0, 10, 10);
 //		application.runSaveVideo("..\\..\\Desktop\\alife screenshots\\frames");
 		
 		
