@@ -5,6 +5,7 @@ import static utils.Utils.nearZero;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.event.MouseEvent;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -13,6 +14,7 @@ import cell.Substance;
 import cell.WorldSettings;
 import display.DrawContext;
 import mutation.MutationGenerator;
+import utils.UnorderedPair;
 	
 public class World {
 	private int width, height;
@@ -23,6 +25,7 @@ public class World {
 	public final WorldSettings settings;
 	public final MutationGenerator mutationGenerator;
 	public Cell selectedCell; // may want to go to private when not debugging
+	private CellPosCache cache;
 
 	public int getWidth() {
 		return width;
@@ -41,6 +44,7 @@ public class World {
 		this.walls = new LinkedList<AbstractWall>();
 		this.settings = settings;
 		this.mutationGenerator = new MutationGenerator();
+		this.cache = new CellPosCache(10);
 	}
 	
 	public void addCell(Cell cell) {
@@ -54,6 +58,7 @@ public class World {
 	
 	public void addEntity(BallEntity cell) {
 		this.entities.add(cell);
+		this.cache.add(cell);
 	}
 	
 	public void addWall(AbstractWall wall) {
@@ -73,16 +78,21 @@ public class World {
 		}
 		
 		// Add ball-ball collision accelerations
+		HashSet<UnorderedPair<BallEntity>> collisions = new HashSet<>();
+		cache.clear();
 		for (BallEntity a : entities) {
-			for (BallEntity b : entities) {
-				double d = Vector.dist(a.pos, b.pos);
-				if (a != b && d < a.radius() + b.radius()) {
-					// Do a collision
-					// Force on a is in direction of (a-b)
-					Vector force = Vector.sub(a.pos, b.pos).normalize().mult(settings.getCollisionFactor() * (a.radius() + b.radius() - d));
-					a.tickAcc.add(force);
-				}
-			}
+			cache.add(a);
+		}
+		for (BallEntity a : entities) {
+			cache.radiusQuery(a, a.radius() * 2).filter(b -> Vector.dist(a.pos(), b.pos()) < a.radius() + b.radius()).forEach(b -> collisions.add(new UnorderedPair<>(a, b)));
+		}
+		for (UnorderedPair<BallEntity> x : collisions) {
+			BallEntity a = x.a;
+			BallEntity b = x.b;
+			double d = Vector.dist(a.pos(), b.pos());
+			Vector force = Vector.sub(a.pos(), b.pos()).normalize().mult(settings.getCollisionFactor() * (a.radius() + b.radius() - d));
+			a.tickAcc.add(force);
+			b.tickAcc.add(force.mult(-1));
 		}
 		
 		// Add ball-wall collision accelerations
