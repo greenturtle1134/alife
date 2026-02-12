@@ -264,6 +264,11 @@ public class Cell extends BallEntity {
 		int x = c.toZoom(this.pos.x);
 		int y = c.toZoom(this.pos.y);
 		int r = c.toZoom(this.radius());
+		
+		g.setColor(genome.color);
+		g.fillOval(x - r, y - r, 2 * r, 2 * r);
+
+		g.setColor(Color.BLACK);
 		g.drawOval(x - r, y - r, 2 * r, 2 * r);
 		
 		int x1 = c.toZoom(Math.cos(facing) * this.radius());

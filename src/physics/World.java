@@ -201,12 +201,12 @@ public class World {
 		// Print debug output
 		if (selectedCell != null) {
 			if (selectedCell.isDead()) {
-				System.out.println("Selected cell has died.");
+//				System.out.println("Selected cell has died.");
 				selectedCell = null;
 			}
 			else {
-				System.out.println(Arrays.toString(selectedCell.substances));
-				System.out.println(selectedCell.getProgram().getStatements()[selectedCell.getI()]);
+//				System.out.println(Arrays.toString(selectedCell.substances));
+//				System.out.println(selectedCell.getProgram().getStatements()[selectedCell.getI()]);
 			}
 		}
 	}
