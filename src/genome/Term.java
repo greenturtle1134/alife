@@ -118,7 +118,7 @@ public abstract class Term {
 		}
 	}
 	
-	// TODO *exactly* what jump options do I want to permit? Forward, backward, by codon, relative, absolute?
+	// TODO Add other Jump options
 	
 //	public static class JumpDelta extends Statement {
 //		private Operator a;
@@ -161,7 +161,7 @@ public abstract class Term {
 		
 		public void exec(Cell c) {
 			if (cond.eval(c) != 0) {
-				// TODO implement skip
+				// TODO implement backskip
 			}
 		}
 		
@@ -196,8 +196,6 @@ public abstract class Term {
 			return "Nop()";
 		}
 	}
-	
-	// TODO decide if I want a "restart" statement?
 	
 	public static class Int extends Operator {
 		private int val;
@@ -263,7 +261,7 @@ public abstract class Term {
 		}
 	}
 	
-	// TODO: Implement integer Pow2 if I want it
+	// Implement integer Pow2 if I want it
 	
 	public static class Double extends Operator {
 		private Operator a;
@@ -297,7 +295,7 @@ public abstract class Term {
 		}
 	}
 	
-	// TODO implement Times64 and Divide64 if I deem those necessary
+	// Implement Times64 and Divide64 if I deem those necessary
 	
 	public static class ReadCodon extends Operator {
 		private int a;
@@ -643,7 +641,7 @@ public abstract class Term {
 		}
 		
 		public void exec(Cell c) {
-			c.rotRequest += (isLeft ? -1 : 1) * a.eval(c) / (isFine ? 256.0 : 64.0); // TODO maybe a parameter for fine turning ratio?
+			c.rotRequest += (isLeft ? -1 : 1) * a.eval(c) / (isFine ? 256.0 : 64.0); // maybe a parameter for fine turning ratio?
 		}
 		
 		public String toString() {
@@ -687,7 +685,7 @@ public abstract class Term {
 		}
 	}
 	
-	// TODO: Implement the AddTo if I want them
+	// Implement the AddTo if I want them
 	
 	public static class Build extends Statement {
 		private Operator target;

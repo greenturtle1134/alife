@@ -15,7 +15,7 @@ public class DNA {
 //	public static final char[] NUCLEOTIDES = {'K', 'X', 'P', 'M'};
 //	public static final char[] NUCLEOTIDES = {'E', 'J', 'P', 'X'};
 	
-	public static final int[] TATA = {1, 0, 1, 0, 0, 0}; // TODO currently for testing purposes
+	public static final int[] TATA = {1, 0, 1, 0, 0, 0}; // currently for testing purposes
 	public static final int STOP_CODON = 19;
 	
 	private byte[] dna;

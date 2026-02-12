@@ -329,7 +329,8 @@ public class Cell extends BallEntity {
 	}
 	
 	/**
-	 * Retrieves the rotation intent of this cell, from -1 to 1 in units of revolutions
+	 * Retrieves the rotation intent of this cell, from -1 to 1 in units of revolutions.
+	 * Should take into account rotation limits, but currently does not.
 	 */
 	public double rotation() {
 		// TODO insert limit control here

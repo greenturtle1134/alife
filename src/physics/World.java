@@ -193,7 +193,7 @@ public class World {
 		// Cells rotate as requested
 		for (Cell e : cells) {
 			e.setFacing(e.getFacing() + e.rotation());
-			e.rotRequest = 0; // TODO should this instead be a method call
+			e.rotRequest = 0;
 		}
 		
 		// Euler-Cromer algorithm: update velocity, then update position with updated velocity
@@ -257,7 +257,7 @@ public class World {
 	}
 	
 	public double lightAtPoint(Vector point) {
-		// TODO implement actual light calculations; currently just a point light at the center
+		// TODO More formalized light calculations
 		double dx = point.x - width/2.0;
 		double dy = point.y - height/2.0;
 		double d = Math.sqrt(dx*dx+dy*dy);
