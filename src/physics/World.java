@@ -28,7 +28,7 @@ public class World {
 	public final MutationGenerator mutationGenerator;
 	public Cell selectedCell; // may want to go to private when not debugging
 	private CellPosCache cache;
-	public final RandomGenerator rng = RandomGenerator.getDefault(); // TODO maybe give options to specify rng
+	public final RandomGenerator rng;
 
 	public int getWidth() {
 		return width;
@@ -38,7 +38,7 @@ public class World {
 		return height;
 	}
 
-	public World(int width, int height, WorldSettings settings) {
+	public World(int width, int height, WorldSettings settings, RandomGenerator rng) {
 		this.width = width;
 		this.height = height;
 		this.entities = new LinkedList<BallEntity>();
@@ -48,6 +48,15 @@ public class World {
 		this.settings = settings;
 		this.mutationGenerator = new MutationGenerator();
 		this.cache = new CellPosCache(25);
+		this.rng = rng;
+	}
+	
+	public World(int width, int height, WorldSettings settings) {
+		this(width, height, settings, RandomGenerator.getDefault());
+	}
+	
+	public World(int width, int height) {
+		this(width, height, WorldSettings.getDefault());
 	}
 	
 	public void addCell(Cell cell) {

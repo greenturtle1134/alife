@@ -48,6 +48,10 @@ public class WorldSettings {
 		this.minCellBody = 25;
 		this.divisionCost = 50;
 	}
+	
+	public static WorldSettings getDefault() {
+		return new WorldSettings();
+	}
 
 	public double getAccelFactor() {
 		return accelFactor;
