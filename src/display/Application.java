@@ -19,6 +19,7 @@ public class Application {
 	private int targetFrameMillis, targetFrameTicks;
 	private int t;
 	private Timer loop;
+	private JLabel statusLabel;
 	
 	public Application(World world, String title, double zoom, int targetFrameMillis, int targetFrameTicks) {
 		this.world = world;
@@ -37,17 +38,23 @@ public class Application {
 		startButton.addActionListener(e -> {
 			if (this.loop.isRunning()) {
 				this.loop.stop();
+				setStatus("Paused simulation.");
 			}
 			else {
 				this.loop.start();
+				setStatus("Started simulation.");
 			}
 		});
 		settingsPanel.add(startButton);
 		frame.add(settingsPanel, BorderLayout.PAGE_START);
 		
 		JPanel statusPanel = new JPanel();
+		statusLabel = new JLabel("Starting...");
 		JLabel fpsLabel = new JLabel("ms/frame: ");
+		JLabel countLabel = new JLabel("cells: ");
+		statusPanel.add(statusLabel);
 		statusPanel.add(fpsLabel);
+		statusPanel.add(countLabel);
 		frame.add(statusPanel, BorderLayout.PAGE_END);
         
         frame.pack();
@@ -62,8 +69,15 @@ public class Application {
 		    }
 		    long end = System.currentTimeMillis();
 		    fpsLabel.setText("ms/frame: " + (end - start));
+		    countLabel.setText("cells: " + world.getCells().size());
 		    frame.repaint();
 		});
+        
+        setStatus("Ready to start.");
+	}
+	
+	public void setStatus(String s) {
+		statusLabel.setText(s);
 	}
 	
 //	public void runSaveVideo(String path) {
