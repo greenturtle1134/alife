@@ -467,6 +467,9 @@ public class Cell extends BallEntity {
 			return;
 		}
 		
+		// Cost energy to divide
+		this.addSubstance(Substance.NRG.id, -world.settings.getDivisionCost());
+		
 		// Compute location of child cell
 		Vector facingVector = new Vector(Math.cos(facing), Math.sin(facing));
 		Vector childDisplace = Vector.mult(facingVector, this.radius() * (1-ratio));

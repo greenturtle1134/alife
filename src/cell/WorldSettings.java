@@ -12,9 +12,10 @@ public class WorldSettings {
 	private double rotationCost; // Cost of one unit of rotation (i.e. 1/64 of a half-revolution)
 	private double photoEnergy; // nrg to award for each unit of active chlorophyll
 	private double minCellBody; // smallest cell permitted
+	private double divisionCost;
 
 	public WorldSettings(double accelFactor, double dragFactor, double collisionFactor, double[] substanceCosts, double[] substanceRefunds, double[] substanceMaints,
-			double[] capacityFactors, double movementCost, double rotationCost, double photoEnergy, double minCellBody) {
+			double[] capacityFactors, double movementCost, double rotationCost, double photoEnergy, double minCellBody, double divisionCost) {
 		this.accelFactor = accelFactor;
 		this.dragFactor = dragFactor;
 		this.collisionFactor = collisionFactor;
@@ -26,6 +27,7 @@ public class WorldSettings {
 		this.rotationCost = rotationCost;
 		this.photoEnergy = photoEnergy;
 		this.minCellBody = minCellBody;
+		this.divisionCost = divisionCost;
 	}
 	
 	public WorldSettings() {
@@ -44,6 +46,7 @@ public class WorldSettings {
 		this.rotationCost = 1;
 		this.photoEnergy = 0.2;
 		this.minCellBody = 25;
+		this.divisionCost = 50;
 	}
 
 	public double getAccelFactor() {
@@ -132,5 +135,13 @@ public class WorldSettings {
 
 	public void setMinCellBody(double minCellBody) {
 		this.minCellBody = minCellBody;
+	}
+
+	public double getDivisionCost() {
+		return divisionCost;
+	}
+
+	public void setDivisionCost(double divisionCost) {
+		this.divisionCost = divisionCost;
 	}
 }

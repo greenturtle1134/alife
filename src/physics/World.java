@@ -9,6 +9,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.random.RandomGenerator;
 
 import cell.Cell;
 import cell.Substance;
@@ -27,6 +28,7 @@ public class World {
 	public final MutationGenerator mutationGenerator;
 	public Cell selectedCell; // may want to go to private when not debugging
 	private CellPosCache cache;
+	public final RandomGenerator rng = RandomGenerator.getDefault(); // TODO maybe give options to specify rng
 
 	public int getWidth() {
 		return width;
@@ -144,6 +146,11 @@ public class World {
 			c.tickAcc.add(c.moveAcc().mult(settings.getAccelFactor()));
 		}
 		
+		// Brownian motion
+		for (BallEntity a : entities) {
+			a.tickAcc.add(new Vector(rng.nextGaussian(), rng.nextGaussian()));
+		}
+		
 		// Divide through by masses
 		for (BallEntity a : entities) {
 			a.tickAcc.mult(1 / a.mass());
@@ -254,8 +261,8 @@ public class World {
 		double dx = point.x - width/2.0;
 		double dy = point.y - height/2.0;
 		double d = Math.sqrt(dx*dx+dy*dy);
-		double r = Math.min(width, height) / 2;
-		return Math.max(0, 200 * (1 - d/r));
+		double r = Math.min(width, height) / 2 - 100;
+		return Math.max(0, (100 - 4*Math.abs(d - r)) * (width - point.x) / width);
 	}
 
 	public void click(double clickX, double clickY, MouseEvent e) {
@@ -267,6 +274,7 @@ public class World {
 			System.out.println("Cell selected.");
 			System.out.println("DNA: " + selectedCell.getDna());
 			System.out.println("Program: " + selectedCell.getProgram());
+			System.out.println("Substances: " + Arrays.toString(selectedCell.substances));
 		}
 		else {
 			System.out.println("No cell selected.");
