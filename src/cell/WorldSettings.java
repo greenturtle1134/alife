@@ -34,8 +34,8 @@ public class WorldSettings {
 		this.accelFactor = 1;
 		this.dragFactor = 0.5;
 		this.collisionFactor = 5;
-		double[] substanceCosts = {1, 1, 0.1, 1};
-		double[] substanceRefunds = {1, 0.8, 0.05, 0.5};
+		double[] substanceCosts = {1, 1, 1, 1};
+		double[] substanceRefunds = {1, 0.8, 0.5, 0.5};
 		double[] substanceMaints = {0, 0.01, 0, 0.1};
 		double[] capacityFactors = {1, 1, 1, 1};
 		this.substanceCosts = substanceCosts;

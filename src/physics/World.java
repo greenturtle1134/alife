@@ -271,7 +271,7 @@ public class World {
 		double dy = point.y - height/2.0;
 		double d = Math.sqrt(dx*dx+dy*dy);
 		double r = Math.min(width, height) / 2 - 100;
-		return Math.max(0, (100 - 4*Math.abs(d - r)) * (width - point.x) / width);
+		return Math.max(0, 4 * (50 - Math.abs(d - r)) * (width - point.x) / width);
 	}
 
 	public void click(double clickX, double clickY, MouseEvent e) {

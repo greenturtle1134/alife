@@ -9,9 +9,9 @@ public class MutationGenerator {
 	private RandomGenerator rng;
 	
 	public MutationGenerator() {
-		this.pBlock = 0.1;
-		this.pAdd = 0.1;
-		this.pDel = 0.1;
+		this.pBlock = 0.01;
+		this.pAdd = 0.01;
+		this.pDel = 0.01;
 		this.rng = RandomGenerator.getDefault();
 	}
 	

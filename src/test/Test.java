@@ -18,15 +18,11 @@ public class Test {
 
 	public static void main(String[] args) {		
 		String testName = "alife test";
-		
-//		String testString = "TATAAA AGT AAA TAC TAT AGA AAA CGA AAT TGT GAA AAT AGT AAT GCG GAA AAT TTA AGA GTG TAC TGA TAT CAA GTG TAC TTA AAT CGA AAT AGA AAT";
-//		String testString = "TATAAA CTA TTA ATA CCA AAT TTA AAG AGT AAA GCA GAG TGA AAG TTG AAG ATA AGA AAA TAC AAA";
-//		String testString = "TATAAA CTA TTA AAT CCA TTA AAC CCA AAG CCA AAT AGT AAA GCA GAG TGA AAG TTG AAG ATA AGA AAA TAC AAA";
-//		String testString = "TATAAACTAAATAGTAATGCAGAGAAATTAAGGCCAAATCCAAAGCCATTAAACATAAGAAAT";
+		String testString = "TATAAACTAAATAGTAATGCAGAGAAATTAAGGCCAAATCCAAAGCCATTAAACATAAGAAAT";
 //		String testString = "TATAAAAGAAATAGTAATGCAGAGAAATTAAGGCCAAATCCAAAGTTCGGAGCCATTAAACATAGGT";
 //		String testString = "TATAAACTACCAAAGTGTGATAAAGTAGAGAATTTAGACCCAAATTCTGAGCCATTAAACAACATAAT";
 //		String testString = "TATAAACCAAATAATCCAAATAATCCAAAGGAGAAACCATTAAACAATATA";
-		String testString = "CTTCGCTCGTGCTGTAGCCGCGGTTAATTTACACCGGGAATCACGAAGTCGAATCACTGGTCTGTCAAGCGGAGCTTCGGCGTTCCAGTGAATGTTCGTTGCAACAGAGCATTCACTTAGAGTTCTTGAGGTAGAAATTGTCCTTGGGTCGGCGCTTATAAACATCGCCCAAATGAGGTTATACAATGCCTTCTCCCAAAGGAGGCTAAGCCATTAAACGCGCGAAGCGGTTCGGTTGAACACTATAGGC";
+//		String testString = "CTTCGCTCGTGCTGTAGCCGCGGTTAATTTACACCGGGAATCACGAAGTCGAATCACTGGTCTGTCAAGCGGAGCTTCGGCGTTCCAGTGAATGTTCGTTGCAACAGAGCATTCACTTAGAGTTCTTGAGGTAGAAATTGTCCTTGGGTCGGCGCTTATAAACATCGCCCAAATGAGGTTATACAATGCCTTCTCCCAAAGGAGGCTAAGCCATTAAACGCGCGAAGCGGTTCGGTTGAACACTATAGGC";
 		DNA testDNA = DNA.stringToDNA(testString);
 		System.out.println("       DNA: " + testDNA);
 		System.out.println("   Splices: " + Arrays.toString(testDNA.findSplices(DNA.TATA)));
@@ -39,7 +35,7 @@ public class Test {
 			System.out.println("       - " + String.format("%04X", l) + ": line " + labels.get(l));
 		}
 		
-		World world = new World(1000, 1000, new WorldSettings());
+		World world = new World(1000, 1000);
 		
 		Cell cell = new Cell(world, new Vector(100, 500), new Vector(0, 0), Math.PI / 2, testDNA, 50, 50);
 		cell.addSubstance(Substance.CHLOROPHYLL.id, 50);
@@ -52,7 +48,7 @@ public class Test {
 //			world.addEntity(new TestBall(world, new Vector(random.nextDouble() * 80 + 10, random.nextDouble() * 80 + 10), new Vector(0, 0), r, r*r));
 //		}
 
-		Application application = new Application(world, testName, 0.8, 10, 1);
+		Application application = new Application(world, testName, 0.8, 10, 10);
 //		application.runSaveVideo("..\\..\\Desktop\\alife screenshots\\frames");
 		
 		
