@@ -2,6 +2,7 @@ package physics;
 
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.stream.Stream;
 
 import com.google.common.collect.ListMultimap;
@@ -52,32 +53,6 @@ public class CellPosCache {
 		return Arrays.stream(res);
 	}
 	
-//	/**
-//	 * Inserts a key/value pair into the multimap, creating a new list if necessary
-//	 * @param key
-//	 * @param value
-//	 */
-//	private void putMap(IntPair key, BallEntity value) {
-//		if (!map.containsKey(key)) {
-//			map.put(key, new LinkedList<BallEntity>());
-//		}
-//		map.get(key).add(value);
-//	}
-//	
-//	/**
-//	 * Deletes a key/value pair from the multimap, removing this entry from the map if it is now empty
-//	 * @param key
-//	 * @param value
-//	 */
-//	private void removeMap(IntPair key, BallEntity value) {
-//		if (map.containsKey(key)) {
-//			map.get(key).remove(value);
-//			if (map.get(key).isEmpty()) {
-//				map.remove(key);
-//			}
-//		}
-//	}
-	
 	/**
 	 * Adds a new BallEntity to the cache
 	 * @param c - object to insert
@@ -98,15 +73,45 @@ public class CellPosCache {
 		reverseMap.remove(c);
 	}
 	
+	/**
+	 * 
+	 */
+	public void update() {
+		for (Map.Entry<BallEntity, IntPair> entry : reverseMap.entrySet()) {
+			IntPair current = getGrid(entry.getKey().pos());
+			if (!(current.equals(entry.getValue()))) {
+//				System.out.println("Updated " + entry.getKey() + " from " + entry.getValue() + " to " + current);
+				map.remove(entry.getValue(), entry.getKey());
+				map.put(current, entry.getKey());
+				entry.setValue(current);
+			}
+		}
+	}
+	
+	/**
+	 * Queries all BallEntites within a given radius of a given point
+	 * @param pos - the point
+	 * @param radius - the radius
+	 * @return a Stream of BallEntities within the radius
+	 */
 	public Stream<BallEntity> radiusQuery(Vector pos, double radius) {
 		Stream<IntPair> gridCells = gridsInRadius(pos, radius);
 		return gridCells.flatMap(x -> map.get(x).stream()).filter(x -> Vector.dist(x.pos(), pos) <= radius);
 	}
 	
+	/**
+	 * Queries all BallEntites within a given radius of a given entity, excluding the entity itself
+	 * @param e - the BallEntity
+	 * @param radius - the radius
+	 * @return a Stream of BallEntities within the radius
+	 */
 	public Stream<BallEntity> radiusQuery(BallEntity e, double radius) {
 		return radiusQuery(e.pos(), radius).filter(x -> x != e);
 	}
 	
+	/**
+	 * Deletes all entries in this cache
+	 */
 	public void clear() {
 		map.clear();
 		reverseMap.clear();
@@ -136,6 +141,11 @@ public class CellPosCache {
 		@Override
 		public int hashCode() {
 			return 31 * x + y;
+		}
+		
+		@Override
+		public String toString() {
+			return "(" + x + ", " + y + ")";
 		}
 	}
 }
