@@ -157,7 +157,7 @@ public class World {
 		
 		// Brownian motion
 		for (BallEntity a : entities) {
-			a.tickAcc.add(new Vector(rng.nextGaussian(), rng.nextGaussian()));
+			a.tickAcc.add(new Vector(rng.nextGaussian(0, settings.getBrownianMotion()), rng.nextGaussian(0, settings.getBrownianMotion())));
 		}
 		
 		// Divide through by masses
