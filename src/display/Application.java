@@ -15,7 +15,6 @@ public class Application {
 	private World world;
 	private JFrame frame;
 	private DisplayPanel panel;
-	private double zoom;
 	private int targetFrameMillis, targetFrameTicks;
 	private int t;
 	private Timer loop;
@@ -23,7 +22,6 @@ public class Application {
 	
 	public Application(World world, String title, double zoom, int targetFrameMillis, int targetFrameTicks) {
 		this.world = world;
-		this.zoom = zoom;
 		this.frame = new JFrame(title);
 		this.panel = new DisplayPanel(world, 0, 0, zoom);
 		this.targetFrameMillis = targetFrameMillis;
@@ -31,7 +29,7 @@ public class Application {
 		this.t = 0;
 		
         frame.add(panel, BorderLayout.CENTER); //adds DisplayGraphics to the frame for viewing
-        panel.setPreferredSize(new Dimension((int) (world.getHeight()*panel.zoom), (int) (world.getWidth()*panel.zoom)));
+        panel.setPreferredSize(new Dimension(400, 400));
         
 		JPanel settingsPanel = new JPanel();
 		JButton startButton = new JButton("Start / Stop");
@@ -46,18 +44,24 @@ public class Application {
 			}
 		});
 		settingsPanel.add(startButton);
+		JButton centerButton = new JButton("Recenter");
+		centerButton.addActionListener(e -> {
+			panel.zoomFit();
+		});
+		settingsPanel.add(centerButton);
 		frame.add(settingsPanel, BorderLayout.PAGE_START);
 		
 		JPanel statusPanel = new JPanel();
 		statusLabel = new JLabel("Starting...");
-		JLabel fpsLabel = new JLabel("ms/frame: ");
-		JLabel countLabel = new JLabel("cells: ");
 		statusPanel.add(statusLabel);
+		JLabel fpsLabel = new JLabel("ms/frame: ");
 		statusPanel.add(fpsLabel);
+		JLabel countLabel = new JLabel("cells: ");
 		statusPanel.add(countLabel);
 		frame.add(statusPanel, BorderLayout.PAGE_END);
         
         frame.pack();
+        panel.zoomFit();
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
