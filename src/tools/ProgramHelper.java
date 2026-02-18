@@ -16,7 +16,6 @@ import java.util.regex.Pattern;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
-import javax.swing.JPanel;
 import javax.swing.JTextArea;
 
 import genome.DNA;
@@ -165,7 +164,6 @@ public class ProgramHelper {
 
 	public static void main(String[] args) {
 		JFrame frame = new JFrame();
-		JPanel panel = new JPanel();
 		
         frame.setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();

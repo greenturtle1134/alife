@@ -22,12 +22,13 @@ public class Application {
 	
 	public Application(World world, String title, double zoom, int targetFrameMillis, int targetFrameTicks) {
 		this.world = world;
-		this.frame = new JFrame(title);
-		this.panel = new DisplayPanel(world, 0, 0, zoom);
 		this.targetFrameMillis = targetFrameMillis;
 		this.targetFrameTicks = targetFrameTicks;
 		this.t = 0;
 		
+		this.frame = new JFrame(title);
+
+		this.panel = new DisplayPanel(world, 0, 0, zoom);
         frame.add(panel, BorderLayout.CENTER); //adds DisplayGraphics to the frame for viewing
         panel.setPreferredSize(new Dimension(400, 400));
         
@@ -59,6 +60,8 @@ public class Application {
 		JLabel countLabel = new JLabel("cells: ");
 		statusPanel.add(countLabel);
 		frame.add(statusPanel, BorderLayout.PAGE_END);
+		
+		panel.setStatusListener(s -> {statusLabel.setText(s);});
         
         frame.pack();
         panel.zoomFit();
@@ -120,12 +123,4 @@ public class Application {
 //		    t++;
 //		}).start();
 //	}
-	
-	public double getZoom() {
-		return panel.zoom;
-	}
-	
-	public void setZoom(double z) {
-		panel.zoom = z;
-	}
 }

@@ -7,15 +7,15 @@ import java.awt.event.MouseWheelEvent;
 
 import javax.swing.JPanel;
 
-import cell.WorldSettings;
 import physics.World;
 
 public class DisplayPanel extends JPanel {
 	private static final long serialVersionUID = 1L;
 	
 	private World world;
-	double x, y;
-	double zoom;
+	private double x, y;
+	private double zoom;
+	private StatusReporter status;
 
 	public DisplayPanel(World world) {
 		this(world, 0, 0, 1);
@@ -27,6 +27,7 @@ public class DisplayPanel extends JPanel {
 		this.x = x;
 		this.y = y;
 		this.zoom = zoom;
+		this.status = StatusReporter.NULL;
 		
 		this.setFocusable(true);
 
@@ -72,7 +73,7 @@ public class DisplayPanel extends JPanel {
 		this.x = cx + (this.x-cx) * factor;
 		this.y = cy + (this.y-cy) * factor;
 		this.zoom *= factor;
-//		System.out.println("Zoomed to " + this.zoom + "x on " + this.x + ", " + this.y);
+		status.set("Zoomed to " + String.format("%.2f", this.zoom) + "x.");
 		repaint();
 	}
 	
@@ -82,9 +83,18 @@ public class DisplayPanel extends JPanel {
 	 */
 	public void zoomFit() {
 		this.zoom = Math.min((double) this.getHeight() / world.getHeight(), (double) this.getWidth() / world.getWidth());
-//		System.out.println("Zoomed to " + this.zoom + "x on " + this.x + ", " + this.y);
+		status.set("Reset zoom to " + String.format("%.2f", this.zoom) + "x.");
 		this.x = (this.getWidth() - world.getWidth() * zoom) / 2;
 		this.y = (this.getHeight() - world.getHeight() * zoom) / 2;
 		repaint();
+	}
+	
+	/**
+	 * Sets the Panel to report to a particular StatusReporter object.
+	 * This method is provided because due to the order I create elements, the status will probably not be ready when I create the panel.
+	 * @param status - StatusReporter to attach
+	 */
+	public void setStatusListener(StatusReporter status) {
+		this.status = status;
 	}
 }
