@@ -26,7 +26,6 @@ public class World {
 	private List<Cell> newCells;
 	public final WorldSettings settings;
 	public final MutationGenerator mutationGenerator;
-	public Cell selectedCell; // may want to go to private when not debugging
 	private CellPosCache cache;
 	public final RandomGenerator rng;
 
@@ -213,18 +212,6 @@ public class World {
 			e.vel.add(e.tickAcc);
 			e.pos.add(e.vel);
 		}
-		
-		// Print debug output
-		if (selectedCell != null) {
-			if (selectedCell.isDead()) {
-//				System.out.println("Selected cell has died.");
-				selectedCell = null;
-			}
-			else {
-//				System.out.println(Arrays.toString(selectedCell.substances));
-//				System.out.println(selectedCell.getProgram().getStatements()[selectedCell.getI()]);
-			}
-		}
 	}
 	
 	public void draw(DrawContext c) {
@@ -240,15 +227,6 @@ public class World {
 		// Draw walls
 		for (AbstractWall w : walls) {
 			w.draw(c);
-		}
-		
-		// Draw the selection envelope
-		if (selectedCell != null) {
-			int x = c.toZoom(selectedCell.pos.x);
-			int y = c.toZoom(selectedCell.pos.y);
-			int r = c.toZoom(selectedCell.radius() * 1.1);
-			g.setColor(Color.YELLOW);
-			g.drawOval(x - r, y - r, 2 * r, 2 * r);
 		}
 	}
 	
@@ -272,21 +250,5 @@ public class World {
 		double d = Math.sqrt(dx*dx+dy*dy);
 		double r = Math.min(width, height) / 2 - 100;
 		return Math.max(0, 4 * (50 - Math.abs(d - r)) * (width - point.x) / width);
-	}
-
-	public void click(double clickX, double clickY, MouseEvent e) {
-		Vector point = new Vector(clickX, clickY);
-		System.out.println(point + " clicked");
-		System.out.println("Light level: " + lightAtPoint(point));
-		this.selectedCell = cellAtPoint(point);
-		if (selectedCell != null) {
-			System.out.println("Cell selected.");
-			System.out.println("DNA: " + selectedCell.getDna());
-			System.out.println("Program: " + selectedCell.getProgram());
-			System.out.println("Substances: " + Arrays.toString(selectedCell.substances));
-		}
-		else {
-			System.out.println("No cell selected.");
-		}
 	}
 }

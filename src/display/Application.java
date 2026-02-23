@@ -13,7 +13,7 @@ import cell.Cell;
 import cell.Substance;
 import physics.World;
 
-public class Application {
+public class Application implements PanelListener {
 	private World world;
 	private JFrame frame;
 	private DisplayPanel panel;
@@ -82,27 +82,25 @@ public class Application {
 		    long end = System.currentTimeMillis();
 		    fpsLabel.setText("ms/frame: " + (end - start));
 		    countLabel.setText("cells: " + world.getCells().size());
-		    if (panel.getWorld().selectedCell != null) {
-			    cellInfoPanel.update(panel.getWorld().selectedCell);
+		    if (panel.selectedCell != null) {
+			    cellInfoPanel.update(panel.selectedCell);
 		    }
 		    frame.repaint();
 		});
 
-		panel.setListener(new PanelListener() {
-			public void setStatus(String s) {
-				statusLabel.setText(s);
-			};
-
-			public void cellClicked(Cell c) {
-				cellInfoPanel.update(c);
-			}
-		});
+		panel.setListener(this);
         
         setStatus("Ready to start.");
 	}
 	
+	@Override
 	public void setStatus(String s) {
 		statusLabel.setText(s);
+	}
+
+	@Override
+	public void cellClicked(Cell c) {
+		cellInfoPanel.update(c);
 	}
 	
 //	public void runSaveVideo(String path) {

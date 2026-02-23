@@ -1,12 +1,16 @@
 package display;
 
+import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
+import java.util.Arrays;
 
 import javax.swing.JPanel;
 
+import cell.Cell;
+import physics.Vector;
 import physics.World;
 
 public class DisplayPanel extends JPanel {
@@ -16,6 +20,7 @@ public class DisplayPanel extends JPanel {
 	private double x, y;
 	private double zoom;
 	private PanelListener listener;
+	public Cell selectedCell;
 
 	public DisplayPanel(World world) {
 		this(world, 0, 0, 1);
@@ -37,9 +42,20 @@ public class DisplayPanel extends JPanel {
                 double clickX = (e.getX() - DisplayPanel.this.x) / DisplayPanel.this.zoom;
                 double clickY = (e.getY() - DisplayPanel.this.y) / DisplayPanel.this.zoom;
                 if (clickX >= 0 && clickX < world.getWidth() && clickY >= 0 && clickY < world.getHeight()) {
-                	world.click(clickX, clickY, e);
-                	// TODO currently we just have the Panel retrieve the selected cell after world.click... will probably be rearranged.
-                	listener.cellClicked(world.selectedCell);
+            		Vector point = new Vector(clickX, clickY);
+            		System.out.println(point + " clicked");
+            		System.out.println("Light level: " + world.lightAtPoint(point));
+            		selectedCell = world.cellAtPoint(point);
+            		if (selectedCell != null) {
+            			System.out.println("Cell selected.");
+            			System.out.println("DNA: " + selectedCell.getDna());
+            			System.out.println("Program: " + selectedCell.getProgram());
+            			System.out.println("Substances: " + Arrays.toString(selectedCell.substances));
+            		}
+            		else {
+            			System.out.println("No cell selected.");
+            		}
+                	listener.cellClicked(selectedCell);
                 }
                 repaint();
             }
@@ -64,7 +80,17 @@ public class DisplayPanel extends JPanel {
     		super.paintComponent(g);
 
     		g.translate((int) this.x, (int) this.y);
-    		world.draw(new DrawContext(g, this.zoom));
+    		DrawContext c = new DrawContext(g, this.zoom);
+    		world.draw(c);
+    		
+    		// Draw the selection envelope
+    		if (selectedCell != null) {
+    			int x = c.toZoom(selectedCell.pos().x);
+    			int y = c.toZoom(selectedCell.pos().y);
+    			int r = c.toZoom(selectedCell.radius() * 1.1);
+    			g.setColor(Color.YELLOW);
+    			g.drawOval(x - r, y - r, 2 * r, 2 * r);
+    		}
 	}
 	
 	/**
