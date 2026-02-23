@@ -105,15 +105,6 @@ public class World {
 			a.tickAcc.add(force);
 			b.tickAcc.add(force.mult(-1));
 		}
-//		for (BallEntity a : entities) {
-//			for (BallEntity b : entities) {
-//				double d = Vector.dist(a.pos(), b.pos());
-//				if (d < a.radius() + b.radius() && a != b) {
-//					Vector force = Vector.sub(a.pos(), b.pos()).normalize().mult(settings.getCollisionFactor() * (a.radius() + b.radius() - d));
-//					a.tickAcc.add(force);
-//				}
-//			}
-//		}
 		
 		// Add ball-wall collision accelerations
 		for (AbstractWall w : walls) {
@@ -184,7 +175,6 @@ public class World {
 		
 		// Add and subtract energy, kill cells that run out of energy or other resource
 		for (Cell e : cells) {
-			// TODO resolve order of operations with energy flow! What I actually want to happen is that cell energies are only clamped at the end
 			double photo = Math.min(e.getSubstance(Substance.CHLOROPHYLL.id), lightAtPoint(e.pos())) * settings.getPhotoEnergy();
 			e.addSubstance(Substance.NRG.id, photo-e.costs());
 			if (nearZero(e.nrg()) || nearZero(e.body())) {
