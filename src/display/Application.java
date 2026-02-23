@@ -9,6 +9,8 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
+import cell.Cell;
+import cell.Substance;
 import physics.World;
 
 public class Application {
@@ -19,6 +21,7 @@ public class Application {
 	private int t;
 	private Timer loop;
 	private JLabel statusLabel;
+	private CellInfoPanel cellInfoPanel;
 	
 	public Application(World world, String title, double zoom, int targetFrameMillis, int targetFrameTicks) {
 		this.world = world;
@@ -61,7 +64,9 @@ public class Application {
 		statusPanel.add(countLabel);
 		frame.add(statusPanel, BorderLayout.PAGE_END);
 		
-		panel.setStatusListener(s -> {statusLabel.setText(s);});
+		Substance[] toDisplay = {Substance.NRG, Substance.BODY, Substance.NUCLEIC, Substance.CHLOROPHYLL};;
+		this.cellInfoPanel = new CellInfoPanel(toDisplay);
+		frame.add(cellInfoPanel, BorderLayout.EAST);
         
         frame.pack();
         panel.zoomFit();
@@ -77,7 +82,20 @@ public class Application {
 		    long end = System.currentTimeMillis();
 		    fpsLabel.setText("ms/frame: " + (end - start));
 		    countLabel.setText("cells: " + world.getCells().size());
+		    if (panel.getWorld().selectedCell != null) {
+			    cellInfoPanel.update(panel.getWorld().selectedCell);
+		    }
 		    frame.repaint();
+		});
+
+		panel.setListener(new PanelListener() {
+			public void setStatus(String s) {
+				statusLabel.setText(s);
+			};
+
+			public void cellClicked(Cell c) {
+				cellInfoPanel.update(c);
+			}
 		});
         
         setStatus("Ready to start.");

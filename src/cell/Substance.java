@@ -1,15 +1,17 @@
 package cell;
 
 public enum Substance {
-	NRG(0),
-	BODY(1),
-	NUCLEIC(2),
-	CHLOROPHYLL(3);
-	public static final int SUBSTANCE_COUNT = 4;
+	NRG(0, "nrg"),
+	BODY(1, "body"),
+	NUCLEIC(2, "nucleic"),
+	CHLOROPHYLL(3, "chloro");
+	public static final int SUBSTANCE_COUNT = Substance.values().length;
 
 	public final int id;
-	private Substance(int id) {
+	public final String shortName;
+	private Substance(int id, String shortName) {
 		this.id = id;
+		this.shortName = shortName;
 	}
 	
 	public static int numToID(int x) {

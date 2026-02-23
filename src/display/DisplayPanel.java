@@ -15,7 +15,7 @@ public class DisplayPanel extends JPanel {
 	private World world;
 	private double x, y;
 	private double zoom;
-	private StatusReporter status;
+	private PanelListener listener;
 
 	public DisplayPanel(World world) {
 		this(world, 0, 0, 1);
@@ -27,7 +27,7 @@ public class DisplayPanel extends JPanel {
 		this.x = x;
 		this.y = y;
 		this.zoom = zoom;
-		this.status = StatusReporter.NULL;
+		this.listener = PanelListener.NULL;
 		
 		this.setFocusable(true);
 
@@ -38,6 +38,8 @@ public class DisplayPanel extends JPanel {
                 double clickY = (e.getY() - DisplayPanel.this.y) / DisplayPanel.this.zoom;
                 if (clickX >= 0 && clickX < world.getWidth() && clickY >= 0 && clickY < world.getHeight()) {
                 	world.click(clickX, clickY, e);
+                	// TODO currently we just have the Panel retrieve the selected cell after world.click... will probably be rearranged.
+                	listener.cellClicked(world.selectedCell);
                 }
                 repaint();
             }
@@ -54,6 +56,10 @@ public class DisplayPanel extends JPanel {
         });
 	}
 	
+	public World getWorld() {
+		return world;
+	}
+
 	public void paintComponent(Graphics g) {
     		super.paintComponent(g);
 
@@ -73,7 +79,7 @@ public class DisplayPanel extends JPanel {
 		this.x = cx + (this.x-cx) * factor;
 		this.y = cy + (this.y-cy) * factor;
 		this.zoom *= factor;
-		status.set("Zoomed to " + String.format("%.2f", this.zoom) + "x.");
+		listener.setStatus("Zoomed to " + String.format("%.2f", this.zoom) + "x.");
 		repaint();
 	}
 	
@@ -83,18 +89,18 @@ public class DisplayPanel extends JPanel {
 	 */
 	public void zoomFit() {
 		this.zoom = Math.min((double) this.getHeight() / world.getHeight(), (double) this.getWidth() / world.getWidth());
-		status.set("Reset zoom to " + String.format("%.2f", this.zoom) + "x.");
+		listener.setStatus("Reset zoom to " + String.format("%.2f", this.zoom) + "x.");
 		this.x = (this.getWidth() - world.getWidth() * zoom) / 2;
 		this.y = (this.getHeight() - world.getHeight() * zoom) / 2;
 		repaint();
 	}
 	
 	/**
-	 * Sets the Panel to report to a particular StatusReporter object.
+	 * Sets the Panel to report to a particular listener object.
 	 * This method is provided because due to the order I create elements, the status will probably not be ready when I create the panel.
-	 * @param status - StatusReporter to attach
+	 * @param listener - listener to attach
 	 */
-	public void setStatusListener(StatusReporter status) {
-		this.status = status;
+	public void setListener(PanelListener listener) {
+		this.listener = listener;
 	}
 }
