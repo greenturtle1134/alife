@@ -16,7 +16,7 @@ import physics.World;
 public class Application implements PanelListener {
 	private World world;
 	private JFrame frame;
-	private DisplayPanel panel;
+	private MainDisplayPanel panel;
 	private int targetFrameMillis, targetFrameTicks;
 	private int t;
 	private Timer loop;
@@ -31,7 +31,7 @@ public class Application implements PanelListener {
 		
 		this.frame = new JFrame(title);
 
-		this.panel = new DisplayPanel(world, 0, 0, zoom);
+		this.panel = new MainDisplayPanel(world, 0, 0, zoom);
         frame.add(panel, BorderLayout.CENTER); //adds DisplayGraphics to the frame for viewing
         panel.setPreferredSize(new Dimension(400, 400));
         
