@@ -79,6 +79,9 @@ public class Application implements PanelListener {
 		    for (int i = 0; i<this.targetFrameTicks; i++) {
 		    	world.tick();
 		    }
+		    if (panel.selectedCell != null && panel.selectedCell.isDead()) {
+		    	panel.selectedCell = null; // TODO should this be handled here? Kind of weird that it has to be in such a weird place.
+		    }
 		    long end = System.currentTimeMillis();
 		    fpsLabel.setText("ms/frame: " + (end - start));
 		    countLabel.setText("cells: " + world.getCells().size());

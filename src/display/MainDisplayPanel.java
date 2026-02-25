@@ -107,14 +107,13 @@ public class MainDisplayPanel extends DisplayPanel {
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
 		
-		g.translate((int) this.x, (int) this.y);
 		DrawContext c = new DrawContext(g, this.zoom);
 		
 		// Draw the selection envelope
 		if (selectedCell != null) {
 			int x = c.toZoom(selectedCell.pos().x);
 			int y = c.toZoom(selectedCell.pos().y);
-			int r = c.toZoom(selectedCell.radius() * 1.1);
+			int r = c.toZoom(selectedCell.radius()) + 2;
 			g.setColor(Color.YELLOW);
 			g.drawOval(x - r, y - r, 2 * r, 2 * r);
 		}
