@@ -2,10 +2,7 @@ package physics;
 
 import static utils.Utils.nearZero;
 
-import java.awt.Color;
 import java.awt.Graphics;
-import java.awt.event.MouseEvent;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -29,7 +26,7 @@ public class World {
 	private List<Particle> newParticles;
 	public final WorldSettings settings;
 	public final MutationGenerator mutationGenerator;
-	private CellPosCache cache;
+	private PosCache<BallEntity> cache;
 	public final RandomGenerator rng;
 
 	public int getWidth() {
@@ -56,7 +53,7 @@ public class World {
 		this.walls = new LinkedList<AbstractWall>();
 		this.settings = settings;
 		this.mutationGenerator = new MutationGenerator();
-		this.cache = new CellPosCache(25);
+		this.cache = new PosCache<>(25);
 		this.rng = rng;
 	}
 	

@@ -9,18 +9,18 @@ import com.google.common.collect.ListMultimap;
 import com.google.common.collect.MultimapBuilder;
 
 /**
- * Stores BallEntities (practically speaking, cells) for fast distance query.
+ * Stores entities with position for fast querying of entities around a particular point. Uses a hash table dividing the area into square cells.
  */
-public class CellPosCache {
+public class PosCache<T extends Positionable> {
 	
 	private int gridSize;
-	private ListMultimap<IntPair, BallEntity> map;
-	private HashMap<BallEntity, IntPair> reverseMap;
+	private ListMultimap<IntPair, T> map;
+	private HashMap<T, IntPair> reverseMap;
 	
-	public CellPosCache(int gridSize) {
+	public PosCache(int gridSize) {
 		this.gridSize = gridSize;
 		this.map = MultimapBuilder.hashKeys().linkedListValues().build();
-		this.reverseMap = new HashMap<BallEntity, IntPair>();
+		this.reverseMap = new HashMap<T, IntPair>();
 	}
 	
 	/**
@@ -54,20 +54,20 @@ public class CellPosCache {
 	}
 	
 	/**
-	 * Adds a new BallEntity to the cache
+	 * Adds a new object to the cache
 	 * @param c - object to insert
 	 */
-	public void add(BallEntity c) {
+	public void add(T c) {
 		IntPair grid = getGrid(c.pos());
 		map.put(grid, c);
 		reverseMap.put(c, grid);
 	}
 	
 	/**
-	 * Erases a BallEntity from the cache
+	 * Erases an object from the cache
 	 * @param c - object to delete
 	 */
-	public void remove(BallEntity c) {
+	public void remove(T c) {
 		IntPair grid = reverseMap.get(c); // Should always work if we correctly enforce object state; will throw a NullPointer if it somehow goes wrong
 		map.remove(grid, c);
 		reverseMap.remove(c);
@@ -77,10 +77,9 @@ public class CellPosCache {
 	 * 
 	 */
 	public void update() {
-		for (Map.Entry<BallEntity, IntPair> entry : reverseMap.entrySet()) {
+		for (Map.Entry<T, IntPair> entry : reverseMap.entrySet()) {
 			IntPair current = getGrid(entry.getKey().pos());
 			if (!(current.equals(entry.getValue()))) {
-//				System.out.println("Updated " + entry.getKey() + " from " + entry.getValue() + " to " + current);
 				map.remove(entry.getValue(), entry.getKey());
 				map.put(current, entry.getKey());
 				entry.setValue(current);
@@ -89,23 +88,23 @@ public class CellPosCache {
 	}
 	
 	/**
-	 * Queries all BallEntites within a given radius of a given point
+	 * Queries all entities within a given radius of a given point
 	 * @param pos - the point
 	 * @param radius - the radius
-	 * @return a Stream of BallEntities within the radius
+	 * @return a Stream of entities within the radius
 	 */
-	public Stream<BallEntity> radiusQuery(Vector pos, double radius) {
+	public Stream<T> radiusQuery(Vector pos, double radius) {
 		Stream<IntPair> gridCells = gridsInRadius(pos, radius);
 		return gridCells.flatMap(x -> map.get(x).stream()).filter(x -> Vector.dist(x.pos(), pos) <= radius);
 	}
 	
 	/**
-	 * Queries all BallEntites within a given radius of a given entity, excluding the entity itself
-	 * @param e - the BallEntity
+	 * Queries all entities within a given radius of a given entity, excluding the entity itself.
+	 * @param e - the entity to query
 	 * @param radius - the radius
-	 * @return a Stream of BallEntities within the radius
+	 * @return a Stream of entities within the radius
 	 */
-	public Stream<BallEntity> radiusQuery(BallEntity e, double radius) {
+	public Stream<T> radiusQuery(T e, double radius) {
 		return radiusQuery(e.pos(), radius).filter(x -> x != e);
 	}
 	

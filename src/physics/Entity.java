@@ -11,7 +11,7 @@ public abstract class Entity {
 	private boolean dead;
 
 	public Entity() {
-		super();
+		super(); // TODO should Entity default constructor set the World field?
 	}
 
 	public World getWorld() {

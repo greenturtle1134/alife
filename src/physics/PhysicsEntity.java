@@ -8,7 +8,7 @@ import display.Drawable;
  * This class exists to facilitate the remote future possibility of non-ball-shaped physics objects,
  * currently all the code is set up just for balls.
  */
-public abstract class PhysicsEntity extends Entity implements Drawable {
+public abstract class PhysicsEntity extends Entity implements Drawable, Positionable {
 	protected Vector pos;
 	protected Vector vel;
 	protected Vector lastPos;
