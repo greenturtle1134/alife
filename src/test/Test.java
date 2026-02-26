@@ -36,8 +36,6 @@ public class Test {
 		cell.addSubstance(Substance.CHLOROPHYLL.id, 50);
 		world.addCell(cell);
 		
-		world.particles.add(new Particle(world, new Vector(500, 500), new Vector(10, 2)));
-		
 //		Random random = new Random(10);
 //		for (int i=0; i<10; i++) {
 //			double r = random.nextDouble() * 10 + 5;
