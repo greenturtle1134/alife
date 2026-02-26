@@ -20,10 +20,13 @@ import utils.UnorderedPair;
 	
 public class World {
 	private int width, height;
+	private long time;
 	private List<BallEntity> entities;
 	private List<Cell> cells;
-	private List<AbstractWall> walls;
 	private List<Cell> newCells;
+	private List<AbstractWall> walls;
+	public List<Particle> particles; // TODO set back to private after testing
+	private List<Particle> newParticles;
 	public final WorldSettings settings;
 	public final MutationGenerator mutationGenerator;
 	private CellPosCache cache;
@@ -36,13 +39,20 @@ public class World {
 	public int getHeight() {
 		return height;
 	}
+	
+	public long time() {
+		return time;
+	}
 
 	public World(int width, int height, WorldSettings settings, RandomGenerator rng) {
 		this.width = width;
 		this.height = height;
+		this.time = 0; // TODO add constructor argument to set time
 		this.entities = new LinkedList<BallEntity>();
 		this.cells = new LinkedList<Cell>();
 		this.newCells = new LinkedList<Cell>();
+		this.particles = new LinkedList<Particle>();
+		this.newParticles = new LinkedList<Particle>();
 		this.walls = new LinkedList<AbstractWall>();
 		this.settings = settings;
 		this.mutationGenerator = new MutationGenerator();
@@ -171,6 +181,10 @@ public class World {
 		cells.addAll(newCells);
 		newCells.clear();
 		
+		// Add new particles to relevant list
+		particles.addAll(newParticles);
+		newParticles.clear();
+		
 		/* ENERGY STEP */
 		
 		// Add and subtract energy, kill cells that run out of energy or other resource
@@ -202,6 +216,30 @@ public class World {
 			e.vel.add(e.tickAcc);
 			e.pos.add(e.vel);
 		}
+		
+		// Particles move according to their velocity and reflect off edges (not generally placed walls for now)
+		for (Particle p : particles) {
+			p.pos.add(p.vel);
+			if (p.pos.x < 0) {
+				p.pos.x = -p.pos.x;
+				p.vel.x *= -1;
+			}
+			if (p.pos.x > this.width) {
+				p.pos.x = 2*this.width-p.pos.x;
+				p.vel.x *= -1;
+			}
+			if (p.pos.y < 0) {
+				p.pos.y = -p.pos.y;
+				p.vel.y *= -1;
+			}
+			if (p.pos.y > this.height) {
+				p.pos.y = 2*this.height-p.pos.y;
+				p.vel.y *= -1;
+			}
+		}
+		
+		/* ADVANCE TIME VARIABLE */
+		this.time++;
 	}
 	
 	public void draw(DrawContext c) {
@@ -217,6 +255,11 @@ public class World {
 		// Draw walls
 		for (AbstractWall w : walls) {
 			w.draw(c);
+		}
+		
+		// Draw particles
+		for (Particle p : particles) {
+			p.draw(c);
 		}
 	}
 	

@@ -8,6 +8,7 @@ import cell.Substance;
 import display.Application;
 import genome.DNA;
 import genome.Program;
+import physics.Particle;
 import physics.Vector;
 import physics.World;
 
@@ -34,6 +35,8 @@ public class Test {
 		Cell cell = new Cell(world, new Vector(100, 500), new Vector(0, 0), Math.PI / 2, testDNA, 50, 50);
 		cell.addSubstance(Substance.CHLOROPHYLL.id, 50);
 		world.addCell(cell);
+		
+		world.particles.add(new Particle(world, new Vector(500, 500), new Vector(10, 2)));
 		
 //		Random random = new Random(10);
 //		for (int i=0; i<10; i++) {
