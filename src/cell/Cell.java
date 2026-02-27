@@ -271,6 +271,11 @@ public class Cell extends BallEntity {
 		g.setColor(Color.BLACK);
 		g.drawOval(x - r, y - r, 2 * r, 2 * r);
 		
+		if (r <= c.simplifyLimit) {
+			// Cell is visually too small, skip all the additional elements
+			return;
+		}
+		
 		int x1 = c.toZoom(Math.cos(facing) * this.radius());
 		int y1 = c.toZoom(Math.sin(facing) * this.radius());
 		g.drawLine(x, y, x + x1, y + y1);

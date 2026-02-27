@@ -107,7 +107,7 @@ public class MainDisplayPanel extends DisplayPanel {
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
 		
-		DrawContext c = new DrawContext(g, this.zoom);
+		DrawContext c = new DrawContext(g, this.zoom, 3);
 		
 		// Draw the selection envelope
 		if (selectedCell != null) {

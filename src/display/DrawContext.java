@@ -7,10 +7,12 @@ import java.awt.Graphics;
 public class DrawContext {
 	public final Graphics g;
 	public final double zoom;
+	public final int simplifyLimit;
 	
-	public DrawContext(Graphics g, double zoom) {
+	public DrawContext(Graphics g, double zoom, int simplifyLimit) {
 		this.g = g;
 		this.zoom = zoom;
+		this.simplifyLimit = simplifyLimit;
 	}
 
 	/**
