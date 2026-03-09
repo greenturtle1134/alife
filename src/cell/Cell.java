@@ -17,6 +17,7 @@ import physics.World;
 
 public class Cell extends BallEntity {
 	public static final int LOC_ANS = 0;
+	public static final int MEM_LEN = 64;
 	
 	/**
 	 * Facing direction of the cell, in radians from the x-axis
@@ -60,7 +61,7 @@ public class Cell extends BallEntity {
 		this.i = i;
 		this.setWait(wait);
 		this.substances = Arrays.copyOf(substances, Substance.SUBSTANCE_COUNT);
-		this.memory = Arrays.copyOf(memory, 64);
+		this.memory = Arrays.copyOf(memory, MEM_LEN);
 		this.moveF = moveF;
 		this.moveR = moveR;
 		this.rotRequest = rotRequest;
@@ -89,7 +90,7 @@ public class Cell extends BallEntity {
 		this.i = i;
 		this.setWait(wait);
 		this.substances = Arrays.copyOf(substances, Substance.SUBSTANCE_COUNT);
-		this.memory = Arrays.copyOf(memory, 64);
+		this.memory = Arrays.copyOf(memory, MEM_LEN);
 		this.moveF = moveF;
 		this.moveR = moveR;
 		this.rotRequest = rotRequest;
@@ -106,7 +107,7 @@ public class Cell extends BallEntity {
 			DNA dna,
 			double[] substances
 			) {
-		this(world, pos, vel, facing, dna, 0, 0, substances, new int[64], 0, 0, 0);
+		this(world, pos, vel, facing, dna, 0, 0, substances, new int[MEM_LEN], 0, 0, 0);
 	}
 	
 	/**
@@ -212,12 +213,13 @@ public class Cell extends BallEntity {
 	}
 
 	/**
-	 * Gets cell's memory at a particular index
+	 * Gets cell's memory at a particular index.
+	 * This method accounts for cases like out of bounds, special values, etc. and can thus be called without further checking from Term.
 	 * @param i - index to retrieve
 	 * @return value of memory at that index
 	 */
 	public int memGet(int i) {
-		if (i < memory.length && i >= 0) {
+		if (i < MEM_LEN && i >= 0) {
 			return memory[i];
 		}
 		else {
@@ -226,12 +228,13 @@ public class Cell extends BallEntity {
 	}
 	
 	/**
-	 * Writes to cell memory
+	 * Writes to cell memory.
+	 * This method accounts for cases like out of bounds, special values, etc. and can thus be called without further checking from Term.
 	 * @param i - index to write to
 	 * @param x = value to write
 	 */
 	public void memSet(int i, int x) {
-		if (i < memory.length && i >= 0) {
+		if (i < MEM_LEN && i >= 0) {
 			memory[i] = x;
 		}
 	}
