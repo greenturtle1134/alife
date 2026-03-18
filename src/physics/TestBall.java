@@ -21,11 +21,6 @@ public class TestBall extends BallEntity {
 		this.radius = radius;
 		this.mass = mass;
 	}
-
-	@Override
-	public void tick() {
-		// do nothing
-	}
 	
 	@Override
 	public void draw(DrawContext c) {

@@ -321,7 +321,6 @@ public class Cell extends BallEntity {
 		return body();
 	}
 
-	@Override
 	public void tick() {
 		this.run(1);
 	}

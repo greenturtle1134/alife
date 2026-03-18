@@ -8,6 +8,8 @@ import cell.Substance;
 import display.Application;
 import genome.DNA;
 import genome.Program;
+import physics.DummyParticle;
+import physics.Particle;
 import physics.Vector;
 import physics.World;
 

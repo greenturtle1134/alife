@@ -27,6 +27,7 @@ public class World {
 	public final WorldSettings settings;
 	public final MutationGenerator mutationGenerator;
 	private PosCache<BallEntity> cache;
+	private PosCache<Particle> particleCache;
 	public final RandomGenerator rng;
 
 	public int getWidth() {
@@ -54,6 +55,7 @@ public class World {
 		this.settings = settings;
 		this.mutationGenerator = new MutationGenerator();
 		this.cache = new PosCache<>(25);
+		this.particleCache = new PosCache<>(25);
 		this.rng = rng;
 	}
 	
@@ -97,10 +99,6 @@ public class World {
 		
 		// Add ball-ball collision accelerations
 		HashSet<UnorderedPair<BallEntity>> collisions = new HashSet<>();
-		cache.clear();
-		for (BallEntity a : entities) {
-			cache.add(a);
-		}
 		for (BallEntity a : entities) {
 			cache.radiusQuery(a, a.radius() * 2).filter(b -> Vector.dist(a.pos(), b.pos()) < a.radius() + b.radius()).forEach(b -> collisions.add(new UnorderedPair<>(a, b)));
 		}
@@ -167,9 +165,37 @@ public class World {
 		/* COMPUTE STEP */
 		
 		// Computational tick
-		for (BallEntity e : entities) {
+		for (Cell e : cells) {
 			e.tick();
 		}
+		
+		/* ENERGY STEP */
+		
+		// Interact particles, this may kill cells
+		for (Cell e : cells) {
+			particleCache.radiusQuery(e.pos(), e.radius()).forEachOrdered(p -> {
+				if (!p.isDead()) {
+					if (p.interact(e)) {
+						p.kill();
+					}
+				}
+			});;
+		}
+		
+		// Add and subtract energy, kill cells that run out of energy or other resource
+		for (Cell e : cells) {
+			double photo = Math.min(e.getSubstance(Substance.CHLOROPHYLL.id), lightAtPoint(e.pos())) * settings.getPhotoEnergy();
+			e.addSubstance(Substance.NRG.id, photo-e.costs());
+			if (nearZero(e.nrg()) || nearZero(e.body())) {
+				e.kill();
+			}
+		}
+
+		// Remove killed cells and particles
+		entities.removeIf(obj -> obj.isDead());
+		cells.removeIf(obj -> obj.isDead());
+		particles.removeIf(obj -> obj.isDead());
+		
 		
 		/* CREATION STEP */
 		
@@ -182,20 +208,8 @@ public class World {
 		particles.addAll(newParticles);
 		newParticles.clear();
 		
-		/* ENERGY STEP */
-		
-		// Add and subtract energy, kill cells that run out of energy or other resource
-		for (Cell e : cells) {
-			double photo = Math.min(e.getSubstance(Substance.CHLOROPHYLL.id), lightAtPoint(e.pos())) * settings.getPhotoEnergy();
-			e.addSubstance(Substance.NRG.id, photo-e.costs());
-			if (nearZero(e.nrg()) || nearZero(e.body())) {
-				e.kill();
-			}
-		}
-
-		// Remove killed cells
-		entities.removeIf(obj -> obj.isDead());
-		cells.removeIf(obj -> obj.isDead());
+		// TODO TEST PARTICLE CODE
+		particles.add(new KillParticle(this, new Vector(this.width/2, this.height/2), new Vector(Math.random()-0.5, Math.random()-0.5), null, this.time()));
 		
 		/* MOVEMENT STEP */
 		
@@ -233,6 +247,17 @@ public class World {
 				p.pos.y = 2*this.height-p.pos.y;
 				p.vel.y *= -1;
 			}
+		}
+		
+		/* CACHE STEP */
+		// Update caches with moved and added cells
+		cache.clear();
+		for (BallEntity a : entities) {
+			cache.add(a);
+		}
+		particleCache.clear();
+		for (Particle a : particles) {
+			particleCache.add(a);
 		}
 		
 		/* ADVANCE TIME VARIABLE */

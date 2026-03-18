@@ -1,10 +1,6 @@
 package physics;
 
-import java.awt.Color;
-import java.awt.Graphics;
-
 import cell.Cell;
-import display.DrawContext;
 import display.Drawable;
 
 /**
@@ -26,28 +22,32 @@ public abstract class Particle extends Entity implements Positionable, Drawable 
 		this.createdTime = createdTime;
 	}
 	
-	public Particle(World world, Vector pos, Vector vel, Entity owner) {
-		this(world, pos, vel, owner, world.time());
-	}
-	
-	public abstract boolean interactCell(Cell c);
+	public abstract boolean interact(Cell e);
 	
 	@Override
 	public Vector pos() {
 		return pos;
 	}
-	
-	@Override
-	public void draw(DrawContext c) {
-		// Sample implementation stored here for personal convenience
-		// Will be deleted later
-		Graphics g = c.g;
-		g.setColor(Color.BLACK);
-		
-		int x = c.toZoom(this.pos.x);
-		int y = c.toZoom(this.pos.y);
-		
-		g.fillRect(x, y, 1, 1);
-	}
+
+//	@Override
+//	public void tick() {
+//		this.pos.add(this.vel);
+//		if (pos.x < 0) {
+//			pos.x = -pos.x;
+//			vel.x *= -1;
+//		}
+//		if (pos.x > world.getWidth()) {
+//			pos.x = 2*world.getWidth() - pos.x;
+//			vel.x *= -1;
+//		}
+//		if (pos.y < 0) {
+//			pos.y = -pos.y;
+//			vel.y *= -1;
+//		}
+//		if (pos.y > world.getHeight()) {
+//			pos.y = 2*world.getHeight() - pos.y;
+//			vel.y *= -1;
+//		}
+//	}
 
 }

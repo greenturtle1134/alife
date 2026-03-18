@@ -30,6 +30,4 @@ public abstract class Entity {
 		return dead;
 	}
 
-	public abstract void tick();
-
 }
