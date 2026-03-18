@@ -209,7 +209,9 @@ public class World {
 		newParticles.clear();
 		
 		// TODO TEST PARTICLE CODE
-		particles.add(new KillParticle(this, new Vector(this.width/2, this.height/2), new Vector(Math.random()-0.5, Math.random()-0.5), null, this.time()));
+		if (this.time() % 10 == 0) {
+			particles.add(new ResourceParticle(this, new Vector(this.width/2, this.height/2 + (Math.random()-0.5) * 10), new Vector(-1, 0), null, this.time(), Substance.BODY, 10));
+		}
 		
 		/* MOVEMENT STEP */
 		

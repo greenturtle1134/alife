@@ -2,7 +2,9 @@ package physics;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import cell.Cell;
 import cell.Substance;
@@ -17,15 +19,22 @@ public class ResourceParticle extends Particle {
 		this.contents = contents;
 	}
 	
+	public ResourceParticle(World world, Vector pos, Vector vel, Entity owner, long createdTime, Substance s, double v) {
+		super(world, pos, vel, owner, createdTime);
+		this.contents = new HashMap<>();
+		this.contents.put(s, v);
+	}
+	
 	@Override
 	public boolean interact(Cell e) {
-		return false;
+		for (Entry<Substance, Double> entry: contents.entrySet()) {
+			e.addSubstance(entry.getKey().id, entry.getValue());
+		}
+		return true;
 	}
 	
 	@Override
 	public void draw(DrawContext c) {
-		// Sample implementation stored here for personal convenience
-		// Will be deleted later
 		Graphics g = c.g;
 		g.setColor(Color.BLACK);
 		
