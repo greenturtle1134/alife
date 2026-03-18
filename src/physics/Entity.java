@@ -1,17 +1,17 @@
 package physics;
 
 /**
- * Represents absolutely anything which exists in a World
- *
- * Honestly this may not even be necessary right now
+ * Represents absolutely anything which exists in a World.
+ * The core functionality is a field for a world and a boolean flag for whether the entity is dead, with a kill() method to flip this flag.
  */
 public abstract class Entity {
 
 	protected World world;
 	private boolean dead;
 
-	public Entity() {
-		super(); // TODO should Entity default constructor set the World field?
+	public Entity(World world) {
+		this.world = world;
+		this.dead = false;
 	}
 
 	public World getWorld() {

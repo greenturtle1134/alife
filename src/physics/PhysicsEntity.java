@@ -16,8 +16,7 @@ public abstract class PhysicsEntity extends Entity implements Drawable, Position
 	protected Vector tickAcc;
 	
 	public PhysicsEntity(World world, Vector pos, Vector vel) {
-		super();
-		this.world = world;
+		super(world);
 		this.pos = pos;
 		this.vel = vel;
 		this.lastPos = pos;

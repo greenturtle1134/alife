@@ -7,23 +7,30 @@ import cell.Cell;
 import display.DrawContext;
 import display.Drawable;
 
+/**
+ * A Particle is a point entity that travels in straight lines and interacts with cells it contacts.
+ * A field createdTime is provided to facilitate
+ * 
+ */
 public abstract class Particle extends Entity implements Positionable, Drawable {
 	public Vector pos;
 	public Vector vel;
 	public long createdTime;
+	public Entity owner;
 	
-	public Particle(World world, Vector pos, Vector vel, long createdTime) {
-		this.world = world;
+	public Particle(World world, Vector pos, Vector vel, Entity owner, long createdTime) {
+		super(world);
 		this.pos = pos;
 		this.vel = vel;
+		this.owner = owner;
 		this.createdTime = createdTime;
 	}
 	
-	public Particle(World world, Vector pos, Vector vel) {
-		this(world, pos, vel, world.time());
+	public Particle(World world, Vector pos, Vector vel, Entity owner) {
+		this(world, pos, vel, owner, world.time());
 	}
 	
-	public abstract void interactCell(Cell c);
+	public abstract boolean interactCell(Cell c);
 	
 	@Override
 	public Vector pos() {
