@@ -14,6 +14,8 @@ import cell.Substance;
 import physics.World;
 
 public class Application implements PanelListener {
+	private static final double AVERAGE_DECAY_FACTOR = 0.1;
+	
 	private World world;
 	private JFrame frame;
 	private MainDisplayPanel panel;
@@ -22,6 +24,8 @@ public class Application implements PanelListener {
 	private Timer loop;
 	private JLabel statusLabel;
 	private CellInfoPanel cellInfoPanel;
+	private long lastFrame;
+	private double averageFrameTime;
 	
 	public Application(World world, String title, double zoom, int targetFrameMillis, int targetFrameTicks) {
 		this.world = world;
@@ -74,21 +78,25 @@ public class Application implements PanelListener {
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
         
+        this.lastFrame = System.currentTimeMillis();
+        this.averageFrameTime = targetFrameMillis;
+        
         this.loop = new Timer(targetFrameMillis, e -> {
-        	long start = System.currentTimeMillis();
 		    for (int i = 0; i<this.targetFrameTicks; i++) {
 		    	world.tick();
 		    }
 		    if (panel.selectedCell != null && panel.selectedCell.isDead()) {
 		    	panel.selectedCell = null; // TODO should this be handled here? Kind of weird that it has to be in such a weird place.
 		    }
-		    long end = System.currentTimeMillis();
-		    fpsLabel.setText("ms/frame: " + (end - start));
+		    frame.repaint();
+		    long frameTime = System.currentTimeMillis() - lastFrame;
+		    lastFrame = System.currentTimeMillis();
+		    averageFrameTime = averageFrameTime * (1-AVERAGE_DECAY_FACTOR) + frameTime * AVERAGE_DECAY_FACTOR;
+		    fpsLabel.setText("fps: " + String.format("%.1f", 1000/averageFrameTime));
 		    countLabel.setText("cells: " + world.getCells().size());
 		    if (panel.selectedCell != null) {
 			    cellInfoPanel.update(panel.selectedCell);
 		    }
-		    frame.repaint();
 		});
 
 		panel.setListener(this);
