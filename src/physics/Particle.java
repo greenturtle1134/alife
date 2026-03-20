@@ -5,7 +5,7 @@ import display.Drawable;
 
 /**
  * A Particle is a point entity that travels in straight lines and interacts with cells it contacts.
- * A field createdTime is provided to facilitate
+ * A field createdTime is provided to facilitate timed life particles but doesn't do anything in this class.
  * 
  */
 public abstract class Particle extends Entity implements Positionable, Drawable {

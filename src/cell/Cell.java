@@ -1,6 +1,7 @@
 package cell;
 
 import static utils.Utils.round;
+import static utils.Utils.nearZero;
 
 import java.awt.Color;
 import java.awt.Graphics;
@@ -172,7 +173,8 @@ public class Cell extends BallEntity {
 	
 	/**
 	 * Changes substance amount; unlike the setSubstance method this DOES respect limits.
-	 * Negatives values can be supplied to remove
+	 * Negatives values can be supplied to remove.
+	 * Kills the cell if the resultant Nrg or Body is zero. This check is only performed if the substance indicated is Nrg or Body.
 	 * @param s - substance ID to modify
 	 * @param x - amount to change it by
 	 * @return the amount by which the substance was successfully changed, in case it's necessary
@@ -185,6 +187,9 @@ public class Cell extends BallEntity {
 			x = -substances[s];
 		}
 		substances[s] += x;
+		if ((s ==  Substance.NRG.id || s == Substance.BODY.id) && nearZero(substances[s])) {
+			this.kill();
+		}
 		return x;
 	}
 
@@ -465,13 +470,13 @@ public class Cell extends BallEntity {
 	 * Cell attempts to reproduce in its current state.
 	 */
 	public void repro() {
-		// Reject division if not enough Nucleic or cell too small
-		if (substances[Substance.NUCLEIC.id] < 2 * this.getDna().length()) {
-			return;
-		}
 		// TODO implement getting ratio and other split parameters from memory
 		double ratio = 0.5;
-		if (Math.min(ratio, 1-ratio) * this.body() < world.settings.getMinCellBody()) {
+		
+		// Reject division if not enough Nucleic or cell too small
+		if (substances[Substance.NUCLEIC.id] < 2 * this.getDna().length() || Math.min(ratio, 1-ratio) * this.body() < world.settings.getMinCellBody()) {
+			// Impose penalty for failed division
+			this.addSubstance(Substance.NRG.id, -0.1*world.settings.getDivisionCost()); // TODO make failed division penalty a setting
 			return;
 		}
 		

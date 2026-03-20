@@ -161,7 +161,17 @@ public class World {
 		}
 	}
 	
-	public void tick() {		
+	public void tick() {
+		/*
+		 * ENERGY MODEL
+		 * 
+		 * 1. Cells perform own actions (computational tick) and change energy
+		 * 2. All cells still alive interact with all particles in their space
+		 * 3. All cells still alive change energy based on all continuous sources at once (photosynthesis + maintenance)
+		 * 
+		 * If a cell's energy becomes 0 at any step, it dies.
+		 */
+		
 		/* COMPUTE STEP */
 		
 		// Computational tick
@@ -173,21 +183,23 @@ public class World {
 		
 		// Interact particles, this may kill cells
 		for (Cell e : cells) {
-			particleCache.radiusQuery(e.pos(), e.radius()).forEachOrdered(p -> {
-				if (!p.isDead()) {
+			if (!e.isDead()) {
+				particleCache.radiusQuery(e.pos(), e.radius()).filter(p -> !p.isDead()).forEachOrdered(p -> {
 					if (p.interact(e)) {
 						p.kill();
 					}
-				}
-			});;
+				});
+			}
 		}
 		
-		// Add and subtract energy, kill cells that run out of energy or other resource
+		// Inflict energy gains and costs, kill cells that run out of energy
 		for (Cell e : cells) {
-			double photo = Math.min(e.getSubstance(Substance.CHLOROPHYLL.id), lightAtPoint(e.pos())) * settings.getPhotoEnergy();
-			e.addSubstance(Substance.NRG.id, photo-e.costs());
-			if (nearZero(e.nrg()) || nearZero(e.body())) {
-				e.kill();
+			if (!e.isDead()) {
+				double photo = Math.min(e.getSubstance(Substance.CHLOROPHYLL.id), lightAtPoint(e.pos())) * settings.getPhotoEnergy();
+				e.addSubstance(Substance.NRG.id, photo-e.costs());
+				if (nearZero(e.nrg()) || nearZero(e.body())) {
+					e.kill();
+				}
 			}
 		}
 
@@ -209,9 +221,10 @@ public class World {
 		newParticles.clear();
 		
 		// TODO TEST PARTICLE CODE
-		if (this.time() % 10 == 0) {
-			particles.add(new ResourceParticle(this, new Vector(this.width/2, this.height/2 + (Math.random()-0.5) * 10), new Vector(-1, 0), null, this.time(), Substance.BODY, 10));
-		}
+//		if (this.time() % 10 == 0) {
+//			particles.add(new ResourceParticle(this, new Vector(this.width/2, this.height/2 + (Math.random()-0.5) * 10), new Vector(-1, 0), null, this.time(), Substance.BODY, 10));
+//			particles.add(new KillParticle(this, new Vector(this.width/2, this.height/2 + (Math.random()-0.5) * 10), new Vector(-1, 0), null, this.time()));
+//		}
 		
 		/* MOVEMENT STEP */
 		
@@ -252,7 +265,7 @@ public class World {
 		}
 		
 		/* CACHE STEP */
-		// Update caches with moved and added cells
+		// Update caches with moved and added cells/particles
 		cache.clear();
 		for (BallEntity a : entities) {
 			cache.add(a);
