@@ -33,7 +33,8 @@ public class Test {
 		
 		World world = new World(1000, 1000);
 		
-		Cell cell = new Cell(world, new Vector(100, 500), new Vector(0, 0), Math.PI / 2, testDNA, 50, 50);
+		double[] testSubstances = {35, 35, 66, 35};
+		Cell cell = new Cell(world, new Vector(100, 500), new Vector(0, 0), Math.PI / 2, testDNA, testSubstances);
 		cell.addSubstance(Substance.CHLOROPHYLL.id, 50);
 		world.addCell(cell);
 		
@@ -43,7 +44,7 @@ public class Test {
 //			world.addEntity(new TestBall(world, new Vector(random.nextDouble() * 80 + 10, random.nextDouble() * 80 + 10), new Vector(0, 0), r, r*r));
 //		}
 
-		new Application(world, testName, 0.8, 10, 1);
+		new Application(world, testName, 0.8, 10, 20);
 	}
 
 }

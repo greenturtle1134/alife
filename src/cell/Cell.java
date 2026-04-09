@@ -166,10 +166,13 @@ public class Cell extends BallEntity {
 		return this.substances[s];
 	}
 	
-	public void setSubstance(int s, double x) {
-		// This method will NOT enforce limits for now
-		this.substances[s] = x;
-	}
+	/*
+	 * Not using this function for now. Directing all substance amount changes through addSubstance to enforce cell dying
+	 */
+//	private void setSubstance(int s, double x) {
+//		// This method will NOT enforce limits for now
+//		this.substances[s] = x;
+//	}
 	
 	/**
 	 * Changes substance amount; unlike the setSubstance method this DOES respect limits.
@@ -473,8 +476,12 @@ public class Cell extends BallEntity {
 		// TODO implement getting ratio and other split parameters from memory
 		double ratio = 0.5;
 		
-		// Reject division if not enough Nucleic or cell too small
-		if (substances[Substance.NUCLEIC.id] < 2 * this.getDna().length() || Math.min(ratio, 1-ratio) * this.body() < world.settings.getMinCellBody()) {
+		// Conditions to reject division
+		if (
+				substances[Substance.NUCLEIC.id] < 2 * this.getDna().length() || // DNA not fully duplicated
+				Math.min(ratio, 1-ratio) * this.body() < world.settings.getMinCellBody() || // Either daughter cell would be too small
+				this.nrg() < world.settings.getDivisionCost() // Insufficient Nrg to conduct division
+		) {
 			// Impose penalty for failed division
 			this.addSubstance(Substance.NRG.id, -0.1*world.settings.getDivisionCost()); // TODO make failed division penalty a setting
 			return;

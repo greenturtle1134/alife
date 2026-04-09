@@ -165,11 +165,10 @@ public class World {
 		/*
 		 * ENERGY MODEL
 		 * 
-		 * 1. Cells perform own actions (computational tick) and change energy
-		 * 2. All cells still alive interact with all particles in their space
-		 * 3. All cells still alive change energy based on all continuous sources at once (photosynthesis + maintenance)
-		 * 
-		 * If a cell's energy becomes 0 at any step, it dies.
+		 * 1. Cells perform own actions (computational tick) and change energy. Cells that hit 0 during this die.
+		 * 2. New cells are added.
+		 * 3. All cells still alive interact with all particles in their space, possibly killing them.
+		 * 4. All cells still alive change energy based on all continuous sources at once (photosynthesis + maintenance), possibly killing them.
 		 */
 		
 		/* COMPUTE STEP */
@@ -178,6 +177,17 @@ public class World {
 		for (Cell e : cells) {
 			e.tick();
 		}
+		
+		/* CREATION STEP */
+		
+		// Add new cells to relevant lists
+		entities.addAll(newCells);
+		cells.addAll(newCells);
+		newCells.clear();
+		
+		// Add new particles to relevant list
+		particles.addAll(newParticles);
+		newParticles.clear();
 		
 		/* ENERGY STEP */
 		
@@ -197,9 +207,9 @@ public class World {
 			if (!e.isDead()) {
 				double photo = Math.min(e.getSubstance(Substance.CHLOROPHYLL.id), lightAtPoint(e.pos())) * settings.getPhotoEnergy();
 				e.addSubstance(Substance.NRG.id, photo-e.costs());
-				if (nearZero(e.nrg()) || nearZero(e.body())) {
-					e.kill();
-				}
+//				if (nearZero(e.nrg()) || nearZero(e.body())) {
+//					e.kill();
+//				}
 			}
 		}
 
@@ -207,18 +217,6 @@ public class World {
 		entities.removeIf(obj -> obj.isDead());
 		cells.removeIf(obj -> obj.isDead());
 		particles.removeIf(obj -> obj.isDead());
-		
-		
-		/* CREATION STEP */
-		
-		// Add new cells to relevant lists
-		entities.addAll(newCells);
-		cells.addAll(newCells);
-		newCells.clear();
-		
-		// Add new particles to relevant list
-		particles.addAll(newParticles);
-		newParticles.clear();
 		
 		// TODO TEST PARTICLE CODE
 //		if (this.time() % 10 == 0) {
