@@ -44,7 +44,7 @@ public class Test {
 //			world.addEntity(new TestBall(world, new Vector(random.nextDouble() * 80 + 10, random.nextDouble() * 80 + 10), new Vector(0, 0), r, r*r));
 //		}
 
-		new Application(world, testName, 0.8, 10, 20);
+		new Application(world, testName, 0.8, 30, 10, false);
 	}
 
 }

@@ -17,20 +17,42 @@ public class Application implements PanelListener {
 	private static final double AVERAGE_DECAY_FACTOR = 0.1;
 	
 	private World world;
+
 	private JFrame frame;
 	private MainDisplayPanel panel;
-	private int targetFrameMillis, targetFrameTicks;
-	private int t;
-	private Timer loop;
 	private JLabel statusLabel;
 	private CellInfoPanel cellInfoPanel;
+	
+	private Timer loop;
+	
+	private int targetFrameMillis, targetFrameTicks;
+	private boolean autoFrameTicks;
+	private int t;
+	
 	private long lastFrame;
 	private double averageFrameTime;
 	
-	public Application(World world, String title, double zoom, int targetFrameMillis, int targetFrameTicks) {
+	public int getTargetFrameMillis() {
+		return targetFrameMillis;
+	}
+
+	public void setTargetFrameMillis(int targetFrameMillis) {
+		this.targetFrameMillis = targetFrameMillis;
+	}
+
+	public int getTargetFrameTicks() {
+		return targetFrameTicks;
+	}
+
+	public void setTargetFrameTicks(int targetFrameTicks) {
+		this.targetFrameTicks = targetFrameTicks;
+	}
+
+	public Application(World world, String title, double zoom, int targetFrameMillis, int targetFrameTicks, boolean autoFrameTicks) {
 		this.world = world;
 		this.targetFrameMillis = targetFrameMillis;
 		this.targetFrameTicks = targetFrameTicks;
+		this.autoFrameTicks = autoFrameTicks;
 		this.t = 0;
 		
 		this.frame = new JFrame(title);
@@ -82,21 +104,38 @@ public class Application implements PanelListener {
         this.averageFrameTime = targetFrameMillis;
         
         this.loop = new Timer(targetFrameMillis, e -> {
+        	// Start recording time for the clock
+        	long startTime = System.currentTimeMillis();
+        	
+        	// Run the simulation
 		    for (int i = 0; i<this.targetFrameTicks; i++) {
 		    	world.tick();
 		    }
+		    
+		    // Show selected cell, clear it if dead
 		    if (panel.selectedCell != null && panel.selectedCell.isDead()) {
 		    	panel.selectedCell = null; // TODO should this be handled here? Kind of weird that it has to be in such a weird place.
 		    }
-		    frame.repaint();
-		    long frameTime = System.currentTimeMillis() - lastFrame;
-		    lastFrame = System.currentTimeMillis();
-		    averageFrameTime = averageFrameTime * (1-AVERAGE_DECAY_FACTOR) + frameTime * AVERAGE_DECAY_FACTOR;
-		    fpsLabel.setText("fps: " + String.format("%.1f", 1000/averageFrameTime));
-		    countLabel.setText("cells: " + world.getCells().size());
 		    if (panel.selectedCell != null) {
 			    cellInfoPanel.update(panel.selectedCell);
 		    }
+		    
+		    // Paint frame
+		    frame.repaint();
+		    
+		    // Measure frame time and update labels
+		    long endTime = System.currentTimeMillis();
+		    long frameTime = endTime - lastFrame;
+		    long tickTime = endTime - startTime;
+		    lastFrame = endTime;
+		    System.out.println(frameTime + " " + tickTime);
+		    averageFrameTime = averageFrameTime * (1-AVERAGE_DECAY_FACTOR) + frameTime * AVERAGE_DECAY_FACTOR;
+		    fpsLabel.setText("fps: " + String.format("%.1f", 1000/averageFrameTime));
+		    countLabel.setText("cells: " + world.getCells().size());
+		    
+		    // If autoset is on, determine new target tick speed
+		    
+		    
 		});
 
 		panel.setListener(this);
