@@ -128,9 +128,9 @@ public class Application implements PanelListener {
 		    long frameTime = endTime - lastFrame;
 		    long tickTime = endTime - startTime;
 		    lastFrame = endTime;
-		    System.out.println(frameTime + " " + tickTime);
+//		    System.out.println(frameTime + " " + tickTime);
 		    averageFrameTime = averageFrameTime * (1-AVERAGE_DECAY_FACTOR) + frameTime * AVERAGE_DECAY_FACTOR;
-		    fpsLabel.setText("fps: " + String.format("%.1f", 1000/averageFrameTime));
+		    fpsLabel.setText("fps: " + String.format("%.1f", 1000/averageFrameTime) + ", ");
 		    countLabel.setText("cells: " + world.getCells().size());
 		    
 		    // If autoset is on, determine new target tick speed

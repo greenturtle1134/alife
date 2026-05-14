@@ -265,6 +265,10 @@ public class Cell extends BallEntity {
 			this.i = this.getProgram().getLabels().get(label);
 		}
 	}
+	
+	public void skip(boolean backward) {
+		this.i = backward ? this.getProgram().getUnskips().lower(this.i) : this.getProgram().getUnskips().ceiling(this.i);
+	}
 
 	@Override
 	public void draw(DrawContext c) {

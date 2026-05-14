@@ -143,7 +143,7 @@ public abstract class Term {
 		
 		public void exec(Cell c) {
 			if (cond.eval(c) != 0) {
-				// TODO implement skip
+				c.skip(false);
 			}
 		}
 		
@@ -161,7 +161,7 @@ public abstract class Term {
 		
 		public void exec(Cell c) {
 			if (cond.eval(c) != 0) {
-				// TODO implement backskip
+				c.skip(true);
 			}
 		}
 		
@@ -193,7 +193,7 @@ public abstract class Term {
 		}
 		
 		public String toString() {
-			return "Nop()";
+			return "Unskip()";
 		}
 	}
 	
@@ -361,6 +361,7 @@ public abstract class Term {
 				}
 				else if (s == Substance.NUCLEIC.id) {
 					// Special case: return fraction of genome size, not actual capacity
+//					System.out.println(fractionRound(c.substances[s] / c.getDna().length(), 64));
 					return fractionRound(c.substances[s] / c.getDna().length(), 64);
 				}
 				else {

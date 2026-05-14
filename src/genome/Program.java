@@ -4,12 +4,14 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.TreeSet;
 
 import genome.Term.Statement;
 
 public class Program {
 	private Statement[] statements;
 	private Map<Integer, Integer> labels;
+	private TreeSet<Integer> unskips;
 	
 	public Statement[] getStatements() {
 		return this.statements;
@@ -19,9 +21,14 @@ public class Program {
 		return this.labels;
 	}
 	
-	private Program(Statement[] statements, Map<Integer, Integer> labels) {
+	public TreeSet<Integer> getUnskips() {
+		return this.unskips;
+	}
+	
+	private Program(Statement[] statements, Map<Integer, Integer> labels, TreeSet<Integer> unskips) {
 		this.statements = statements;
 		this.labels = labels;
+		this.unskips = unskips;
 	}
 	
 	public String toString() {
@@ -51,6 +58,17 @@ public class Program {
 			}
 		}
 		
-		return new Program(statements, labels);
+		// Locate unskips
+		TreeSet<Integer> unskips = new TreeSet<>();
+		for (int i = 0; i<statements.length; i++) {
+			if (statements[i] instanceof Term.Unskip) {
+				unskips.add(i);
+			}
+		}
+		// Add effective unskips at start and end
+		unskips.add(-1);
+		unskips.add(statements.length-1);
+		
+		return new Program(statements, labels, unskips);
 	}
 }

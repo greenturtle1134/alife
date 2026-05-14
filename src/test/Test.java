@@ -18,7 +18,8 @@ public class Test {
 	public static void main(String[] args) {		
 		String testName = "alife test";
 //		String testString = "TATAAACTAAATAGTAATGCAGAGAAATTAAGGCCAAATCCAAAGCCATTAAACATAAGAAAT";
-		String testString = "TATAAAAGTTTAGAGTGATGGCCAAATCCAAAGAAGCCATTAAACATAAT";
+//		String testString = "TATAAAAGTTTAGAGTGATGGCCAAATCCAAAGAAGCCATTAAACATAAT";
+		String testString = "TATAAA CCA AAT CCA AAG AAG CCA TTA AAC ACA GCA GAG TGA AAG TCA TTA CCC ATA";
 		DNA testDNA = DNA.stringToDNA(testString);
 		System.out.println("       DNA: " + testDNA);
 		System.out.println("   Splices: " + Arrays.toString(testDNA.findSplices(DNA.TATA)));
@@ -44,7 +45,7 @@ public class Test {
 //			world.addEntity(new TestBall(world, new Vector(random.nextDouble() * 80 + 10, random.nextDouble() * 80 + 10), new Vector(0, 0), r, r*r));
 //		}
 
-		new Application(world, testName, 0.8, 30, 10, false);
+		new Application(world, testName, 0.8, 50, 50, false);
 	}
 
 }
